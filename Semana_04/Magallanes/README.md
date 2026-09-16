@@ -8,16 +8,22 @@
 ## Descripción
 Aplicación desarrollada en Jetpack Compose para gestionar un carrito de compras. Permite ingresar productos (nombre, precio y cantidad) mediante un formulario, mostrarlos en una lista dinámica con `LazyColumn`, eliminar elementos individuales y calcular en tiempo real el subtotal, el IGV (18%) y el total a pagar.
 
-## Capturas de pantalla
-## Carrito vacío:
-![img1.png](img1.png)
-## Agregando al carrito:
-![img2.png](img2.png)
-## Carrito con elementos:
-![img3.png](img3.png)
-## Eliminando productos:
-![img4.png](img4.png)
+### Capturas de pantalla
+### Carrito vacío:
 
+![img1.png](app/img1.png)
+
+## Agregando al carrito:
+
+![img2.png](app/img2.png)
+
+### Carrito con elementos:
+
+![img3.png](app/img3.png)
+
+### Eliminando productos:
+
+![img4.png](app/img4.png)
 
 ## Preguntas conceptuales
 
