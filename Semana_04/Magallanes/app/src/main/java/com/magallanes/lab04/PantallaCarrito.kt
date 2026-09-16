@@ -1,6 +1,8 @@
 package com.magallanes.lab04
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,12 +13,10 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaCarrito() {
-    // Estados del formulario
     var nombre by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
 
-    // Lista observable de productos
     val productos = remember { mutableStateListOf<Producto>() }
 
     Scaffold(
@@ -36,7 +36,7 @@ fun PantallaCarrito() {
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            // Campo: Nombre del producto
+            // Formulario de ingreso
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -46,7 +46,6 @@ fun PantallaCarrito() {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Campos: Precio y Cantidad en la misma fila
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -70,14 +69,12 @@ fun PantallaCarrito() {
             }
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Botón Agregar con validación
             Button(
                 onClick = {
                     val precioNum = precio.toDoubleOrNull() ?: 0.0
                     val cantidadNum = cantidad.toIntOrNull() ?: 0
                     if (nombre.isNotBlank() && precioNum > 0 && cantidadNum > 0) {
                         productos.add(Producto(nombre.trim(), precioNum, cantidadNum))
-                        // Limpiar campos del formulario
                         nombre = ""
                         precio = ""
                         cantidad = ""
@@ -86,6 +83,20 @@ fun PantallaCarrito() {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("AGREGAR")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // LazyColumn inicial con weight(1f)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(productos) { producto ->
+                    Text(text = "${producto.nombre} - S/ ${producto.precio} x ${producto.cantidad}")
+                }
             }
         }
     }
