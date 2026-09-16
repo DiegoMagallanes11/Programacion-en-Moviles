@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
@@ -36,7 +40,7 @@ fun PantallaCarrito() {
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            // Formulario de ingreso
+            // Formulario
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -87,16 +91,61 @@ fun PantallaCarrito() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // LazyColumn inicial con weight(1f)
+            // LazyColumn con tarjetas dinámicas
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(productos) { producto ->
-                    Text(text = "${producto.nombre} - S/ ${producto.precio} x ${producto.cantidad}")
+                    TarjetaProducto(
+                        producto = producto,
+                        onEliminar = { productos.remove(producto) }
+                    )
                 }
+            }
+        }
+    }
+}
+
+// Tarjeta según la Figura 3 del laboratorio
+@Composable
+fun TarjetaProducto(producto: Producto, onEliminar: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = producto.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "S/ %.2f x %d".format(producto.precio, producto.cantidad),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+            Text(
+                text = "S/ %.2f".format(producto.subtotalItem),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            IconButton(onClick = onEliminar) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
