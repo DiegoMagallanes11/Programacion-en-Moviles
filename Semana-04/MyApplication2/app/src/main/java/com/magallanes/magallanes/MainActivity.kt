@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             MagallanesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        TemperatureDisplay()
+                        PantallaTareas()
                     }
                 }
             }
@@ -31,8 +31,8 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun TemperatureDisplayPreview() {
+fun PantallaTareasPreview() {
     MagallanesTheme {
-        TemperatureDisplay()
+        PantallaTareas()
     }
 }
