@@ -14,43 +14,30 @@ import com.magallanes.navlab.screens.ProfileScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route
     ) {
-        composable(route = Screen.Home.route) {
-            HomeScreen(
-                onNavigateToList = { navController.navigate(Screen.List.route) },
-                onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
-            )
+        composable(Screen.Home.route) {
+            HomeScreen(navController)
         }
-        composable(route = Screen.List.route) {
-            ListScreen(
-                onNavigateToDetail = { itemId ->
-                    navController.navigate(Screen.Detail.createRoute(itemId))
-                },
-                onBack = { navController.popBackStack() }
-            )
+        composable(Screen.List.route) {
+            ListScreen(navController)
+        }
+        composable(Screen.Profile.route) {
+            ProfileScreen(navController)
         }
         composable(
             route = Screen.Detail.route,
-            arguments = listOf(navArgument("itemId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
-            DetailScreen(
-                itemId = itemId,
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(route = Screen.Profile.route) {
-            ProfileScreen(
-                onBackToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
+            arguments = listOf(
+                navArgument(name = "itemId") {
+                    type = NavType.IntType
+                    defaultValue = 0
                 }
             )
+        ) { backStackEntry ->
+            val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
+            DetailScreen(navController, itemId)
         }
     }
 }
