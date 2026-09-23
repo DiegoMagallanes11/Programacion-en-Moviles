@@ -16,7 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-
+// Mejora IA: Lógica de cancelación de reservas
 sealed class DestinoSecundario(val ruta: String, val titulo: String, val icono: ImageVector) {
     object Inicio : DestinoSecundario("inicio", "Clases", Icons.Default.Home)
     object Reservas : DestinoSecundario("reservas", "Mis Reservas", Icons.Default.DateRange)
