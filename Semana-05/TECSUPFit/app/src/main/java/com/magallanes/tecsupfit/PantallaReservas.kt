@@ -17,10 +17,12 @@ data class Reserva(
     val estado: String
 )
 
+
 @Composable
 fun PantallaReservas(
     reservas: List<Reserva>,
-    onCancelarReserva: (Reserva) -> Unit
+    onCancelarReserva: (Reserva) -> Unit,
+    onIrAInicio: () -> Unit // <-- Nuevo parámetro
 ) {
     Column(
         modifier = Modifier
@@ -38,7 +40,17 @@ fun PantallaReservas(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("No tienes reservas registradas aún.")
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text("No tienes reservas registradas aún.")
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(onClick = onIrAInicio) {
+                        Text("Explorar Clases")
+                    }
+                }
             }
         } else {
             LazyColumn(

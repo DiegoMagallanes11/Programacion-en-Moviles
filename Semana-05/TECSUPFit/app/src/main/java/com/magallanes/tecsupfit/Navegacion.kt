@@ -1,5 +1,6 @@
 package com.magallanes.tecsupfit
 
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -9,14 +10,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-// Mejora IA: Lógica de cancelación de reservas
+
 sealed class DestinoSecundario(val ruta: String, val titulo: String, val icono: ImageVector) {
     object Inicio : DestinoSecundario("inicio", "Clases", Icons.Default.Home)
     object Reservas : DestinoSecundario("reservas", "Mis Reservas", Icons.Default.DateRange)
@@ -60,10 +60,14 @@ fun AppTECSUPFit() {
                         label = { Text(destino.titulo) },
                         selected = rutaActual == destino.ruta,
                         onClick = {
-                            navController.navigate(destino.ruta) {
-                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (rutaActual != destino.ruta) {
+                                navController.navigate(destino.ruta) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = (destino.ruta != DestinoSecundario.Inicio.ruta)
+                                }
                             }
                         }
                     )
@@ -154,6 +158,14 @@ fun AppTECSUPFit() {
                     reservas = reservas,
                     onCancelarReserva = { reservaACancelar ->
                         reservas.remove(reservaACancelar)
+                    },
+                    onIrAInicio = {
+                        navController.navigate(DestinoSecundario.Inicio.ruta) {
+                            popUpTo(DestinoSecundario.Inicio.ruta) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
