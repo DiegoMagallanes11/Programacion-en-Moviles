@@ -60,10 +60,15 @@ fun AppTECSUPFit() {
                         label = { Text(destino.titulo) },
                         selected = rutaActual == destino.ruta,
                         onClick = {
-                            navController.navigate(destino.ruta) {
-                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (rutaActual != destino.ruta) {
+                                navController.navigate(destino.ruta) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                        inclusive = (destino.ruta == DestinoSecundario.Inicio.ruta)
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = (destino.ruta != DestinoSecundario.Inicio.ruta)
+                                }
                             }
                         }
                     )
@@ -150,14 +155,8 @@ fun AppTECSUPFit() {
             }
 
             composable(DestinoSecundario.Reservas.ruta) {
-                PantallaReservas(
-                    reservas = reservas,
-                    onCancelarReserva = { reservaACancelar ->
-                        reservas.remove(reservaACancelar)
-                    }
-                )
+                PantallaReservas(reservas = reservas)
             }
-
             composable(DestinoSecundario.Perfil.ruta) {
                 PantallaPerfil()
             }

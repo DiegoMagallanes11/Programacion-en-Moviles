@@ -18,10 +18,7 @@ data class Reserva(
 )
 
 @Composable
-fun PantallaReservas(
-    reservas: List<Reserva>,
-    onCancelarReserva: (Reserva) -> Unit
-) {
+fun PantallaReservas(reservas: List<Reserva>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,10 +43,7 @@ fun PantallaReservas(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(reservas) { reserva ->
-                    TarjetaReserva(
-                        reserva = reserva,
-                        onCancelar = { onCancelarReserva(reserva) }
-                    )
+                    TarjetaReserva(reserva = reserva)
                 }
             }
         }
@@ -57,10 +51,7 @@ fun PantallaReservas(
 }
 
 @Composable
-fun TarjetaReserva(
-    reserva: Reserva,
-    onCancelar: () -> Unit
-) {
+fun TarjetaReserva(reserva: Reserva) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -78,26 +69,10 @@ fun TarjetaReserva(
             Text(text = "Horario: ${reserva.horario}")
             Text(text = "Entrenador: ${reserva.entrenador}")
             Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SuggestionChip(
-                    onClick = { },
-                    label = { Text(reserva.estado) }
-                )
-
-                OutlinedButton(
-                    onClick = onCancelar,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Cancelar")
-                }
-            }
+            SuggestionChip(
+                onClick = { },
+                label = { Text(reserva.estado) }
+            )
         }
     }
 }
