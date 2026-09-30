@@ -39,18 +39,18 @@ fun AppDrawerContent(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "MR",
+                        text = "DM",
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
                     Text(
-                        text = "Maria Rojas",
+                        text = "Diego Magallanes Linares",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "maria@tecsup.edu.pe",
+                        text = "diego.magallanes@tecsup.edu.pe",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
