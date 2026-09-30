@@ -2,7 +2,10 @@ package com.fernandez.lab06magallanes
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.ReportProblem
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,7 +15,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TarjetaProducto(producto: Producto) {
-    // Estado para controlar la visibilidad del menu
     var menuAbierto by remember { mutableStateOf(false) }
 
     Card(
@@ -47,21 +49,45 @@ fun TarjetaProducto(producto: Producto) {
                     )
                 }
 
-                // Menu desplegable con las opciones principales
+                // Menu desplegable personalizado con iconos e imagenes
                 DropdownMenu(
                     expanded = menuAbierto,
                     onDismissRequest = { menuAbierto = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Favoritos") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.FavoriteBorder,
+                                contentDescription = null
+                            )
+                        },
                         onClick = { menuAbierto = false }
                     )
+
+                    HorizontalDivider()
+
                     DropdownMenuItem(
                         text = { Text("Compartir") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = null
+                            )
+                        },
                         onClick = { menuAbierto = false }
                     )
+
+                    HorizontalDivider()
+
                     DropdownMenuItem(
                         text = { Text("Reportar") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.ReportProblem,
+                                contentDescription = null
+                            )
+                        },
                         onClick = { menuAbierto = false }
                     )
                 }
