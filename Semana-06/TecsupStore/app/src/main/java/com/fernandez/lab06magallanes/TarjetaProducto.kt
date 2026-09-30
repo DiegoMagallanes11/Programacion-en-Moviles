@@ -2,6 +2,7 @@ package com.fernandez.lab06magallanes
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.ReportProblem
@@ -14,7 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TarjetaProducto(producto: Producto) {
+fun TarjetaProducto(
+    producto: Producto,
+    onToggleFavorito: () -> Unit // Evento para cambiar el estado de favorito
+) {
     var menuAbierto by remember { mutableStateOf(false) }
 
     Card(
@@ -49,20 +53,24 @@ fun TarjetaProducto(producto: Producto) {
                     )
                 }
 
-                // Menu desplegable personalizado con iconos e imagenes
                 DropdownMenu(
                     expanded = menuAbierto,
                     onDismissRequest = { menuAbierto = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text("Favoritos") },
+                        text = {
+                            Text(if (producto.esFavorito) "Quitar de Favoritos" else "Agregar a Favoritos")
+                        },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
+                                imageVector = if (producto.esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = null
                             )
                         },
-                        onClick = { menuAbierto = false }
+                        onClick = {
+                            onToggleFavorito()
+                            menuAbierto = false
+                        }
                     )
 
                     HorizontalDivider()
@@ -70,10 +78,7 @@ fun TarjetaProducto(producto: Producto) {
                     DropdownMenuItem(
                         text = { Text("Compartir") },
                         leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Share,
-                                contentDescription = null
-                            )
+                            Icon(imageVector = Icons.Default.Share, contentDescription = null)
                         },
                         onClick = { menuAbierto = false }
                     )
@@ -83,10 +88,7 @@ fun TarjetaProducto(producto: Producto) {
                     DropdownMenuItem(
                         text = { Text("Reportar") },
                         leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.ReportProblem,
-                                contentDescription = null
-                            )
+                            Icon(imageVector = Icons.Default.ReportProblem, contentDescription = null)
                         },
                         onClick = { menuAbierto = false }
                     )

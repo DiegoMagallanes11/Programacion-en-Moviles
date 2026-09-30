@@ -15,27 +15,28 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavegacion() {
-    // Control para abrir y cerrar el drawer
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
-    // Estado para saber en que pantalla estamos
     var pantallaActual by remember { mutableStateOf("Inicio") }
 
-    // Productos de prueba
-    val productos = remember {
-        listOf(
+    // Lista mutable de productos para cambiar el estado de favorito
+    val listaProductos = remember {
+        mutableStateListOf(
             Producto(1, "Audifonos", 89.00),
             Producto(2, "Smartwatch", 199.00),
             Producto(3, "Funda celular", 25.00)
         )
     }
 
+    // Cuenta cuantos productos estan marcados como favorito
+    val totalFavoritos = listaProductos.count { it.esFavorito }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             AppDrawerContent(
                 opcionSeleccionada = pantallaActual,
+                cantidadFavoritos = totalFavoritos,
                 onOpcionSeleccionada = { opcion ->
                     pantallaActual = opcion
                     scope.launch { drawerState.close() }
@@ -62,7 +63,6 @@ fun AppNavegacion() {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                // Mostrar vista segun la opcion del menu
                 when (pantallaActual) {
                     "Inicio" -> {
                         LazyColumn(
@@ -70,8 +70,45 @@ fun AppNavegacion() {
                                 .fillMaxSize()
                                 .padding(8.dp)
                         ) {
-                            items(productos) { prod ->
-                                TarjetaProducto(producto = prod)
+                            items(listaProductos) { prod ->
+                                TarjetaProducto(
+                                    producto = prod,
+                                    onToggleFavorito = {
+                                        val index = listaProductos.indexOf(prod)
+                                        if (index != -1) {
+                                            listaProductos[index] = prod.copy(esFavorito = !prod.esFavorito)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    "Favoritos" -> {
+                        val favoritos = listaProductos.filter { it.esFavorito }
+                        if (favoritos.isEmpty()) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("No tienes favoritos agregados")
+                            }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp)
+                            ) {
+                                items(favoritos) { prod ->
+                                    TarjetaProducto(
+                                        producto = prod,
+                                        onToggleFavorito = {
+                                            val index = listaProductos.indexOf(prod)
+                                            if (index != -1) {
+                                                listaProductos[index] = prod.copy(esFavorito = !prod.esFavorito)
+                                            }
+                                        }
+                                    )
+                                }
                             }
                         }
                     }

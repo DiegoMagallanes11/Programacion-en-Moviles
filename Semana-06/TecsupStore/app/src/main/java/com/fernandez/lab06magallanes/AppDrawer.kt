@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AppDrawerContent(
     opcionSeleccionada: String,
+    cantidadFavoritos: Int, // Recibimos la cantidad de favoritos
     onOpcionSeleccionada: (String) -> Unit
 ) {
     ModalDrawerSheet {
-        // Cabecera con foto/iniciales y datos del usuario
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -31,7 +31,6 @@ fun AppDrawerContent(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Circulo con las iniciales del usuario
                 Box(
                     modifier = Modifier
                         .size(44.dp)
@@ -62,7 +61,6 @@ fun AppDrawerContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Items con iconos y resalte de la opcion activa
         NavigationDrawerItem(
             label = { Text("Inicio") },
             icon = { Icon(Icons.Default.Home, contentDescription = null) },
@@ -79,9 +77,17 @@ fun AppDrawerContent(
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
 
+        // Item Favoritos con el Badge contador
         NavigationDrawerItem(
             label = { Text("Favoritos") },
             icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
+            badge = {
+                if (cantidadFavoritos > 0) {
+                    Badge {
+                        Text(text = "$cantidadFavoritos")
+                    }
+                }
+            },
             selected = opcionSeleccionada == "Favoritos",
             onClick = { onOpcionSeleccionada("Favoritos") },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
