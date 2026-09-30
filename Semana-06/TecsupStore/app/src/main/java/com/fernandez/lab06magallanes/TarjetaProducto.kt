@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TarjetaProducto(producto: Producto) {
-    // Estado para saber si el menu esta abierto o cerrado
+    // Estado para controlar la visibilidad del menu
     var menuAbierto by remember { mutableStateOf(false) }
 
     Card(
@@ -26,7 +26,6 @@ fun TarjetaProducto(producto: Producto) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icono del producto
             Icon(
                 imageVector = Icons.Default.ShoppingBag,
                 contentDescription = null,
@@ -35,13 +34,11 @@ fun TarjetaProducto(producto: Producto) {
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Nombre y precio
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = producto.nombre, style = MaterialTheme.typography.titleMedium)
                 Text(text = "S/ ${producto.precio}", style = MaterialTheme.typography.bodyMedium)
             }
 
-            // Usamos Box para colocar el icono y posicionar el menu encima
             Box {
                 IconButton(onClick = { menuAbierto = true }) {
                     Icon(
@@ -50,7 +47,24 @@ fun TarjetaProducto(producto: Producto) {
                     )
                 }
 
-                // Aqui colocaremos el DropdownMenu en el siguiente paso
+                // Menu desplegable con las opciones principales
+                DropdownMenu(
+                    expanded = menuAbierto,
+                    onDismissRequest = { menuAbierto = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Favoritos") },
+                        onClick = { menuAbierto = false }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Compartir") },
+                        onClick = { menuAbierto = false }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Reportar") },
+                        onClick = { menuAbierto = false }
+                    )
+                }
             }
         }
     }
