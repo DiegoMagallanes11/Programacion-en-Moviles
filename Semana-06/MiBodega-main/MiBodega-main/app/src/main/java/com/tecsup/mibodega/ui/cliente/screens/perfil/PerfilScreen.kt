@@ -86,13 +86,13 @@ fun PerfilScreen(
                 Spacer(Modifier.height(12.dp))
 
                 Text(
-                    text = "Usuario Administrador",
+                    text = "Diego Magallanes",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
-                    text = "admin@mibodega.pe",
+                    text = "diego.magallanes@tecsup.edu.pe",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

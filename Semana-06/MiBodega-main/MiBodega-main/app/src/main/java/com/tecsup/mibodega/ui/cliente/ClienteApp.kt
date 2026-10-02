@@ -1,5 +1,9 @@
 package com.tecsup.mibodega.ui.cliente
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -52,6 +56,7 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
  * - Tiene el estado del carrito (List<ItemCarrito>), que se reparte
  *   hacia abajo a Inicio, Detalle, Carrito y Entrega.
  * - Maneja el tema global (modo claro / modo oscuro) recibido desde MainActivity.
+ * - Configura animaciones fluidas de transición entre pantallas con enterTransition, exitTransition, popEnterTransition y popExitTransition.
  *
  * Credenciales estáticas de login: usuario "admin", contraseña "1234".
  */
@@ -155,7 +160,31 @@ fun ClienteApp(
         NavHost(
             navController = navController,
             startDestination = Rutas.BIENVENIDA,
-            modifier = Modifier.padding(paddingScaffold)
+            modifier = Modifier.padding(paddingScaffold),
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(350)
+                ) + fadeIn(animationSpec = tween(350))
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(350)
+                ) + fadeOut(animationSpec = tween(350))
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(350)
+                ) + fadeIn(animationSpec = tween(350))
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(350)
+                ) + fadeOut(animationSpec = tween(350))
+            }
         ) {
             composable(Rutas.BIENVENIDA) {
                 BienvenidaScreen(
