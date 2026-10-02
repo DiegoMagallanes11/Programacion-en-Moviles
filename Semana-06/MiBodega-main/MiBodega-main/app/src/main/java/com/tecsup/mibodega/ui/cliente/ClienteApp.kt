@@ -239,15 +239,16 @@ fun ClienteApp() {
             }
 
             composable(Rutas.ENTREGA) {
+                val subtotal = carrito.sumOf { it.producto.precio * it.cantidad }
                 DatosEntregaScreen(
+                    subtotal = subtotal,
                     onVolver = { navController.popBackStack() },
-                    onConfirmarEntrega = { nombre, telefono, direccion, referencia ->
-                        val total = carrito.sumOf { it.producto.precio * it.cantidad } + 4.00 // costo delivery
+                    onConfirmarEntrega = { nombre, telefono, direccion, referencia, totalCalculado ->
                         val nuevoPedido = Pedido(
                             id = "PED-${System.currentTimeMillis().toString().takeLast(5)}",
                             fecha = "Hoy", 
                             items = carrito.toList(),
-                            total = total
+                            total = totalCalculado
                         )
                         historialPedidos = listOf(nuevoPedido) + historialPedidos
                         
