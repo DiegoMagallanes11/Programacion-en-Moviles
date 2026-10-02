@@ -1,10 +1,13 @@
 package com.tecsup.mibodega.ui.cliente.modelo
 
+import com.tecsup.mibodega.R
+
 data class Producto(
     val id: Int,
     val nombre: String,
     val descripcion: String,
     val precio: Double,
     val categoria: String,
-    val esFavorito: Boolean = false
+    val esFavorito: Boolean = false,
+    val imagenRes: Int = R.drawable.ilustracion_bodega
 )

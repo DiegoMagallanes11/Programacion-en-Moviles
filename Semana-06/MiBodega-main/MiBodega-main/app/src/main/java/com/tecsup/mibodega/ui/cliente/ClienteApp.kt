@@ -41,6 +41,7 @@ import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
 import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
+import com.tecsup.mibodega.ui.cliente.screens.categorias.CategoriasScreen
 import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
@@ -64,6 +65,7 @@ private object Rutas {
     const val BIENVENIDA = "bienvenida"
     const val REGISTRO = "registro"
     const val INICIO = "inicio"
+    const val CATEGORIAS = "categorias"
     const val DETALLE = "detalle/{productoId}"
     const val CARRITO = "carrito"
     const val ENTREGA = "entrega"
@@ -77,6 +79,7 @@ private object Rutas {
 /** Rutas donde se muestra la TopAppBar con el ícono del carrito */
 private val rutasConTopBar = setOf(
     Rutas.INICIO,
+    Rutas.CATEGORIAS,
     Rutas.DETALLE,
     Rutas.CARRITO,
     Rutas.ENTREGA,
@@ -87,6 +90,7 @@ private val rutasConTopBar = setOf(
 /** Rutas donde se muestra la BottomNavigationBar */
 private val rutasConBottomBar = setOf(
     Rutas.INICIO,
+    Rutas.CATEGORIAS,
     Rutas.PEDIDOS,
     Rutas.PERFIL
 )
@@ -104,6 +108,9 @@ fun ClienteApp(
     
     // Historial de pedidos
     var historialPedidos by remember { mutableStateOf<List<Pedido>>(emptyList()) }
+
+    // Estado global de categoría seleccionada
+    var categoriaSeleccionadaGlobal by remember { mutableStateOf("Todos") }
 
     // Cantidad total dinámica para el badge
     val cantidadTotal = carrito.sumOf { it.cantidad }
@@ -216,6 +223,7 @@ fun ClienteApp(
 
             composable(Rutas.INICIO) {
                 InicioScreen(
+                    categoriaInicial = categoriaSeleccionadaGlobal,
                     cantidadCarrito = cantidadTotal,
                     onVerCarrito = { navController.navigate(Rutas.CARRITO) },
                     onProductoClick = { producto ->
@@ -223,6 +231,20 @@ fun ClienteApp(
                     },
                     onAgregarProducto = { producto ->
                         carrito = agregarOSumarProducto(carrito, producto, 1)
+                    },
+                    onCategoriaCambiada = { nuevaCategoria ->
+                        categoriaSeleccionadaGlobal = nuevaCategoria
+                    }
+                )
+            }
+
+            composable(Rutas.CATEGORIAS) {
+                CategoriasScreen(
+                    onSeleccionarCategoria = { categoria ->
+                        categoriaSeleccionadaGlobal = categoria
+                        navController.navigate(Rutas.INICIO) {
+                            popUpTo(Rutas.INICIO) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -343,7 +365,7 @@ private fun agregarOSumarProducto(
 private fun BarraInferior(rutaActual: String?, onNavigate: (String) -> Unit) {
     val items = listOf(
         Triple("Inicio", Icons.Default.Home, Rutas.INICIO),
-        Triple("Categorías", Icons.Default.List, "categorias_placeholder"),
+        Triple("Categorías", Icons.Default.List, Rutas.CATEGORIAS),
         Triple("Pedidos", Icons.Default.Receipt, Rutas.PEDIDOS),
         Triple("Perfil", Icons.Default.Person, Rutas.PERFIL)
     )
@@ -352,7 +374,7 @@ private fun BarraInferior(rutaActual: String?, onNavigate: (String) -> Unit) {
             NavigationBarItem(
                 selected = rutaActual == rutaDestino,
                 onClick = { 
-                    if (rutaDestino in setOf(Rutas.INICIO, Rutas.PEDIDOS, Rutas.PERFIL)) {
+                    if (rutaDestino in setOf(Rutas.INICIO, Rutas.CATEGORIAS, Rutas.PEDIDOS, Rutas.PERFIL)) {
                         onNavigate(rutaDestino) 
                     }
                 },

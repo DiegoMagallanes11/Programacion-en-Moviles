@@ -19,10 +19,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,28 +60,25 @@ private enum class OrdenPrecio { NINGUNO, MENOR_A_MAYOR, MAYOR_A_MENOR }
 
 /**
  * Pantalla 3: Inicio / Productos (mockup "Cliente").
- * La más completa: Scaffold (topBar + bottomBar), LazyRow de categorías
- * y LazyVerticalGrid de productos.
  *
  * Incluye:
- * - Filtro por categorías
+ * - Filtro por categorías en tiempo real
  * - Búsqueda por nombre
  * - Filtro de favoritos (chip "Favoritos")
  * - Selector / menú de ordenamiento por precio (Menor a Mayor / Mayor a Menor)
- *
- * @param productos lista completa (fake por ahora, luego vendrá de un ViewModel)
- * @param cantidadCarrito para el badge del carrito en la topBar
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InicioScreen(
     productos: List<Producto> = listaProductosFake,
+    categoriaInicial: String = "Todos",
     cantidadCarrito: Int,
     onVerCarrito: () -> Unit,
     onProductoClick: (Producto) -> Unit,
-    onAgregarProducto: (Producto) -> Unit
+    onAgregarProducto: (Producto) -> Unit,
+    onCategoriaCambiada: (String) -> Unit = {}
 ) {
-    var categoriaSeleccionada by remember { mutableStateOf(listaCategorias.first()) }
+    var categoriaSeleccionada by remember(categoriaInicial) { mutableStateOf(categoriaInicial) }
     var textoBusqueda by remember { mutableStateOf("") }
     var soloFavoritos by remember { mutableStateOf(false) }
     var ordenPrecio by remember { mutableStateOf(OrdenPrecio.NINGUNO) }
@@ -133,8 +130,9 @@ fun InicioScreen(
             )
 
             Text(
-                text = "Productos destacados",
+                text = if (categoriaSeleccionada == "Todos") "Productos destacados" else "Categoría: $categoriaSeleccionada",
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
             )
 
@@ -147,7 +145,10 @@ fun InicioScreen(
                     ChipCategoria(
                         texto = categoria,
                         seleccionado = categoria == categoriaSeleccionada,
-                        onClick = { categoriaSeleccionada = categoria }
+                        onClick = {
+                            categoriaSeleccionada = categoria
+                            onCategoriaCambiada(categoria)
+                        }
                     )
                 }
                 item {

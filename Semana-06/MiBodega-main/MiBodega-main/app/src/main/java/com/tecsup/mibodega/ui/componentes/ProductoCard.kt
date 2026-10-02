@@ -1,5 +1,6 @@
 package com.tecsup.mibodega.ui.componentes
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,7 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,8 +42,7 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
  * Tarjeta de producto usada en el grid de Inicio.
- * Solo muestra datos y avisa cuando la tocan o cuando tocan "+" o el corazón;
- * no sabe nada de navegación ni del carrito.
+ * Muestra la imagen o un placeholder si no está disponible.
  *
  * @param esFavorito indica si el producto está marcado como favorito
  * @param onToggleFavorito callback para alternar el estado de favorito
@@ -60,21 +64,32 @@ fun ProductoCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
-            // Imagen placeholder con botón de favorito superpuesto
+            // Imagen o placeholder con botón de favorito superpuesto
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.3f)
                     .background(GrisClaro, RoundedCornerShape(10.dp))
             ) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingBasket,
-                    contentDescription = producto.nombre,
-                    tint = VerdeBodega,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .align(Alignment.Center)
-                )
+                if (producto.imagenRes != 0) {
+                    Image(
+                        painter = painterResource(id = producto.imagenRes),
+                        contentDescription = producto.nombre,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(10.dp))
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingBasket,
+                        contentDescription = producto.nombre,
+                        tint = VerdeBodega,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    )
+                }
 
                 // Botón de corazón (favorito) en la esquina superior derecha
                 IconButton(
