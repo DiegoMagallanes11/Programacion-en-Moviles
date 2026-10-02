@@ -3,6 +3,7 @@ package com.tecsup.mibodega.ui.cliente.screens.inicio
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,24 +17,19 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -71,7 +67,7 @@ private enum class OrdenPrecio { NINGUNO, MENOR_A_MAYOR, MAYOR_A_MENOR }
  * - Filtro por categorías
  * - Búsqueda por nombre
  * - Filtro de favoritos (chip "Favoritos")
- * - Ordenamiento por precio (Menor a Mayor / Mayor a Menor)
+ * - Selector / menú de ordenamiento por precio (Menor a Mayor / Mayor a Menor)
  *
  * @param productos lista completa (fake por ahora, luego vendrá de un ViewModel)
  * @param cantidadCarrito para el badge del carrito en la topBar
@@ -89,6 +85,7 @@ fun InicioScreen(
     var textoBusqueda by remember { mutableStateOf("") }
     var soloFavoritos by remember { mutableStateOf(false) }
     var ordenPrecio by remember { mutableStateOf(OrdenPrecio.NINGUNO) }
+    var menuOrdenExpandido by remember { mutableStateOf(false) }
 
     // Estado local de favoritos (set de IDs de productos marcados)
     var favoritosIds by remember(productos) {
@@ -174,61 +171,77 @@ fun InicioScreen(
                 }
             }
 
-            // Botones de ordenamiento por precio
+            // Selector / Menú desplegable de ordenamiento por precio
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.End,
+                    .padding(vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Ordenar:",
+                    text = "${productosFiltrados.size} productos",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(Modifier.width(8.dp))
-                FilterChip(
-                    selected = ordenPrecio == OrdenPrecio.MENOR_A_MAYOR,
-                    onClick = {
-                        ordenPrecio = if (ordenPrecio == OrdenPrecio.MENOR_A_MAYOR) OrdenPrecio.NINGUNO
-                        else OrdenPrecio.MENOR_A_MAYOR
-                    },
-                    label = { Text("Menor a Mayor") },
-                    leadingIcon = {
+
+                Box {
+                    Row(
+                        modifier = Modifier
+                            .background(GrisClaro, RoundedCornerShape(12.dp))
+                            .clickable { menuOrdenExpandido = true }
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
                         Icon(
-                            Icons.Default.ArrowUpward,
-                            contentDescription = null,
-                            modifier = Modifier.padding(0.dp)
+                            imageVector = Icons.AutoMirrored.Filled.Sort,
+                            contentDescription = "Ordenar por",
+                            tint = VerdeBodega
                         )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = VerdeBodega,
-                        selectedLabelColor = Color.White,
-                        selectedLeadingIconColor = Color.White
-                    )
-                )
-                Spacer(Modifier.width(8.dp))
-                FilterChip(
-                    selected = ordenPrecio == OrdenPrecio.MAYOR_A_MENOR,
-                    onClick = {
-                        ordenPrecio = if (ordenPrecio == OrdenPrecio.MAYOR_A_MENOR) OrdenPrecio.NINGUNO
-                        else OrdenPrecio.MAYOR_A_MENOR
-                    },
-                    label = { Text("Mayor a Menor") },
-                    leadingIcon = {
+                        Text(
+                            text = when (ordenPrecio) {
+                                OrdenPrecio.NINGUNO -> "Ordenar por precio"
+                                OrdenPrecio.MENOR_A_MAYOR -> "Menor a Mayor"
+                                OrdenPrecio.MAYOR_A_MENOR -> "Mayor a Menor"
+                            },
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                         Icon(
-                            Icons.Default.ArrowDownward,
-                            contentDescription = null,
-                            modifier = Modifier.padding(0.dp)
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null
                         )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = VerdeBodega,
-                        selectedLabelColor = Color.White,
-                        selectedLeadingIconColor = Color.White
-                    )
-                )
+                    }
+
+                    DropdownMenu(
+                        expanded = menuOrdenExpandido,
+                        onDismissRequest = { menuOrdenExpandido = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Sin orden") },
+                            onClick = {
+                                ordenPrecio = OrdenPrecio.NINGUNO
+                                menuOrdenExpandido = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Menor a Mayor") },
+                            onClick = {
+                                ordenPrecio = OrdenPrecio.MENOR_A_MAYOR
+                                menuOrdenExpandido = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Mayor a Menor") },
+                            onClick = {
+                                ordenPrecio = OrdenPrecio.MAYOR_A_MENOR
+                                menuOrdenExpandido = false
+                            }
+                        )
+                    }
+                }
             }
 
             LazyVerticalGrid(
@@ -278,8 +291,6 @@ private fun ChipCategoria(
         Text(text = texto, color = contenido, fontWeight = FontWeight.Medium)
     }
 }
-
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
