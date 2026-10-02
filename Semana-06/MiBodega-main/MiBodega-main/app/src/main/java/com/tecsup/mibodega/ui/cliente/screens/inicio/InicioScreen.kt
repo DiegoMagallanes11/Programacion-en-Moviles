@@ -108,9 +108,7 @@ fun InicioScreen(
             }
         }
 
-    Scaffold(
-        bottomBar = { BarraInferior() }
-    ) { paddingInterno ->
+    Scaffold { paddingInterno ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -279,30 +277,7 @@ private fun ChipCategoria(
     }
 }
 
-@Composable
-private fun BarraInferior() {
-    var seleccionado by remember { mutableStateOf(0) }
-    val items = listOf(
-        Triple("Inicio", Icons.Default.Home, 0),
-        Triple("Categorías", Icons.Default.List, 1),
-        Triple("Pedidos", Icons.Default.Receipt, 2),
-        Triple("Perfil", Icons.Default.Person, 3)
-    )
-    NavigationBar {
-        items.forEach { (etiqueta, icono, indice) ->
-            NavigationBarItem(
-                selected = seleccionado == indice,
-                onClick = { seleccionado = indice },
-                icon = { Icon(icono, contentDescription = etiqueta) },
-                label = { Text(etiqueta) },
-                colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
-                    selectedIconColor = VerdeBodega,
-                    selectedTextColor = VerdeBodega
-                )
-            )
-        }
-    }
-}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

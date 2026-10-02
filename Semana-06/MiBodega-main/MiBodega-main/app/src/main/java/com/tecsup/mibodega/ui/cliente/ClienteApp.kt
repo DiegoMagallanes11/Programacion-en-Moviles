@@ -24,7 +24,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import com.tecsup.mibodega.ui.cliente.modelo.ItemCarrito
+import com.tecsup.mibodega.ui.cliente.modelo.Pedido
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
@@ -33,7 +41,9 @@ import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
+import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
+import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
  * "Director de orquesta" de la app cliente:
@@ -55,6 +65,7 @@ private object Rutas {
     const val CARRITO = "carrito"
     const val ENTREGA = "entrega"
     const val CONFIRMACION = "confirmacion"
+    const val PEDIDOS = "pedidos"
 
     fun detalle(productoId: Int) = "detalle/$productoId"
 }
@@ -64,7 +75,14 @@ private val rutasConTopBar = setOf(
     Rutas.INICIO,
     Rutas.DETALLE,
     Rutas.CARRITO,
-    Rutas.ENTREGA
+    Rutas.ENTREGA,
+    Rutas.PEDIDOS
+)
+
+/** Rutas donde se muestra la BottomNavigationBar */
+private val rutasConBottomBar = setOf(
+    Rutas.INICIO,
+    Rutas.PEDIDOS
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,15 +92,19 @@ fun ClienteApp() {
 
     // El carrito vive aquí arriba, no en ninguna Screen.
     var carrito by remember { mutableStateOf<List<ItemCarrito>>(emptyList()) }
+    
+    // Historial de pedidos
+    var historialPedidos by remember { mutableStateOf<List<Pedido>>(emptyList()) }
 
     // Cantidad total dinámica para el badge
     val cantidadTotal = carrito.sumOf { it.cantidad }
 
-    // Ruta actual para decidir si mostrar la TopAppBar
+    // Ruta actual para decidir si mostrar la TopAppBar y BottomBar
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val rutaActual = navBackStackEntry?.destination?.route
 
     val mostrarTopBar = rutaActual in rutasConTopBar
+    val mostrarBottomBar = rutaActual in rutasConBottomBar
 
     Scaffold(
         topBar = {
@@ -107,6 +129,19 @@ fun ClienteApp() {
                                     contentDescription = "Carrito"
                                 )
                             }
+                        }
+                    }
+                )
+            }
+        },
+        bottomBar = {
+            if (mostrarBottomBar) {
+                BarraInferior(
+                    rutaActual = rutaActual,
+                    onNavigate = { ruta ->
+                        navController.navigate(ruta) {
+                            popUpTo(Rutas.INICIO)
+                            launchSingleTop = true
                         }
                     }
                 )
@@ -207,7 +242,15 @@ fun ClienteApp() {
                 DatosEntregaScreen(
                     onVolver = { navController.popBackStack() },
                     onConfirmarEntrega = { nombre, telefono, direccion, referencia ->
-                        // TODO: guardar datos de entrega cuando exista el backend real
+                        val total = carrito.sumOf { it.producto.precio * it.cantidad } + 4.00 // costo delivery
+                        val nuevoPedido = Pedido(
+                            id = "PED-${System.currentTimeMillis().toString().takeLast(5)}",
+                            fecha = "Hoy", 
+                            items = carrito.toList(),
+                            total = total
+                        )
+                        historialPedidos = listOf(nuevoPedido) + historialPedidos
+                        
                         navController.navigate(Rutas.CONFIRMACION) {
                             popUpTo(Rutas.INICIO)
                         }
@@ -224,6 +267,10 @@ fun ClienteApp() {
                         }
                     }
                 )
+            }
+            
+            composable(Rutas.PEDIDOS) {
+                PedidosScreen(historialPedidos = historialPedidos)
             }
         }
     }
@@ -245,5 +292,33 @@ private fun agregarOSumarProducto(
         }
     } else {
         carrito + ItemCarrito(producto = producto, cantidad = cantidad)
+    }
+}
+
+@Composable
+private fun BarraInferior(rutaActual: String?, onNavigate: (String) -> Unit) {
+    val items = listOf(
+        Triple("Inicio", Icons.Default.Home, Rutas.INICIO),
+        Triple("Categorías", Icons.Default.List, "categorias_placeholder"),
+        Triple("Pedidos", Icons.Default.Receipt, Rutas.PEDIDOS),
+        Triple("Perfil", Icons.Default.Person, "perfil_placeholder")
+    )
+    NavigationBar {
+        items.forEach { (etiqueta, icono, rutaDestino) ->
+            NavigationBarItem(
+                selected = rutaActual == rutaDestino,
+                onClick = { 
+                    if (rutaDestino == Rutas.INICIO || rutaDestino == Rutas.PEDIDOS) {
+                        onNavigate(rutaDestino) 
+                    }
+                },
+                icon = { Icon(icono, contentDescription = etiqueta) },
+                label = { Text(etiqueta) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = VerdeBodega,
+                    selectedTextColor = VerdeBodega
+                )
+            )
+        }
     }
 }
