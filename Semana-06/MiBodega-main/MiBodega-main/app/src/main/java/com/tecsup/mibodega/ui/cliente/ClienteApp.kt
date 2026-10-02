@@ -1,13 +1,25 @@
 package com.tecsup.mibodega.ui.cliente
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tecsup.mibodega.ui.cliente.modelo.ItemCarrito
@@ -26,6 +38,8 @@ import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
  * - Tiene el NavHost con las rutas de cada pantalla.
  * - Tiene el estado del carrito (List<ItemCarrito>), que se reparte
  *   hacia abajo a Inicio, Detalle, Carrito y Entrega.
+ * - Tiene un Scaffold con TopAppBar que muestra un BadgedBox con la
+ *   cantidad total de productos en el carrito de forma dinámica.
  * Ninguna Screen navega sola ni modifica el carrito directamente:
  * todas reciben funciones (lambdas) desde aquí (state hoisting).
  *
@@ -43,6 +57,15 @@ private object Rutas {
     fun detalle(productoId: Int) = "detalle/$productoId"
 }
 
+/** Rutas donde se muestra la TopAppBar con el ícono del carrito */
+private val rutasConTopBar = setOf(
+    Rutas.INICIO,
+    Rutas.DETALLE,
+    Rutas.CARRITO,
+    Rutas.ENTREGA
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClienteApp() {
     val navController = rememberNavController()
@@ -50,116 +73,156 @@ fun ClienteApp() {
     // El carrito vive aquí arriba, no en ninguna Screen.
     var carrito by remember { mutableStateOf<List<ItemCarrito>>(emptyList()) }
 
-    NavHost(
-        navController = navController,
-        startDestination = Rutas.BIENVENIDA
-    ) {
-        composable(Rutas.BIENVENIDA) {
-            BienvenidaScreen(
-                onRegistrarse = { navController.navigate(Rutas.REGISTRO) },
-                onIniciarSesion = { usuario, contrasena ->
-                    // Validación de credenciales estáticas
-                    if (usuario == "admin" && contrasena == "1234") {
+    // Cantidad total dinámica para el badge
+    val cantidadTotal = carrito.sumOf { it.cantidad }
+
+    // Ruta actual para decidir si mostrar la TopAppBar
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val rutaActual = navBackStackEntry?.destination?.route
+
+    val mostrarTopBar = rutaActual in rutasConTopBar
+
+    Scaffold(
+        topBar = {
+            if (mostrarTopBar) {
+                TopAppBar(
+                    title = { Text("Mi Bodega", fontWeight = FontWeight.Bold) },
+                    actions = {
+                        IconButton(onClick = {
+                            if (rutaActual != Rutas.CARRITO) {
+                                navController.navigate(Rutas.CARRITO)
+                            }
+                        }) {
+                            BadgedBox(
+                                badge = {
+                                    if (cantidadTotal > 0) {
+                                        Badge { Text("$cantidadTotal") }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Default.ShoppingCart,
+                                    contentDescription = "Carrito"
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    ) { paddingScaffold ->
+        NavHost(
+            navController = navController,
+            startDestination = Rutas.BIENVENIDA,
+            modifier = androidx.compose.ui.Modifier.padding(paddingScaffold)
+        ) {
+            composable(Rutas.BIENVENIDA) {
+                BienvenidaScreen(
+                    onRegistrarse = { navController.navigate(Rutas.REGISTRO) },
+                    onIniciarSesion = { usuario, contrasena ->
+                        // Validación de credenciales estáticas
+                        if (usuario == "admin" && contrasena == "1234") {
+                            navController.navigate(Rutas.INICIO) {
+                                popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                            }
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                    onTerminos = { /* TODO: abrir términos y condiciones */ }
+                )
+            }
+
+            composable(Rutas.REGISTRO) {
+                RegistroScreen(
+                    onVolver = { navController.popBackStack() },
+                    onCrearCuenta = { nombre, telefono, direccion, referencia ->
+                        // TODO: guardar estos datos cuando exista el registro real
                         navController.navigate(Rutas.INICIO) {
                             popUpTo(Rutas.BIENVENIDA) { inclusive = true }
                         }
-                        true
-                    } else {
-                        false
                     }
-                },
-                onTerminos = { /* TODO: abrir términos y condiciones */ }
-            )
-        }
+                )
+            }
 
-        composable(Rutas.REGISTRO) {
-            RegistroScreen(
-                onVolver = { navController.popBackStack() },
-                onCrearCuenta = { nombre, telefono, direccion, referencia ->
-                    // TODO: guardar estos datos cuando exista el registro real
-                    navController.navigate(Rutas.INICIO) {
-                        popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+            composable(Rutas.INICIO) {
+                InicioScreen(
+                    cantidadCarrito = cantidadTotal,
+                    onVerCarrito = { navController.navigate(Rutas.CARRITO) },
+                    onProductoClick = { producto ->
+                        navController.navigate(Rutas.detalle(producto.id))
+                    },
+                    onAgregarProducto = { producto ->
+                        carrito = agregarOSumarProducto(carrito, producto, 1)
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable(Rutas.INICIO) {
-            InicioScreen(
-                cantidadCarrito = carrito.sumOf { it.cantidad },
-                onVerCarrito = { navController.navigate(Rutas.CARRITO) },
-                onProductoClick = { producto ->
-                    navController.navigate(Rutas.detalle(producto.id))
-                },
-                onAgregarProducto = { producto ->
-                    carrito = agregarOSumarProducto(carrito, producto, 1)
-                }
-            )
-        }
+            composable(
+                route = Rutas.DETALLE,
+                arguments = listOf(navArgument("productoId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
+                val producto = listaProductosFake.first { it.id == productoId }
 
-        composable(
-            route = Rutas.DETALLE,
-            arguments = listOf(navArgument("productoId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
-            val producto = listaProductosFake.first { it.id == productoId }
-
-            DetalleProductoScreen(
-                producto = producto,
-                onVolver = { navController.popBackStack() },
-                onAgregarAlCarrito = { productoSeleccionado, cantidad ->
-                    carrito = agregarOSumarProducto(carrito, productoSeleccionado, cantidad)
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(Rutas.CARRITO) {
-            CarritoScreen(
-                carrito = carrito,
-                onVolver = { navController.popBackStack() },
-                onIncrementar = { producto ->
-                    carrito = carrito.map {
-                        if (it.producto.id == producto.id) it.copy(cantidad = it.cantidad + 1) else it
+                DetalleProductoScreen(
+                    producto = producto,
+                    onVolver = { navController.popBackStack() },
+                    onAgregarAlCarrito = { productoSeleccionado, cantidad ->
+                        carrito = agregarOSumarProducto(carrito, productoSeleccionado, cantidad)
+                        navController.popBackStack()
                     }
-                },
-                onDecrementar = { producto ->
-                    carrito = carrito.mapNotNull {
-                        when {
-                            it.producto.id != producto.id -> it
-                            it.cantidad > 1 -> it.copy(cantidad = it.cantidad - 1)
-                            else -> null // si llega a 0, se elimina de la lista
+                )
+            }
+
+            composable(Rutas.CARRITO) {
+                CarritoScreen(
+                    carrito = carrito,
+                    onVolver = { navController.popBackStack() },
+                    onIncrementar = { producto ->
+                        carrito = carrito.map {
+                            if (it.producto.id == producto.id) it.copy(cantidad = it.cantidad + 1) else it
+                        }
+                    },
+                    onDecrementar = { producto ->
+                        carrito = carrito.mapNotNull {
+                            when {
+                                it.producto.id != producto.id -> it
+                                it.cantidad > 1 -> it.copy(cantidad = it.cantidad - 1)
+                                else -> null // si llega a 0, se elimina de la lista
+                            }
+                        }
+                    },
+                    onEliminar = { producto ->
+                        carrito = carrito.filterNot { it.producto.id == producto.id }
+                    },
+                    onContinuarPedido = { navController.navigate(Rutas.ENTREGA) }
+                )
+            }
+
+            composable(Rutas.ENTREGA) {
+                DatosEntregaScreen(
+                    onVolver = { navController.popBackStack() },
+                    onConfirmarEntrega = { nombre, telefono, direccion, referencia ->
+                        // TODO: guardar datos de entrega cuando exista el backend real
+                        navController.navigate(Rutas.CONFIRMACION) {
+                            popUpTo(Rutas.INICIO)
                         }
                     }
-                },
-                onEliminar = { producto ->
-                    carrito = carrito.filterNot { it.producto.id == producto.id }
-                },
-                onContinuarPedido = { navController.navigate(Rutas.ENTREGA) }
-            )
-        }
+                )
+            }
 
-        composable(Rutas.ENTREGA) {
-            DatosEntregaScreen(
-                onVolver = { navController.popBackStack() },
-                onConfirmarEntrega = { nombre, telefono, direccion, referencia ->
-                    // TODO: guardar datos de entrega cuando exista el backend real
-                    navController.navigate(Rutas.CONFIRMACION) {
-                        popUpTo(Rutas.INICIO)
+            composable(Rutas.CONFIRMACION) {
+                ConfirmacionScreen(
+                    onVolverAlInicio = {
+                        carrito = emptyList()
+                        navController.navigate(Rutas.INICIO) {
+                            popUpTo(Rutas.INICIO) { inclusive = true }
+                        }
                     }
-                }
-            )
-        }
-
-        composable(Rutas.CONFIRMACION) {
-            ConfirmacionScreen(
-                onVolverAlInicio = {
-                    carrito = emptyList()
-                    navController.navigate(Rutas.INICIO) {
-                        popUpTo(Rutas.INICIO) { inclusive = true }
-                    }
-                }
-            )
+                )
+            }
         }
     }
 }

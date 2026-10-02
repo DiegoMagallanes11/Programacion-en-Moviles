@@ -27,14 +27,10 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -42,7 +38,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -114,24 +109,6 @@ fun InicioScreen(
         }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Mi Bodega", fontWeight = FontWeight.Bold) },
-                actions = {
-                    IconButton(onClick = onVerCarrito) {
-                        BadgedBox(
-                            badge = {
-                                if (cantidadCarrito > 0) {
-                                    Badge { Text("$cantidadCarrito") }
-                                }
-                            }
-                        ) {
-                            Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito")
-                        }
-                    }
-                }
-            )
-        },
         bottomBar = { BarraInferior() }
     ) { paddingInterno ->
         Column(
