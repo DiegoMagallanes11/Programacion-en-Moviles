@@ -14,8 +14,7 @@ val listaProductosFake = listOf(
         nombre = "Arroz Costeño",
         descripcion = "Arroz extra, grano largo, ideal para el día a día.",
         precio = 4.50,
-        categoria = "Abarrotes",
-        esFavorito = true
+        categoria = "Abarrotes"
     ),
     Producto(
         id = 2,
@@ -43,8 +42,7 @@ val listaProductosFake = listOf(
         nombre = "Coca-Cola Original",
         descripcion = "Bebida gaseosa sabor cola. Ideal para compartir en familia.",
         precio = 6.50,
-        categoria = "Bebidas",
-        esFavorito = true
+        categoria = "Bebidas"
     )
 )
 
