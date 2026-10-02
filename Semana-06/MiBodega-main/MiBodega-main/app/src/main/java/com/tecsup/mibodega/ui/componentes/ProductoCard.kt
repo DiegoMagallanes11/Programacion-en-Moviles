@@ -48,7 +48,7 @@ fun ProductoCard(
     producto: Producto,
     onClick: () -> Unit,
     onAgregar: () -> Unit,
-    esFavorito: Boolean = false,
+    esFavorito: Boolean = producto.esFavorito,
     onToggleFavorito: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {

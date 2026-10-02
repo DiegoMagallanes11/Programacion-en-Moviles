@@ -91,7 +91,9 @@ fun InicioScreen(
     var ordenPrecio by remember { mutableStateOf(OrdenPrecio.NINGUNO) }
 
     // Estado local de favoritos (set de IDs de productos marcados)
-    var favoritosIds by remember { mutableStateOf(setOf<Int>()) }
+    var favoritosIds by remember(productos) {
+        mutableStateOf(productos.filter { it.esFavorito }.map { it.id }.toSet())
+    }
 
     val productosFiltrados = productos
         .filter { producto ->
