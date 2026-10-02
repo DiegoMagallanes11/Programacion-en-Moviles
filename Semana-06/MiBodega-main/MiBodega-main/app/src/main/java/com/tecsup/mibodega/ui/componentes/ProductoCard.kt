@@ -1,7 +1,7 @@
 package com.tecsup.mibodega.ui.componentes
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingBasket
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,14 +37,19 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
  * Tarjeta de producto usada en el grid de Inicio.
- * Solo muestra datos y avisa cuando la tocan o cuando tocan "+";
+ * Solo muestra datos y avisa cuando la tocan o cuando tocan "+" o el corazón;
  * no sabe nada de navegación ni del carrito.
+ *
+ * @param esFavorito indica si el producto está marcado como favorito
+ * @param onToggleFavorito callback para alternar el estado de favorito
  */
 @Composable
 fun ProductoCard(
     producto: Producto,
     onClick: () -> Unit,
     onAgregar: () -> Unit,
+    esFavorito: Boolean = false,
+    onToggleFavorito: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -52,21 +60,36 @@ fun ProductoCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
-            // Placeholder de imagen: reemplázalo por Image(painterResource(...))
-            // cuando tengan las fotos reales de cada producto.
+            // Imagen placeholder con botón de favorito superpuesto
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.3f)
-                    .background(GrisClaro, RoundedCornerShape(10.dp)),
-                contentAlignment = Alignment.Center
+                    .background(GrisClaro, RoundedCornerShape(10.dp))
             ) {
                 Icon(
                     imageVector = Icons.Default.ShoppingBasket,
                     contentDescription = producto.nombre,
                     tint = VerdeBodega,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier
+                        .size(36.dp)
+                        .align(Alignment.Center)
                 )
+
+                // Botón de corazón (favorito) en la esquina superior derecha
+                IconButton(
+                    onClick = onToggleFavorito,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = if (esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = if (esFavorito) "Quitar de favoritos" else "Agregar a favoritos",
+                        tint = if (esFavorito) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
 
             Spacer(Modifier.height(8.dp))
@@ -81,7 +104,7 @@ fun ProductoCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -106,4 +129,3 @@ fun ProductoCard(
         }
     }
 }
-
