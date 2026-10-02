@@ -15,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -114,7 +116,7 @@ fun ClienteApp() {
         NavHost(
             navController = navController,
             startDestination = Rutas.BIENVENIDA,
-            modifier = androidx.compose.ui.Modifier.padding(paddingScaffold)
+            modifier = Modifier.padding(paddingScaffold)
         ) {
             composable(Rutas.BIENVENIDA) {
                 BienvenidaScreen(
