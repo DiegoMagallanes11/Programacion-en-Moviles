@@ -17,8 +17,7 @@ val listaProductosFake = listOf(
         descripcion = "Arroz extra, grano largo, ideal para el día a día.",
         precio = 4.50,
         categoria = "Abarrotes",
-        // TODO: Puedes colocar una imagen personalizada en res/drawable/arroz_costeno.png y cambiar este ID por R.drawable.arroz_costeno
-        imagenRes = R.drawable.ilustracion_bodega
+        imagenRes = R.drawable.arroz_costeno
     ),
     Producto(
         id = 2,
@@ -26,8 +25,7 @@ val listaProductosFake = listOf(
         descripcion = "Aceite vegetal 1 L, alto en vitamina E.",
         precio = 8.90,
         categoria = "Abarrotes",
-        // TODO: Puedes colocar una imagen personalizada en res/drawable/aceite_primor.png y cambiar este ID por R.drawable.aceite_primor
-        imagenRes = R.drawable.ilustracion_bodega
+        imagenRes = R.drawable.aceite_primor
     ),
     Producto(
         id = 3,
@@ -35,8 +33,7 @@ val listaProductosFake = listOf(
         descripcion = "Leche evaporada entera 1 L.",
         precio = 5.20,
         categoria = "Abarrotes",
-        // TODO: Puedes colocar una imagen personalizada en res/drawable/leche_gloria.png y cambiar este ID por R.drawable.leche_gloria
-        imagenRes = R.drawable.ilustracion_bodega
+        imagenRes = R.drawable.leche_gloria
     ),
     Producto(
         id = 4,
@@ -44,8 +41,7 @@ val listaProductosFake = listOf(
         descripcion = "Galletas de chocolate rellenas 126 g.",
         precio = 3.50,
         categoria = "Snacks",
-        // TODO: Puedes colocar una imagen personalizada en res/drawable/galleta_oreo.png y cambiar este ID por R.drawable.galleta_oreo
-        imagenRes = R.drawable.ilustracion_bodega
+        imagenRes = R.drawable.galleta_oreo
     ),
     Producto(
         id = 5,
@@ -53,7 +49,6 @@ val listaProductosFake = listOf(
         descripcion = "Bebida gaseosa sabor cola. Ideal para compartir en familia.",
         precio = 6.50,
         categoria = "Bebidas",
-        // TODO: Puedes colocar una imagen personalizada en res/drawable/coca_cola.png y cambiar este ID por R.drawable.coca_cola
-        imagenRes = R.drawable.ilustracion_bodega
+        imagenRes = R.drawable.coca_cola
     )
 )
