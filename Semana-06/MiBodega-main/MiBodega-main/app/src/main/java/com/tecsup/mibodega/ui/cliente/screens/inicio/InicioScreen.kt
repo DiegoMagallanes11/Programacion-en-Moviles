@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -89,10 +90,17 @@ fun InicioScreen(
         mutableStateOf(productos.filter { it.esFavorito }.map { it.id }.toSet())
     }
 
+    // Consulta ya normalizada: sin espacios sobrantes, minúsculas y sin tildes,
+    // para que "limon" encuentre "Limón" mientras el usuario escribe.
+    val consultaBusqueda = remember(textoBusqueda) { normalizar(textoBusqueda) }
+
     val productosFiltrados = productos
         .filter { producto ->
             val coincideCategoria = categoriaSeleccionada == "Todos" || producto.categoria == categoriaSeleccionada
-            val coincideBusqueda = producto.nombre.contains(textoBusqueda, ignoreCase = true)
+            val coincideBusqueda = consultaBusqueda.isEmpty() ||
+                producto.nombre.normalizadoContiene(consultaBusqueda) ||
+                producto.descripcion.normalizadoContiene(consultaBusqueda) ||
+                producto.categoria.normalizadoContiene(consultaBusqueda)
             val coincideFavorito = !soloFavoritos || favoritosIds.contains(producto.id)
             coincideCategoria && coincideBusqueda && coincideFavorito
         }
@@ -245,27 +253,49 @@ fun InicioScreen(
                 }
             }
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(vertical = 12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(productosFiltrados) { producto ->
-                    ProductoCard(
-                        producto = producto,
-                        onClick = { onProductoClick(producto) },
-                        onAgregar = { onAgregarProducto(producto) },
-                        esFavorito = favoritosIds.contains(producto.id),
-                        onToggleFavorito = {
-                            favoritosIds = if (favoritosIds.contains(producto.id)) {
-                                favoritosIds - producto.id
-                            } else {
-                                favoritosIds + producto.id
-                            }
-                        }
+            if (productosFiltrados.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Sin resultados",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = "No encontramos productos con ese nombre.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(vertical = 12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(productosFiltrados) { producto ->
+                        ProductoCard(
+                            producto = producto,
+                            onClick = { onProductoClick(producto) },
+                            onAgregar = { onAgregarProducto(producto) },
+                            esFavorito = favoritosIds.contains(producto.id),
+                            onToggleFavorito = {
+                                favoritosIds = if (favoritosIds.contains(producto.id)) {
+                                    favoritosIds - producto.id
+                                } else {
+                                    favoritosIds + producto.id
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -273,6 +303,20 @@ fun InicioScreen(
 }
 
 // Sub-composables PRIVADOS: solo los usa esta pantalla.
+
+/**
+ * Quita tildes, pasa a minúsculas y recorta espacios para comparar textos.
+ * Así "LIMÓN", "limon " y "limón" se consideran la misma búsqueda.
+ */
+private fun normalizar(texto: String): String =
+    java.text.Normalizer
+        .normalize(texto, java.text.Normalizer.Form.NFD)
+        .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
+        .lowercase()
+        .trim()
+
+private fun String.normalizadoContiene(consulta: String): Boolean =
+    normalizar(this).contains(consulta)
 
 @Composable
 private fun ChipCategoria(
