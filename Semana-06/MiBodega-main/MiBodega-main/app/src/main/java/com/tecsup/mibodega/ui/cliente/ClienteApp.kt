@@ -37,6 +37,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tecsup.mibodega.ui.cliente.modelo.ItemCarrito
+import com.tecsup.mibodega.ui.cliente.modelo.Pedido
 import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
@@ -87,6 +88,9 @@ fun ClienteApp() {
 
     // El carrito vive aquí, no en ninguna pantalla.
     var carrito by remember { mutableStateOf<List<ItemCarrito>>(emptyList()) }
+
+    // Historial de pedidos: cada confirmación de entrega agrega uno
+    var historialPedidos by remember { mutableStateOf<List<Pedido>>(emptyList()) }
 
     // Categoría seleccionada: vive arriba para que Inicio y Categorías
     // compartan el mismo filtro.
@@ -276,7 +280,15 @@ fun ClienteApp() {
                 DatosEntregaScreen(
                     subtotal = subtotal,
                     onVolver = { navController.popBackStack() },
-                    onConfirmarEntrega = { _, _, _, _, _ ->
+                    onConfirmarEntrega = { _, _, _, _, totalCalculado ->
+                        val nuevoPedido = Pedido(
+                            id = "PED-${System.currentTimeMillis().toString().takeLast(5)}",
+                            fecha = "Hoy",
+                            items = carrito.toList(),
+                            total = totalCalculado
+                        )
+                        historialPedidos = listOf(nuevoPedido) + historialPedidos
+
                         navController.navigate(Rutas.CONFIRMACION) {
                             popUpTo(Rutas.INICIO)
                         }
@@ -307,7 +319,7 @@ fun ClienteApp() {
             }
 
             composable(Rutas.PEDIDOS) {
-                PedidosScreen()
+                PedidosScreen(historialPedidos = historialPedidos)
             }
 
             composable(Rutas.PERFIL) {
