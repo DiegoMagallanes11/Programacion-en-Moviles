@@ -31,10 +31,12 @@ fun BotonPrimario(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     subtexto: String? = null,
-    icono: Painter? = null
+    icono: Painter? = null,
+    habilitado: Boolean = true
 ) {
     Button(
         onClick = onClick,
+        enabled = habilitado,
         modifier = modifier
             .fillMaxWidth()
             .height(if (subtexto != null) 64.dp else 52.dp),
@@ -71,3 +73,4 @@ fun BotonPrimario(
         }
     }
 }
+
