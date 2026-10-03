@@ -86,6 +86,18 @@ fun ClienteApp() {
     // compartan el mismo filtro.
     var categoriaSeleccionada by remember { mutableStateOf("Todos") }
 
+    // Favoritos globales: viven aquí para que Inicio y Detalle muestren
+    // siempre el mismo estado al navegar entre pantallas.
+    var favoritosIds by remember {
+        mutableStateOf(listaProductosFake.filter { it.esFavorito }.map { it.id }.toSet())
+    }
+    fun alternarFavorito(id: Int) {
+        favoritosIds = if (favoritosIds.contains(id)) favoritosIds - id else favoritosIds + id
+    }
+
+    // Cantidad total dinámica para el badge del carrito
+    val cantidadTotal = carrito.sumOf { it.cantidad }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val rutaActual = navBackStackEntry?.destination?.route
     val mostrarTopBar = rutaActual in rutasConTopBar
@@ -166,7 +178,11 @@ fun ClienteApp() {
                     onAgregarProducto = { producto ->
                         carrito = agregarOSumarProducto(carrito, producto, 1)
                     },
-                    onCategoriaCambiada = { categoriaSeleccionada = it }
+                    onCategoriaCambiada = { categoriaSeleccionada = it },
+                    favoritosIds = favoritosIds,
+                    onToggleFavorito = { alternarFavorito(it) },
+                    cantidadCarrito = cantidadTotal,
+                    onVerCarrito = { navController.navigate(Rutas.CARRITO) }
                 )
             }
 
@@ -181,6 +197,8 @@ fun ClienteApp() {
                     DetalleProductoScreen(
                         producto = producto,
                         onVolver = { navController.popBackStack() },
+                        esFavorito = favoritosIds.contains(producto.id),
+                        onToggleFavorito = { alternarFavorito(producto.id) },
                         onAgregarAlCarrito = { productoSeleccionado, cantidad ->
                             carrito = agregarOSumarProducto(carrito, productoSeleccionado, cantidad)
                             navController.popBackStack()

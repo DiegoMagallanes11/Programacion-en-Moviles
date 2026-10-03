@@ -8,5 +8,6 @@ data class Producto(
     val descripcion: String,
     val precio: Double,
     val categoria: String,
+    val esFavorito: Boolean = false,
     val imagenRes: Int = R.drawable.ilustracion_bodega
 )

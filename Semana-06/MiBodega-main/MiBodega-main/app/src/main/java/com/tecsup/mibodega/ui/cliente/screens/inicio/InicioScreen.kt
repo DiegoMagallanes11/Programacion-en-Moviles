@@ -3,17 +3,33 @@ package com.tecsup.mibodega.ui.cliente.screens.inicio
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -26,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,34 +55,61 @@ import com.tecsup.mibodega.ui.theme.GrisClaro
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
- * Pantalla 3: Inicio / Productos (mockup "Cliente").
- * Muestra el catálogo en una LazyColumn y permite filtrarlo
- * por categoría con una fila horizontal de chips (LazyRow).
+ * Opciones de ordenamiento por precio.
  */
+private enum class OrdenPrecio { NINGUNO, MENOR_A_MAYOR, MAYOR_A_MENOR }
+
+/**
+ * Pantalla 3: Inicio / Productos (mockup "Cliente").
+ *
+ * Incluye:
+ * - Filtro por categorías en tiempo real
+ * - Búsqueda por nombre
+ * - Filtro de favoritos (chip "Favoritos")
+ * - Selector / menú de ordenamiento por precio (Menor a Mayor / Mayor a Menor)
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InicioScreen(
     productos: List<Producto> = listaProductosFake,
     categoriaInicial: String = "Todos",
-    onProductoClick: (Producto) -> Unit = {},
-    onAgregarProducto: (Producto) -> Unit = {},
-    onCategoriaCambiada: (String) -> Unit = {}
+    cantidadCarrito: Int,
+    onVerCarrito: () -> Unit,
+    onProductoClick: (Producto) -> Unit,
+    onAgregarProducto: (Producto) -> Unit,
+    onCategoriaCambiada: (String) -> Unit = {},
+    favoritosIds: Set<Int> = emptySet(),
+    onToggleFavorito: (Int) -> Unit = {}
 ) {
     var categoriaSeleccionada by remember(categoriaInicial) { mutableStateOf(categoriaInicial) }
     var textoBusqueda by remember { mutableStateOf("") }
+    var soloFavoritos by remember { mutableStateOf(false) }
+    var ordenPrecio by remember { mutableStateOf(OrdenPrecio.NINGUNO) }
+    var menuOrdenExpandido by remember { mutableStateOf(false) }
 
-    // Consulta normalizada: sin espacios sobrantes, minúsculas y sin tildes,
+    // Consulta ya normalizada: sin espacios sobrantes, minúsculas y sin tildes,
     // para que "limon" encuentre "Limón" mientras el usuario escribe.
     val consultaBusqueda = remember(textoBusqueda) { normalizar(textoBusqueda) }
 
-    // El filtro depende del estado: al escribir o cambiar el chip se recompone la lista.
-    val productosFiltrados = productos.filter { producto ->
-        val coincideCategoria = categoriaSeleccionada == "Todos" || producto.categoria == categoriaSeleccionada
-        val coincideBusqueda = consultaBusqueda.isEmpty() ||
-            producto.nombre.normalizadoContiene(consultaBusqueda) ||
-            producto.descripcion.normalizadoContiene(consultaBusqueda) ||
-            producto.categoria.normalizadoContiene(consultaBusqueda)
-        coincideCategoria && coincideBusqueda
-    }
+    // Los favoritos vienen de ClienteApp: al volver del Detalle ya está
+    // actualizado, por eso aquí ya no se guarda estado local.
+    val productosFiltrados = productos
+        .filter { producto ->
+            val coincideCategoria = categoriaSeleccionada == "Todos" || producto.categoria == categoriaSeleccionada
+            val coincideBusqueda = consultaBusqueda.isEmpty() ||
+                producto.nombre.normalizadoContiene(consultaBusqueda) ||
+                producto.descripcion.normalizadoContiene(consultaBusqueda) ||
+                producto.categoria.normalizadoContiene(consultaBusqueda)
+            val coincideFavorito = !soloFavoritos || favoritosIds.contains(producto.id)
+            coincideCategoria && coincideBusqueda && coincideFavorito
+        }
+        .let { lista ->
+            when (ordenPrecio) {
+                OrdenPrecio.MENOR_A_MAYOR -> lista.sortedBy { it.precio }
+                OrdenPrecio.MAYOR_A_MENOR -> lista.sortedByDescending { it.precio }
+                OrdenPrecio.NINGUNO -> lista
+            }
+        }
 
     Scaffold { paddingInterno ->
         Column(
@@ -74,30 +118,32 @@ fun InicioScreen(
                 .padding(paddingInterno)
                 .padding(horizontal = 16.dp)
         ) {
-        OutlinedTextField(
-            value = textoBusqueda,
-            onValueChange = { textoBusqueda = it },
-            label = { Text("Buscar") },
-            placeholder = { Text("Buscar productos...") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+            OutlinedTextField(
+                value = textoBusqueda,
+                onValueChange = { textoBusqueda = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                placeholder = { Text("Buscar productos...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = GrisClaro,
+                    focusedContainerColor = GrisClaro,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = VerdeBodega
+                )
             )
-        )
 
-        Spacer(Modifier.height(8.dp))
-
-        Text(
-                text = if (categoriaSeleccionada == "Todos") "Productos destacados"
-                else "Categoría: $categoriaSeleccionada",
+            Text(
+                text = if (categoriaSeleccionada == "Todos") "Productos destacados" else "Categoría: $categoriaSeleccionada",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+                modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
             )
 
+            // Fila de categorías + chip de Favoritos
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp)
@@ -111,6 +157,98 @@ fun InicioScreen(
                             onCategoriaCambiada(categoria)
                         }
                     )
+                }
+                item {
+                    FilterChip(
+                        selected = soloFavoritos,
+                        onClick = { soloFavoritos = !soloFavoritos },
+                        label = { Text("Favoritos", fontWeight = FontWeight.Medium) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Favorite,
+                                contentDescription = null,
+                                tint = if (soloFavoritos) Color.White else Color.Red,
+                                modifier = Modifier.padding(0.dp)
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color.Red,
+                            selectedLabelColor = Color.White
+                        )
+                    )
+                }
+            }
+
+            // Selector / Menú desplegable de ordenamiento por precio
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${productosFiltrados.size} productos",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Box {
+                    Row(
+                        modifier = Modifier
+                            .background(GrisClaro, RoundedCornerShape(12.dp))
+                            .clickable { menuOrdenExpandido = true }
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Sort,
+                            contentDescription = "Ordenar por",
+                            tint = VerdeBodega
+                        )
+                        Text(
+                            text = when (ordenPrecio) {
+                                OrdenPrecio.NINGUNO -> "Ordenar por precio"
+                                OrdenPrecio.MENOR_A_MAYOR -> "Menor a Mayor"
+                                OrdenPrecio.MAYOR_A_MENOR -> "Mayor a Menor"
+                            },
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = menuOrdenExpandido,
+                        onDismissRequest = { menuOrdenExpandido = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Sin orden") },
+                            onClick = {
+                                ordenPrecio = OrdenPrecio.NINGUNO
+                                menuOrdenExpandido = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Menor a Mayor") },
+                            onClick = {
+                                ordenPrecio = OrdenPrecio.MENOR_A_MAYOR
+                                menuOrdenExpandido = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Mayor a Menor") },
+                            onClick = {
+                                ordenPrecio = OrdenPrecio.MAYOR_A_MENOR
+                                menuOrdenExpandido = false
+                            }
+                        )
+                    }
                 }
             }
 
@@ -135,16 +273,20 @@ fun InicioScreen(
                     )
                 }
             } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(vertical = 8.dp),
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    contentPadding = PaddingValues(vertical = 12.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    items(productosFiltrados, key = { it.id }) { producto ->
+                    items(productosFiltrados) { producto ->
                         ProductoCard(
                             producto = producto,
                             onClick = { onProductoClick(producto) },
-                            onAgregar = { onAgregarProducto(producto) }
+                            onAgregar = { onAgregarProducto(producto) },
+                            esFavorito = favoritosIds.contains(producto.id),
+                            onToggleFavorito = { onToggleFavorito(producto.id) }
                         )
                     }
                 }
@@ -176,10 +318,9 @@ private fun ChipCategoria(
     onClick: () -> Unit
 ) {
     val fondo = if (seleccionado) VerdeBodega else GrisClaro
-    val contenido = if (seleccionado) MaterialTheme.colorScheme.onPrimary
-    else MaterialTheme.colorScheme.onSurface
+    val contenido = if (seleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
-    Column(
+    Row(
         modifier = Modifier
             .background(fondo, RoundedCornerShape(20.dp))
             .clickable(onClick = onClick)
@@ -193,6 +334,11 @@ private fun ChipCategoria(
 @Composable
 private fun InicioPreview() {
     BodegaTheme {
-        InicioScreen()
+        InicioScreen(
+            cantidadCarrito = 3,
+            onVerCarrito = {},
+            onProductoClick = {},
+            onAgregarProducto = {}
+        )
     }
 }
