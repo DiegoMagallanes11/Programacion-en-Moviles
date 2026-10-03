@@ -50,13 +50,13 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
  * Pantalla 1: Registro / Login (mockup "Cliente").
  * No sabe navegar sola: recibe qué hacer por parámetro (callbacks).
  *
- * Valida credenciales estáticas ("admin" / "1234") y devuelve true/false
- * para que ClienteApp decida si navega al Inicio o se queda aquí.
+ * Versión base: el botón "Iniciar sesión" entra directo al Inicio
+ * sin comparar las credenciales con ningún dato fijo.
  */
 @Composable
 fun BienvenidaScreen(
     onRegistrarse: () -> Unit,
-    onIniciarSesion: (usuario: String, contrasena: String) -> Boolean,
+    onIniciarSesion: () -> Unit,
     onTerminos: () -> Unit
 ) {
     var usuario by remember { mutableStateOf("") }
@@ -143,7 +143,7 @@ fun BienvenidaScreen(
 
         BotonSecundario(
             texto = "Iniciar sesión",
-            onClick = { onIniciarSesion(usuario, contrasena) }
+            onClick = onIniciarSesion
         )
 
         Spacer(Modifier.height(20.dp))
@@ -205,6 +205,6 @@ private fun PieTerminos(onTerminos: () -> Unit) {
 @Composable
 private fun BienvenidaPreview() {
     BodegaTheme {
-        BienvenidaScreen({}, { _, _ -> false }, {})
+        BienvenidaScreen({}, {}, {})
     }
 }
