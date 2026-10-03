@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -50,17 +51,18 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
  * Pantalla 1: Registro / Login (mockup "Cliente").
  * No sabe navegar sola: recibe qué hacer por parámetro (callbacks).
  *
- * Versión base: el botón "Iniciar sesión" entra directo al Inicio
- * sin comparar las credenciales con ningún dato fijo.
+ * Valida credenciales estáticas ("admin" / "1234").
+ * Muestra un mensaje en texto rojo bajo los campos si las credenciales son incorrectas.
  */
 @Composable
 fun BienvenidaScreen(
     onRegistrarse: () -> Unit,
-    onIniciarSesion: () -> Unit,
+    onIniciarSesion: (usuario: String, contrasena: String) -> Boolean,
     onTerminos: () -> Unit
 ) {
     var usuario by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
+    var errorLogin by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -94,19 +96,25 @@ fun BienvenidaScreen(
 
         Spacer(Modifier.height(20.dp))
 
+        // Campos de login
         OutlinedTextField(
             value = usuario,
-            onValueChange = { usuario = it },
+            onValueChange = {
+                usuario = it
+                errorLogin = false
+            },
             label = { Text("Usuario") },
             placeholder = { Text("admin") },
             singleLine = true,
+            isError = errorLogin,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                focusedBorderColor = MaterialTheme.colorScheme.primary
+                unfocusedBorderColor = if (errorLogin) Color.Red else MaterialTheme.colorScheme.outline,
+                focusedBorderColor = if (errorLogin) Color.Red else MaterialTheme.colorScheme.primary,
+                errorBorderColor = Color.Red
             )
         )
 
@@ -114,10 +122,14 @@ fun BienvenidaScreen(
 
         OutlinedTextField(
             value = contrasena,
-            onValueChange = { contrasena = it },
+            onValueChange = {
+                contrasena = it
+                errorLogin = false
+            },
             label = { Text("Contraseña") },
             placeholder = { Text("****") },
             singleLine = true,
+            isError = errorLogin,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
@@ -125,10 +137,23 @@ fun BienvenidaScreen(
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                focusedBorderColor = MaterialTheme.colorScheme.primary
+                unfocusedBorderColor = if (errorLogin) Color.Red else MaterialTheme.colorScheme.outline,
+                focusedBorderColor = if (errorLogin) Color.Red else MaterialTheme.colorScheme.primary,
+                errorBorderColor = Color.Red
             )
         )
+
+        // Mensaje de error en texto rojo
+        if (errorLogin) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Usuario o contraseña incorrectos",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         Spacer(Modifier.weight(1f))
 
@@ -143,7 +168,12 @@ fun BienvenidaScreen(
 
         BotonSecundario(
             texto = "Iniciar sesión",
-            onClick = onIniciarSesion
+            onClick = {
+                val exito = onIniciarSesion(usuario, contrasena)
+                if (!exito) {
+                    errorLogin = true
+                }
+            }
         )
 
         Spacer(Modifier.height(20.dp))
@@ -205,6 +235,6 @@ private fun PieTerminos(onTerminos: () -> Unit) {
 @Composable
 private fun BienvenidaPreview() {
     BodegaTheme {
-        BienvenidaScreen({}, {}, {})
+        BienvenidaScreen({}, { _, _ -> false }, {})
     }
 }

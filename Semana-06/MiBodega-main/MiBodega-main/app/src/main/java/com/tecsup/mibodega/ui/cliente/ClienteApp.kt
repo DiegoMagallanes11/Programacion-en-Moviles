@@ -132,9 +132,14 @@ fun ClienteApp() {
             composable(Rutas.BIENVENIDA) {
                 BienvenidaScreen(
                     onRegistrarse = { navController.navigate(Rutas.REGISTRO) },
-                    onIniciarSesion = {
-                        navController.navigate(Rutas.INICIO) {
-                            popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                    onIniciarSesion = { usuario, contrasena ->
+                        if (usuario == "admin" && contrasena == "1234") {
+                            navController.navigate(Rutas.INICIO) {
+                                popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                            }
+                            true
+                        } else {
+                            false
                         }
                     },
                     onTerminos = { /* TODO: abrir términos y condiciones */ }
