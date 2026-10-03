@@ -1,21 +1,15 @@
 package com.tecsup.mibodega.ui.cliente
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
+import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 
@@ -85,23 +79,9 @@ fun ClienteApp() {
             }
 
             composable(Rutas.INICIO) {
-                PantallaProvisional(nombre = "Inicio")
+                InicioScreen()
             }
         }
-    }
-}
-
-@Composable
-private fun PantallaProvisional(nombre: String) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = nombre,
-            style = MaterialTheme.typography.titleLarge
-        )
     }
 }
 
