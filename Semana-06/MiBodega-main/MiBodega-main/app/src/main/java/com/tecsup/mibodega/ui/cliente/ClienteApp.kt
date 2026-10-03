@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,7 +36,9 @@ import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
 import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
 import com.tecsup.mibodega.ui.cliente.screens.categorias.CategoriasScreen
+import com.tecsup.mibodega.ui.cliente.screens.confirmacion.ConfirmacionScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
+import com.tecsup.mibodega.ui.cliente.screens.entrega.DatosEntregaScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
 import com.tecsup.mibodega.ui.cliente.screens.perfil.PerfilScreen
@@ -70,6 +73,7 @@ private val rutasConTopBar = setOf(
     Rutas.CATEGORIAS,
     Rutas.DETALLE,
     Rutas.CARRITO,
+    Rutas.ENTREGA,
     Rutas.PEDIDOS,
     Rutas.PERFIL
 )
@@ -227,7 +231,31 @@ fun ClienteApp() {
                     onEliminar = { producto ->
                         carrito = carrito.filterNot { it.producto.id == producto.id }
                     },
-                    onContinuarPedido = { /* TODO: navegar a datos de entrega */ }
+                    onContinuarPedido = { navController.navigate(Rutas.ENTREGA) }
+                )
+            }
+
+            composable(Rutas.ENTREGA) {
+                val subtotal = carrito.sumOf { it.producto.precio * it.cantidad }
+                DatosEntregaScreen(
+                    subtotal = subtotal,
+                    onVolver = { navController.popBackStack() },
+                    onConfirmarEntrega = { _, _, _, _, _ ->
+                        navController.navigate(Rutas.CONFIRMACION) {
+                            popUpTo(Rutas.INICIO)
+                        }
+                    }
+                )
+            }
+
+            composable(Rutas.CONFIRMACION) {
+                ConfirmacionScreen(
+                    onVolverAlInicio = {
+                        carrito = emptyList()
+                        navController.navigate(Rutas.INICIO) {
+                            popUpTo(Rutas.INICIO) { inclusive = true }
+                        }
+                    }
                 )
             }
 
