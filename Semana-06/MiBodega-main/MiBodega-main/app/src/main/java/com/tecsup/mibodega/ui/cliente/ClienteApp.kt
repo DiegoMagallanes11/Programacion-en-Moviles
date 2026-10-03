@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
+import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 import com.tecsup.mibodega.ui.theme.BodegaTheme
 
 /**
@@ -55,7 +57,35 @@ fun ClienteApp() {
             modifier = Modifier.padding(paddingScaffold)
         ) {
             composable(Rutas.BIENVENIDA) {
-                PantallaProvisional(nombre = "Bienvenida")
+                BienvenidaScreen(
+                    onRegistrarse = { navController.navigate(Rutas.REGISTRO) },
+                    onIniciarSesion = { usuario, contrasena ->
+                        if (usuario == "admin" && contrasena == "1234") {
+                            navController.navigate(Rutas.INICIO) {
+                                popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                            }
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                    onTerminos = { /* TODO: abrir términos y condiciones */ }
+                )
+            }
+
+            composable(Rutas.REGISTRO) {
+                RegistroScreen(
+                    onVolver = { navController.popBackStack() },
+                    onCrearCuenta = { _, _, _, _ ->
+                        navController.navigate(Rutas.INICIO) {
+                            popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(Rutas.INICIO) {
+                PantallaProvisional(nombre = "Inicio")
             }
         }
     }
