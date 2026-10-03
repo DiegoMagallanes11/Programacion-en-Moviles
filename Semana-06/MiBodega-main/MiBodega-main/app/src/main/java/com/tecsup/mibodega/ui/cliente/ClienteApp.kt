@@ -83,7 +83,10 @@ private val rutasConBottomBar = setOf(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClienteApp() {
+fun ClienteApp(
+    esModoOscuro: Boolean = false,
+    onModoOscuroChanged: (Boolean) -> Unit = {}
+) {
     val navController = rememberNavController()
 
     // El carrito vive aquí, no en ninguna pantalla.
@@ -323,8 +326,10 @@ fun ClienteApp() {
             }
 
             composable(Rutas.PERFIL) {
-                PerfilScreen(
-                    onCerrarSesion = {
+PerfilScreen(
+                        esModoOscuro = esModoOscuro,
+                        onModoOscuroChanged = onModoOscuroChanged,
+                        onCerrarSesion = {
                         navController.navigate(Rutas.BIENVENIDA) {
                             popUpTo(0) { inclusive = true }
                         }
