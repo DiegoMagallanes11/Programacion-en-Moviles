@@ -112,6 +112,15 @@ fun ClienteApp(
     // Estado global de categoría seleccionada
     var categoriaSeleccionadaGlobal by remember { mutableStateOf("Todos") }
 
+    // Favoritos globales: viven aquí para que Inicio y Detalle muestren
+    // siempre el mismo estado al navegar entre pantallas.
+    var favoritosIds by remember {
+        mutableStateOf(listaProductosFake.filter { it.esFavorito }.map { it.id }.toSet())
+    }
+    fun alternarFavorito(id: Int) {
+        favoritosIds = if (favoritosIds.contains(id)) favoritosIds - id else favoritosIds + id
+    }
+
     // Cantidad total dinámica para el badge
     val cantidadTotal = carrito.sumOf { it.cantidad }
 
@@ -234,7 +243,9 @@ fun ClienteApp(
                     },
                     onCategoriaCambiada = { nuevaCategoria ->
                         categoriaSeleccionadaGlobal = nuevaCategoria
-                    }
+                    },
+                    favoritosIds = favoritosIds,
+                    onToggleFavorito = { alternarFavorito(it) }
                 )
             }
 
@@ -259,6 +270,8 @@ fun ClienteApp(
                 DetalleProductoScreen(
                     producto = producto,
                     onVolver = { navController.popBackStack() },
+                    esFavorito = favoritosIds.contains(producto.id),
+                    onToggleFavorito = { alternarFavorito(producto.id) },
                     onAgregarAlCarrito = { productoSeleccionado, cantidad ->
                         carrito = agregarOSumarProducto(carrito, productoSeleccionado, cantidad)
                         navController.popBackStack()

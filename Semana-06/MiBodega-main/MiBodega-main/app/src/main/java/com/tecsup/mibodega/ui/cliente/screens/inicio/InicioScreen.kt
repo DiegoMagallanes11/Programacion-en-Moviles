@@ -77,7 +77,9 @@ fun InicioScreen(
     onVerCarrito: () -> Unit,
     onProductoClick: (Producto) -> Unit,
     onAgregarProducto: (Producto) -> Unit,
-    onCategoriaCambiada: (String) -> Unit = {}
+    onCategoriaCambiada: (String) -> Unit = {},
+    favoritosIds: Set<Int> = emptySet(),
+    onToggleFavorito: (Int) -> Unit = {}
 ) {
     var categoriaSeleccionada by remember(categoriaInicial) { mutableStateOf(categoriaInicial) }
     var textoBusqueda by remember { mutableStateOf("") }
@@ -85,15 +87,12 @@ fun InicioScreen(
     var ordenPrecio by remember { mutableStateOf(OrdenPrecio.NINGUNO) }
     var menuOrdenExpandido by remember { mutableStateOf(false) }
 
-    // Estado local de favoritos (set de IDs de productos marcados)
-    var favoritosIds by remember(productos) {
-        mutableStateOf(productos.filter { it.esFavorito }.map { it.id }.toSet())
-    }
-
     // Consulta ya normalizada: sin espacios sobrantes, minúsculas y sin tildes,
     // para que "limon" encuentre "Limón" mientras el usuario escribe.
     val consultaBusqueda = remember(textoBusqueda) { normalizar(textoBusqueda) }
 
+    // Los favoritos vienen de ClienteApp: al volver del Detalle ya está
+    // actualizado, por eso aquí ya no se guarda estado local.
     val productosFiltrados = productos
         .filter { producto ->
             val coincideCategoria = categoriaSeleccionada == "Todos" || producto.categoria == categoriaSeleccionada
@@ -287,13 +286,7 @@ fun InicioScreen(
                             onClick = { onProductoClick(producto) },
                             onAgregar = { onAgregarProducto(producto) },
                             esFavorito = favoritosIds.contains(producto.id),
-                            onToggleFavorito = {
-                                favoritosIds = if (favoritosIds.contains(producto.id)) {
-                                    favoritosIds - producto.id
-                                } else {
-                                    favoritosIds + producto.id
-                                }
-                            }
+                            onToggleFavorito = { onToggleFavorito(producto.id) }
                         )
                     }
                 }
