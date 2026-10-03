@@ -18,12 +18,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
 import com.tecsup.mibodega.ui.cliente.screens.categorias.CategoriasScreen
+import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
 import com.tecsup.mibodega.ui.cliente.screens.perfil.PerfilScreen
@@ -130,8 +134,29 @@ fun ClienteApp() {
             composable(Rutas.INICIO) {
                 InicioScreen(
                     categoriaInicial = categoriaSeleccionada,
+                    onProductoClick = { producto ->
+                        navController.navigate(Rutas.detalle(producto.id))
+                    },
                     onCategoriaCambiada = { categoriaSeleccionada = it }
                 )
+            }
+
+            composable(
+                route = Rutas.DETALLE,
+                arguments = listOf(navArgument("productoId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
+                val producto = listaProductosFake.firstOrNull { it.id == productoId }
+
+                if (producto != null) {
+                    DetalleProductoScreen(
+                        producto = producto,
+                        onVolver = { navController.popBackStack() },
+                        onAgregarAlCarrito = { productoSeleccionado, _ ->
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
 
             composable(Rutas.CATEGORIAS) {
