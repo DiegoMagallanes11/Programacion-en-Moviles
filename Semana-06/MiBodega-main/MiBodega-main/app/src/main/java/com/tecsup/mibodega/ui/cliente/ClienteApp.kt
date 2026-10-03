@@ -14,6 +14,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -68,6 +71,10 @@ private val rutasConBottomBar = setOf(
 fun ClienteApp() {
     val navController = rememberNavController()
 
+    // Categoría seleccionada: vive arriba para que Inicio y Categorías
+    // compartan el mismo filtro.
+    var categoriaSeleccionada by remember { mutableStateOf("Todos") }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val rutaActual = navBackStackEntry?.destination?.route
     val mostrarBottomBar = rutaActual in rutasConBottomBar
@@ -121,11 +128,21 @@ fun ClienteApp() {
             }
 
             composable(Rutas.INICIO) {
-                InicioScreen()
+                InicioScreen(
+                    categoriaInicial = categoriaSeleccionada,
+                    onCategoriaCambiada = { categoriaSeleccionada = it }
+                )
             }
 
             composable(Rutas.CATEGORIAS) {
-                CategoriasScreen(onSeleccionarCategoria = {})
+                CategoriasScreen(
+                    onSeleccionarCategoria = { categoria ->
+                        categoriaSeleccionada = categoria
+                        navController.navigate(Rutas.INICIO) {
+                            popUpTo(Rutas.INICIO) { inclusive = true }
+                        }
+                    }
+                )
             }
 
             composable(Rutas.PEDIDOS) {
