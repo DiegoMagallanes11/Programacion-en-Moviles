@@ -9,7 +9,7 @@ import com.tecsup.ayudacampus.AyudaApp
 import com.tecsup.ayudacampus.model.Rol
 import com.tecsup.ayudacampus.viewmodel.*
 import com.tecsup.ayudacampus.ui.cliente.*
-import com.tecsup.ayudacampus.ui.soporte.CategoriasScreen
+import com.tecsup.ayudacampus.ui.soporte.*
 import com.tecsup.ayudacampus.ui.components.AppTopBar
 import com.tecsup.ayudacampus.ui.theme.AyudaTheme
 @Composable fun NavAyuda(app: AyudaApp) {
@@ -19,7 +19,7 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
   when { cargando -> SplashScreen();usuario==null -> LoginScreen(sesion);else -> key(usuario!!.id) {
    val u=usuario!!;val nav=rememberNavController()
    Scaffold(topBar={AppTopBar("AyudaCampus")}) { padding ->
-    NavHost(nav,if(u.rol=="ADMIN") Rutas.CATEGORIAS else Rutas.MIS_TICKETS,Modifier.padding(padding)) {
+    NavHost(nav,if(u.rol=="ADMIN") Rutas.PANEL else Rutas.MIS_TICKETS,Modifier.padding(padding)) {
      composable(Rutas.MIS_TICKETS) {
       val vm: MisTicketsViewModel=viewModel(factory=AyudaViewModelFactory { MisTicketsViewModel(app.repository,u.id) })
       MisTicketsScreen(vm,u.nombre,{nav.navigate("detalle/$it")},{nav.navigate(Rutas.NUEVO)})
@@ -33,6 +33,8 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
       val vm: TicketDetalleViewModel=viewModel(factory=AyudaViewModelFactory { TicketDetalleViewModel(app.repository,id,u) })
       DetalleTicketScreen(vm,u.id)
      }
+     composable(Rutas.PANEL) { val vm: PanelViewModel=viewModel(factory=AyudaViewModelFactory { PanelViewModel(app.repository) });PanelScreen(vm) { nav.navigate(Rutas.BANDEJA) } }
+     composable(Rutas.BANDEJA) { val vm: BandejaViewModel=viewModel(factory=AyudaViewModelFactory { BandejaViewModel(app.repository) });BandejaScreen(vm) { nav.navigate("atender/$it") } }
      composable(Rutas.CATEGORIAS) { val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });CategoriasScreen(vm) }
     }
    }

@@ -1,3 +1,4 @@
+
 package com.tecsup.ayudacampus.data.local.entity
 import androidx.room.*
 @Entity(tableName="usuarios", indices=[Index(value=["correo"],unique=true)])
