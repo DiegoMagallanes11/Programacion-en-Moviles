@@ -35,7 +35,15 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
      }
      composable(Rutas.PANEL) { val vm: PanelViewModel=viewModel(factory=AyudaViewModelFactory { PanelViewModel(app.repository) });PanelScreen(vm) { nav.navigate(Rutas.BANDEJA) } }
      composable(Rutas.BANDEJA) { val vm: BandejaViewModel=viewModel(factory=AyudaViewModelFactory { BandejaViewModel(app.repository) });BandejaScreen(vm) { nav.navigate("atender/$it") } }
-     composable(Rutas.CATEGORIAS) { val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });CategoriasScreen(vm) }
+     composable(Rutas.ATENDER) { entry ->
+      val id=entry.arguments?.getString("id")?.toIntOrNull() ?: 0
+      val vm: AtenderViewModel=viewModel(factory=AyudaViewModelFactory { AtenderViewModel(app.repository,id,u) });AtenderTicketScreen(vm,u.id)
+     }
+     composable(Rutas.CATEGORIAS) { val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });CategoriasScreen(vm,{nav.navigate("categoria/$it")},{nav.navigate("categoria/0")}) }
+     composable(Rutas.FORM_CATEGORIA) { entry ->
+      val id=entry.arguments?.getString("id")?.toIntOrNull() ?: 0
+      val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });FormularioCategoriaScreen(vm,id) { nav.popBackStack() }
+     }
     }
    }
   } }
