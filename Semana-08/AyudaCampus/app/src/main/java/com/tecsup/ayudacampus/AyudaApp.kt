@@ -5,6 +5,7 @@ import com.tecsup.ayudacampus.data.repository.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 class AyudaApp : Application() {
+ val preferencias by lazy { com.tecsup.ayudacampus.data.prefs.PreferenciasStore(this) }
  val database by lazy { AyudaDatabase.obtener(this) }
  val repository: AyudaRepository by lazy { AyudaRepositoryRoom(database) }
  val listo = MutableStateFlow(false)
