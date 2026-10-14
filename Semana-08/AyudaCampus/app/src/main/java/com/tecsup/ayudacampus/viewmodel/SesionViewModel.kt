@@ -35,5 +35,26 @@ class SesionViewModel(private val repo: AyudaRepository, private val prefs: Pref
    finally { _ocupado.value=false }
   }
  }
+ val notificaciones=prefs.notificaciones.stateIn(viewModelScope,SharingStarted.Eagerly,true)
+ val recibirTickets=prefs.recibirTickets.stateIn(viewModelScope,SharingStarted.Eagerly,true)
+ private fun preferencia(bloque: suspend () -> Unit) {
+  viewModelScope.launch { try { bloque() } catch(e: Exception) { if(e is CancellationException) throw e;_error.value="No se pudo guardar la preferencia" } }
+ }
+ fun modoOscuro(valor: Boolean) = preferencia { prefs.guardarModoOscuro(valor) }
+ fun notificaciones(valor: Boolean) = preferencia { prefs.guardarNotificaciones(valor) }
+ fun recibirTickets(valor: Boolean) = preferencia { prefs.guardarRecibirTickets(valor) }
+ fun cerrarSesion() = preferencia { prefs.cerrarSesion();_usuario.value=null;_error.value=null }
+ fun cambiarPerfil() {
+  if(_ocupado.value) return
+  _ocupado.value=true;_error.value=null
+  viewModelScope.launch {
+   try {
+    val otro=if(_usuario.value?.rol=="ADMIN") Rol.CLIENTE else Rol.ADMIN
+    val usuario=requireNotNull(repo.obtenerUsuarioPorRol(otro)) { "El perfil de práctica no está disponible" }
+    prefs.guardarSesion(usuario.rol,usuario.id);_usuario.value=usuario
+   } catch(e: Exception) { if(e is CancellationException) throw e;_error.value="No se pudo cambiar de perfil" }
+   finally { _ocupado.value=false }
+  }
+ }
  fun limpiarError() { _error.value=null }
 }

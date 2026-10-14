@@ -28,7 +28,7 @@ import com.tecsup.ayudacampus.ui.components.*
    AyudaButton("Enviar comentario",texto.isNotBlank() && !ocupado) { vm.comentar(texto);texto="" }
   }
   if(t.estado=="RESUELTO") {
-   Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
+   Card(colors=CardDefaults.cardColors(containerColor=com.tecsup.ayudacampus.ui.theme.Resuelto.copy(alpha=.12f))) {
     Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
      Text("Tu ticket ha sido resuelto",style=MaterialTheme.typography.titleMedium);Text("Califica la atención para confirmar el cierre.")
      Estrellas(estrellas) { estrellas=it }

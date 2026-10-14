@@ -3,14 +3,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
 import com.tecsup.ayudacampus.model.Rol
-val Cian = Color(0xFF0891B2)
-val Violeta = Color(0xFF7C3AED)
-val Abierto = Color(0xFFD97706)
-val EnProceso = Color(0xFF2563EB)
-val Resuelto = Color(0xFF16A34A)
-val Cerrado = Color(0xFF6B7280)
-val Alta = Color(0xFFDC2626)
-val Media = Color(0xFFB45309)
 @Composable fun AyudaTheme(rol: Rol = Rol.CLIENTE, oscuro: Boolean = false, content: @Composable () -> Unit) {
  val admin = rol == Rol.ADMIN
  val scheme = if (oscuro) darkColorScheme(
@@ -23,5 +15,5 @@ val Media = Color(0xFFB45309)
   background = if(admin) Color(0xFFFAF8FF) else Color(0xFFF7FDFE),
   surface = Color.White
  )
- MaterialTheme(colorScheme=scheme, typography=Typography(), content=content)
+ MaterialTheme(colorScheme=scheme, typography=AyudaTypography, content=content)
 }
