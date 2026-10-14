@@ -13,7 +13,10 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
  val usuario by sesion.usuarioActual.collectAsState();val cargando by sesion.cargando.collectAsState();val oscuro by sesion.modoOscuro.collectAsState()
  AyudaTheme(if(usuario?.rol=="ADMIN") Rol.ADMIN else Rol.CLIENTE,oscuro) { Surface {
   when { cargando -> SplashScreen();usuario==null -> LoginScreen(sesion);else -> {
-   val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });CategoriasScreen(vm)
+   if(usuario!!.rol=="CLIENTE") {
+    val vm: MisTicketsViewModel=viewModel(factory=AyudaViewModelFactory { MisTicketsViewModel(app.repository,usuario!!.id) })
+    MisTicketsScreen(vm,usuario!!.nombre,{},{})
+   } else { val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });CategoriasScreen(vm) }
   } }
  } }
 }
