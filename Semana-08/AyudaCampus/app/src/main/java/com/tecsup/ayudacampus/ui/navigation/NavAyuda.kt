@@ -28,6 +28,11 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
       val vm: NuevoTicketViewModel=viewModel(factory=AyudaViewModelFactory { NuevoTicketViewModel(app.repository,app.preferencias,u.id) })
       NuevoTicketScreen(vm) { nav.popBackStack() }
      }
+     composable(Rutas.DETALLE) { entry ->
+      val id=entry.arguments?.getString("id")?.toIntOrNull() ?: 0
+      val vm: TicketDetalleViewModel=viewModel(factory=AyudaViewModelFactory { TicketDetalleViewModel(app.repository,id,u) })
+      DetalleTicketScreen(vm,u.id)
+     }
      composable(Rutas.CATEGORIAS) { val vm: CategoriasViewModel=viewModel(factory=AyudaViewModelFactory { CategoriasViewModel(app.repository) });CategoriasScreen(vm) }
     }
    }
