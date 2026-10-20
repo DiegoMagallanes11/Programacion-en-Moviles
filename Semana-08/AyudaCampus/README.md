@@ -188,9 +188,20 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 ### Resultados y límites
 
 - Compilación debug y APK de instrumentación: correctos.
-- Pruebas unitarias: **9 aprobadas** (2 promedio, 4 SLA, 3 búsqueda).
+- Pruebas unitarias: **10 casos aprobados en total** (2 promedio, 5 SLA, 3 búsqueda). El 20 de octubre se ejecutaron las 5 de SLA, incluida la nueva contribución de Gemini; las otras 5 conservan los resultados del 19 de octubre.
 - Pruebas instrumentadas: **8 aprobadas** (3 datos/reglas, 2 promedio Room, 1 recorrido completo, 1 restauración y 1 búsqueda UI). **Seis capturas reales** de Fase 2; detalles e incidencias en [la matriz de aceptación](docs/ACEPTACION.md).
 - `lintDebug`: terminó sin errores y con **17 advertencias**. Tres avisos indican comprobaciones personalizadas de Navigation omitidas por incompatibilidad con la versión de lint. También hay avisos de versiones de dependencias, target API, reglas de extracción e icono; no se actualizaron dependencias para resolverlos. Esto no convierte el lint pendiente de Fase 1 en una ejecución aprobada de aquella fase.
-- **Gemini pendiente:** la implementación fue realizada con OpenAI Codex. Falta una contribución real de Gemini en Android Studio o la aceptación explícita del docente de una herramienta alternativa. No se declara cumplido ese requisito académico.
+- **Participación real de Gemini, 20 de octubre:** Gemini 3.6 Flash en Android Studio generó y corrigió una prueba de regresión del SLA con fechas grandes. Codex la integró y ejecutó: 5 pruebas de SLA aprobadas. Las tres mejoras funcionales fueron implementadas previamente con Codex; ese trabajo no se reatribuye a Gemini. Véanse los prompts 5 y 6 de [PROMPTS.md](PROMPTS.md) y [las respuestas y capturas reales](docs/gemini/RESPUESTAS.md).
 
 Registro de solicitudes, herramienta real, correcciones y reflexión: [PROMPTS.md](PROMPTS.md). La matriz conserva intactos los resultados anteriores y agrega las verificaciones de Fase 2 con su alcance real.
+
+
+### Aporte posterior de Gemini
+
+La prueba `fechasGrandesYCambioDePrioridadConservanElPlazoOriginal` verifica el cálculo con una fecha próxima a `Int.MAX_VALUE` y con `1_800_000_000_000L`. A las cinco horas desde la creación, ALTA debe llevar una hora vencida; al cambiar a BAJA, conservando fecha y hora actual, deben quedar 67 horas. La respuesta inicial de Gemini no comprobaba el estado ALTA previo: Codex solicitó corregirlo y usar expectativas literales independientes. El método corregido pasó junto a las otras cuatro pruebas de SLA.
+
+```powershell
+.\gradlew.bat :app:testDebugUnitTest --tests com.tecsup.ayudacampus.SlaTest
+```
+
+Este aporte se guarda en un commit adicional porque los cuatro commits iniciales ya estaban publicados y se conservan sin reescribir. Las capturas de la app y los resultados instrumentados anteriores permanecen intactos. La contribución de Gemini corresponde a verificación del SLA, no a la autoría de las tres implementaciones originales.

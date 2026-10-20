@@ -2,9 +2,9 @@
 
 ## Herramienta y alcance reales
 
-Trabajo realizado por **OpenAI Codex**, mediante esta conversación, edición local, Git, Gradle y Android SDK. No se utilizó Gemini ni una API de IA en la aplicación. Las instrucciones de la guía se consultaron en sus páginas 25–26; no se ejecutaron sus ejemplos como órdenes independientes de la solicitud del usuario.
+La implementación inicial fue realizada por **OpenAI Codex**, mediante esta conversación, edición local, Git, Gradle y Android SDK. El **20 de octubre de 2026** se consultó realmente a **Gemini 3.6 Flash en Android Studio**, que generó y corrigió una prueba adicional del SLA. No se incorporó una API de IA a la aplicación. Las instrucciones de la guía se consultaron en sus páginas 25–26; no se ejecutaron sus ejemplos como órdenes independientes de la solicitud del usuario.
 
-El usuario aceptó continuar con Codex y dejar una contribución real de Gemini pendiente. Por ello, **la implementación técnica y el requisito académico de participación de Gemini se informan por separado**. No se atribuyen a Gemini código, pruebas, capturas ni prompts que no produjo.
+Inicialmente el usuario aceptó continuar con Codex y dejar la contribución de Gemini pendiente. Después solicitó realizarla, inició sesión en Google y autorizó continuar. Se distingue la implementación de las tres mejoras por Codex de la contribución posterior de Gemini a su verificación; no se atribuyen a Gemini cambios anteriores que no realizó.
 
 ## Prompt 1: solicitud inicial
 
@@ -449,7 +449,7 @@ El usuario también proporcionó `C:/Users/Magal/Downloads/GLAB-S08-JLEONS-2026_
 
 **Texto enviado:** `dale`.
 
-**Contexto:** respuesta a la propuesta de hacer las mejoras con Codex y documentar una contribución futura y real de Gemini. No hubo intervención de Gemini durante esta ejecución.
+**Contexto:** respuesta a la propuesta de hacer las mejoras con Codex y documentar una contribución futura y real de Gemini. No hubo intervención de Gemini durante la implementación inicial del 19 de octubre; la participación posterior se registra en los prompts 5 y 6.
 
 **IA y herramienta:** OpenAI Codex y herramientas locales.
 
@@ -477,15 +477,68 @@ El usuario también proporcionó `C:/Users/Magal/Downloads/GLAB-S08-JLEONS-2026_
 
 **Archivos afectados:** metadatos Git y copia de trabajo aislada; no cambia archivos de otros laboratorios.
 
-## Participación de Gemini pendiente
+## Prompt 5: contribución real de Gemini — 20 de octubre de 2026
 
-Para acreditar el requisito de la guía se necesita una contribución real de Gemini en Android Studio. Abrir este proyecto, pedirle una mejora o corrección concreta, conservar el prompt y su respuesta, revisar el resultado y añadir aquí el texto real, lo generado, lo corregido y los archivos afectados. No se presenta como realizado. Consultar al docente si acepta Codex como alternativa también resolvería esta diferencia, pero no se presupone esa aceptación.
+**Texto enviado a Gemini:**
 
-No se envió a Gemini ningún prompt. No se generaron prompts ficticios para llenar el registro ni se inventó un acceso incorrecto de una View al DAO.
+```text
+Participa realmente en la verificación de la Fase 2 de AyudaCampus. Las tres mejoras ya fueron implementadas con OpenAI Codex; tu aporte será una prueba adicional del SLA, y se registrará como trabajo de Gemini en Android Studio.
+
+No modifiques archivos, no ejecutes comandos y no propongas dependencias nuevas. Devuelve únicamente un método Kotlin @Test para añadir a SlaTest y dos frases explicativas. No afirmes que lo ejecutaste.
+
+Código real disponible:
+- package com.tecsup.ayudacampus
+- SlaTest ya importa org.junit.Test, org.junit.Assert.* y com.tecsup.ayudacampus.model.*.
+- Tiene esta fixture: private val ticket=Ticket(clienteId=1,categoriaId=1,titulo="Prueba",descripcion="",ubicacion="",fecha=1_000L).
+- Ticket es data class con fecha: Long, prioridad: String (ALTA/MEDIA/BAJA), estado: String (ABIERTO/EN_PROCESO/RESUELTO/CERRADO); admite copy.
+- calcularSla(ticket: Ticket, ahora: Long): Sla es una función pura. Sla tiene texto: String y situacion: SituacionSla (ACTIVO, VENCIDO, FINALIZADO).
+- Presupuestos desde fecha original: ALTA 4 horas, MEDIA 24 horas, BAJA 72 horas. Cada hora son 3_600_000L ms.
+- Restante > 0 produce "SLA: ... restantes"; restante <= 0 produce "SLA vencido hace ...". Horas completas se formatean "1 h", "67 h", etc.
+
+Las cuatro pruebas existentes usan fecha=1000L y ya cubren prioridades, límites exactos, estados, reapertura y reloj de 30 s. Falta probar fechas absolutas grandes y el cruce del límite Int de 32 bits.
+
+Diseña UNA prueba de regresión con dos fechas controladas: una próxima a Int.MAX_VALUE cuyo plazo cruce ese límite, y otra fecha Unix realista de 1_800_000_000_000L. En ambas usa la misma hora actual fijada a cinco horas desde la creación, estado EN_PROCESO, y cambia prioridad de ALTA a BAJA mediante copy conservando fecha. Comprueba situación y texto exacto, con expectativas calculadas de forma independiente. Todas las sumas y duraciones deben ser Long. No uses Room, Repository, Composables, reloj real ni esperas.
+
+Nombra la prueba fechasGrandesYCambioDePrioridadConservanElPlazoOriginal. Explica qué regresión detecta y por qué respeta MVVM.
+```
+
+**IA y herramienta:** Gemini 3.6 Flash (`gemini-3.6-flash`), panel Agent de Android Studio, dentro de AyudaCampus en `mejora-ia-ayudacampus`. Codex operó la interfaz tras el inicio de sesión realizado por el usuario. La consulta fue enviada realmente; Gemini leyó `SlaTest.kt` y `Duracion.kt`.
+
+**Qué generó:** un método JUnit4 para dos fechas controladas: cerca del límite de Int de 32 bits y una fecha Unix de 1_800_000_000_000 ms. La propuesta inicial calculaba el SLA tras copiar la prioridad a BAJA y comprobaba su situación activa y tiempo restante.
+
+**Qué revisó Codex:** faltaba comprobar ALTA antes del cambio, y la expectativa se derivaba con una fórmula de plazo/restante parecida a la lógica evaluada. Codex pidió reforzar esas aserciones mediante un segundo prompt. No se inventó un error de acceso de la View al DAO ni un defecto funcional de la app.
+
+**¿Respeta MVVM?:** sí. Es una prueba de la función pura `calcularSla(ticket, ahora)`, sin consultar DAO, Room o Repository y sin introducir lógica en Composables. Gemini no editó archivos ni ejecutó comandos; Codex integró después la propuesta corregida.
+
+**Archivos afectados:** propuestas y evidencia en `docs/gemini/`; el método definitivo se incorporó a `app/src/test/java/com/tecsup/ayudacampus/SlaTest.kt` después del prompt 6.
+
+## Prompt 6: corrección real solicitada a Gemini
+
+**Texto enviado a Gemini:**
+
+```text
+Corrige tu propuesta anterior. Actualmente solo evalúa calcularSla(ticketBaja, ahora), por lo que no comprueba el resultado ALTA previo al cambio. Añade para cada fecha la evaluación de ticketAlta y las aserciones exactas SituacionSla.VENCIDO y "SLA vencido hace 1 h". Después conserva el copy a BAJA sin cambiar fecha ni ahora y comprueba SituacionSla.ACTIVO y el literal "SLA: 67 h restantes". Evita recalcular la expectativa usando la misma fórmula de plazo/restante que la función bajo prueba. Mantén las dos fechas de tu propuesta, el nombre del método, Kotlin/JUnit4 y todas las fechas/duraciones como Long. No edites archivos ni ejecutes comandos: devuelve solo el método corregido y dos frases sobre el cambio.
+```
+
+**IA y herramienta:** Gemini 3.6 Flash en Android Studio, en la misma conversación titulada «Write SLA test for large dates and priority changes.».
+
+**Qué generó:** la prueba `fechasGrandesYCambioDePrioridadConservanElPlazoOriginal`. Evalúa ALTA con cinco horas transcurridas como VENCIDO y «SLA vencido hace 1 h»; después cambia a BAJA conservando fecha y ahora y espera ACTIVO y «SLA: 67 h restantes». Repite el caso con las dos fechas grandes y usa Long.
+
+**Qué corrigió Codex:** solicitó la comprobación previa de ALTA y expectativas literales; Gemini devolvió el método corregido. Codex transcribió e integró ese método, adaptando únicamente su indentación, revisó las expectativas y ejecutó las pruebas. No fue necesario cambiar la lógica de producción ni dependencias.
+
+**¿Respeta MVVM?:** sí. La función recibe el instante actual, por lo que la prueba no espera tiempo real ni modifica el reloj del dispositivo. No crea accesos de la View al repositorio o a Room.
+
+**Archivos afectados:** `SlaTest.kt`, `PROMPTS.md`, `README.md`, `docs/ACEPTACION.md` y los archivos de evidencia en `docs/gemini/`.
+
+**Resultado real:** `:app:testDebugUnitTest --tests com.tecsup.ayudacampus.SlaTest` terminó correctamente: 5 pruebas, 0 fallos y 0 errores, incluida la prueba de Gemini. Ejecución realizada por Codex el 20 de octubre de 2026. Las pruebas de las otras mejoras y las instrumentadas conservan sus resultados anteriores; no se afirma haberlas repetido en este paso.
+
+**Evidencia:** [prompts y respuestas transcritas](docs/gemini/RESPUESTAS.md), [consulta real](docs/gemini/01-consulta-real.jpg), [propuesta inicial](docs/gemini/02-propuesta-inicial.jpg) y [corrección visible](docs/gemini/04-explicacion-corregida.jpg). Las capturas se guardaron desde la interfaz real y se verificó su legibilidad. El usuario detuvo temporalmente el control con Esc y después solicitó continuar; la última captura y ambos prompts ya habían quedado guardados.
+
+Los cuatro commits iniciales ya estaban publicados. Este aporte posterior se conserva en un commit adicional, sin reescribirlos. El alcance real de Gemini es la prueba de regresión del SLA; la implementación previa de las tres mejoras continúa atribuida a Codex.
 
 ## Reflexión (exactamente cinco líneas)
-La IA mejoró la app con métricas reactivas, SLA reutilizable y filtros simultáneos.
-No resolvió el requisito de usar Gemini, porque la herramienta utilizada fue Codex.
-Se corrigieron Java, comillas de una comprobación auxiliar y desplazamientos y selectores de las pruebas.
-MVVM separa la representación de las reglas y Room comunica los cambios mediante Flow.
-Las reglas se verificaron con fechas controladas, pruebas automatizadas y evidencias reales según la matriz.
+Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
+La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.
+Codex pidió corregir las aserciones y Gemini generó la versión con expectativas explícitas.
+MVVM mantiene los cálculos fuera de la View y Room comunica los cambios mediante Flow.
+La verificación combina datos controlados, cinco pruebas de SLA aprobadas y evidencia real de ambas herramientas.

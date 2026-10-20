@@ -1,0 +1,18 @@
+Participa realmente en la verificación de la Fase 2 de AyudaCampus. Las tres mejoras ya fueron implementadas con OpenAI Codex; tu aporte será una prueba adicional del SLA, y se registrará como trabajo de Gemini en Android Studio.
+
+No modifiques archivos, no ejecutes comandos y no propongas dependencias nuevas. Devuelve únicamente un método Kotlin @Test para añadir a SlaTest y dos frases explicativas. No afirmes que lo ejecutaste.
+
+Código real disponible:
+- package com.tecsup.ayudacampus
+- SlaTest ya importa org.junit.Test, org.junit.Assert.* y com.tecsup.ayudacampus.model.*.
+- Tiene esta fixture: private val ticket=Ticket(clienteId=1,categoriaId=1,titulo="Prueba",descripcion="",ubicacion="",fecha=1_000L).
+- Ticket es data class con fecha: Long, prioridad: String (ALTA/MEDIA/BAJA), estado: String (ABIERTO/EN_PROCESO/RESUELTO/CERRADO); admite copy.
+- calcularSla(ticket: Ticket, ahora: Long): Sla es una función pura. Sla tiene texto: String y situacion: SituacionSla (ACTIVO, VENCIDO, FINALIZADO).
+- Presupuestos desde fecha original: ALTA 4 horas, MEDIA 24 horas, BAJA 72 horas. Cada hora son 3_600_000L ms.
+- Restante > 0 produce "SLA: ... restantes"; restante <= 0 produce "SLA vencido hace ...". Horas completas se formatean "1 h", "67 h", etc.
+
+Las cuatro pruebas existentes usan fecha=1000L y ya cubren prioridades, límites exactos, estados, reapertura y reloj de 30 s. Falta probar fechas absolutas grandes y el cruce del límite Int de 32 bits.
+
+Diseña UNA prueba de regresión con dos fechas controladas: una próxima a Int.MAX_VALUE cuyo plazo cruce ese límite, y otra fecha Unix realista de 1_800_000_000_000L. En ambas usa la misma hora actual fijada a cinco horas desde la creación, estado EN_PROCESO, y cambia prioridad de ALTA a BAJA mediante copy conservando fecha. Comprueba situación y texto exacto, con expectativas calculadas de forma independiente. Todas las sumas y duraciones deben ser Long. No uses Room, Repository, Composables, reloj real ni esperas.
+
+Nombra la prueba fechasGrandesYCambioDePrioridadConservanElPlazoOriginal. Explica qué regresión detecta y por qué respeta MVVM.

@@ -56,4 +56,21 @@ class SlaTest {
   assertEquals("SLA vencido hace menos de 1 min",estado.value!!.texto)
   job.cancel()
  }
+ @Test
+ fun fechasGrandesYCambioDePrioridadConservanElPlazoOriginal() {
+  val fechas = listOf(Int.MAX_VALUE.toLong() - 1_000L, 1_800_000_000_000L)
+  for (fecha in fechas) {
+   val ahora = fecha + 5L * 3_600_000L
+   val ticketAlta = ticket.copy(fecha = fecha, prioridad = "ALTA", estado = "EN_PROCESO")
+
+   val slaAlta = calcularSla(ticketAlta, ahora)
+   assertEquals(SituacionSla.VENCIDO, slaAlta.situacion)
+   assertEquals("SLA vencido hace 1 h", slaAlta.texto)
+
+   val ticketBaja = ticketAlta.copy(prioridad = "BAJA")
+   val slaBaja = calcularSla(ticketBaja, ahora)
+   assertEquals(SituacionSla.ACTIVO, slaBaja.situacion)
+   assertEquals("SLA: 67 h restantes", slaBaja.texto)
+  }
+ }
 }

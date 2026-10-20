@@ -106,6 +106,25 @@ Esta sección agrega resultados de una ejecución nueva. Los resultados y las se
 
 ### Pendientes
 
-El requisito académico de **Gemini en Android Studio** sigue pendiente. La herramienta real fue OpenAI Codex. Se necesita una contribución verificable de Gemini, registrada con su prompt y respuesta, o confirmación del docente de que acepta Codex como alternativa. No se atribuye este trabajo a Gemini ni se declara cumplido ese requisito.
+Al cerrar la ejecución del 19 de octubre, la participación de **Gemini en Android Studio** estaba pendiente y la herramienta utilizada había sido Codex. El seguimiento del 20 de octubre se documenta a continuación, diferenciando la autoría de las mejoras de la contribución posterior a su verificación.
 
 Lint completó su tarea con los avisos descritos; las comprobaciones personalizadas omitidas no se dan por aprobadas. Las entidades y el esquema Room permanecen sin cambios, y no se añadió una migración innecesaria.
+
+
+## Seguimiento del 20 de octubre de 2026 — aporte real de Gemini
+
+| Comprobación nueva | Resultado real |
+| --- | --- |
+| Uso de Gemini en Android Studio | Se enviaron dos prompts reales a Gemini 3.6 Flash desde el panel Agent de AyudaCampus, tras el inicio de sesión del usuario |
+| Propuesta inicial | Generó una prueba con fechas grandes y cambio a BAJA, pero no evaluó ALTA antes del cambio; Codex pidió corregirla y usar expectativas literales |
+| Propuesta corregida | `fechasGrandesYCambioDePrioridadConservanElPlazoOriginal`, incorporada a `SlaTest.kt`; sin cambios de lógica funcional o dependencias |
+| Fecha cerca del límite Int | `Int.MAX_VALUE.toLong() - 1_000L`; la hora actual y el plazo cruzan el límite de 32 bits |
+| Fecha Unix grande | `1_800_000_000_000L`; todos los instantes y duraciones son Long |
+| Cambio de prioridad con fecha original | A las 5 h, ALTA: VENCIDO y «SLA vencido hace 1 h»; BAJA: ACTIVO y «SLA: 67 h restantes» |
+| Pruebas ejecutadas por Codex | `:app:testDebugUnitTest --tests com.tecsup.ayudacampus.SlaTest`: **5 aprobadas, 0 fallos, 0 errores**, incluida la nueva prueba |
+| Arquitectura | Prueba de función pura con hora controlada; sin DAO, Repository, Composables, reloj real ni esperas |
+| Registro y evidencia | [Prompts 5 y 6](../PROMPTS.md), [respuestas transcritas y capturas originales](gemini/RESPUESTAS.md) |
+
+El total acumulado es de **10 casos unitarios aprobados**: los 5 de SLA ejecutados el 20 de octubre y los 2 de promedio y 3 de búsqueda aprobados previamente. Los 8 casos instrumentados y lint conservan los resultados del 19 de octubre; no se ejecutaron de nuevo porque este aporte solo añade una prueba unitaria y documentación.
+
+Los cuatro commits originales se conservan íntegros y publicados. El aporte de Gemini y su documentación se registran en un commit posterior, sobre la misma rama, sin mezclarla en `main`. La contribución real de Gemini se limita a la prueba de SLA: no se le atribuyen las tres implementaciones anteriores realizadas por Codex. Este registro acredita la participación observada y su alcance; la evaluación académica corresponde al docente.
