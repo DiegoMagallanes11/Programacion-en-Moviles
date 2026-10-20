@@ -4,13 +4,17 @@ import kotlinx.coroutines.flow.first
 import com.tecsup.ayudacampus.data.local.entity.*
 object DatosIniciales {
  suspend fun sembrar(db: AyudaDatabase) = db.withTransaction {
-  if(db.usuarioDao().contar() != 0) return@withTransaction
+  if(db.usuarioDao().contar() != 0) {
+   // Actualización idempotente de los datos de práctica, sin borrar tickets ni sesión.
+   db.usuarioDao().personalizarNombreDePractica("Diego Magallanes")
+   return@withTransaction
+  }
   if(db.categoriaDao().contar() == 0) db.categoriaDao().insertarTodas(listOf(
    Categoria(nombre="Hardware",icono="pc"), Categoria(nombre="Software",icono="code"),
    Categoria(nombre="Red / Wi-Fi",icono="wifi"), Categoria(nombre="Cuenta",icono="key"), Categoria(nombre="Impresión",icono="printer")
   ))
   db.usuarioDao().insertarTodos(listOf(
-   Usuario(nombre="Juan Pérez",correo="juan@campus.test",clave="1234",rol="CLIENTE"),
+   Usuario(nombre="Diego Magallanes",correo="juan@campus.test",clave="1234",rol="CLIENTE"),
    Usuario(nombre="Soporte TI",correo="soporte@campus.test",clave="admin",rol="ADMIN")
   ))
   val cliente = requireNotNull(db.usuarioDao().login("juan@campus.test","1234"))

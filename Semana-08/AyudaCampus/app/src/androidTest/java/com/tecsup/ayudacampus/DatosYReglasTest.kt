@@ -23,6 +23,31 @@ class DatosYReglasTest {
   repo=AyudaRepositoryRoom(db);DatosIniciales.sembrar(db)
  }
  @After fun cerrar() { runBlocking { withContext(Dispatchers.Main) { vms.clear() } };db.close() }
+ @Test fun personalizacionConservaDatosDeUnaInstalacionAnterior() = runBlocking {
+  val anterior=Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().targetContext,AyudaDatabase::class.java).build()
+  try {
+   anterior.usuarioDao().insertarTodos(listOf(
+    Usuario(17,"Juan Pérez","juan@campus.test","1234","CLIENTE"),
+    Usuario(18,"Juan Pérez","otra@campus.test","1234","CLIENTE")
+   ))
+   anterior.categoriaDao().insertarTodas(listOf(Categoria(id=9,nombre="Histórica",icono="pc")))
+   anterior.ticketDao().insertarTicket(Ticket(id=23,clienteId=17,categoriaId=9,titulo="Ticket conservado",descripcion="Descripción original",ubicacion="Aula",fecha=1000L))
+   anterior.ticketDao().insertarComentario(Comentario(ticketId=23,autorId=17,autorNombre="Juan Pérez",autorRol="CLIENTE",texto="Mensaje original",fecha=2000L))
+   anterior.ticketDao().insertarComentario(Comentario(ticketId=23,autorId=18,autorNombre="Juan Pérez",autorRol="CLIENTE",texto="Otro autor",fecha=3000L))
+   DatosIniciales.sembrar(anterior)
+   DatosIniciales.sembrar(anterior)
+   assertEquals("Diego Magallanes",anterior.usuarioDao().obtener(17)!!.nombre)
+   assertEquals("Juan Pérez",anterior.usuarioDao().obtener(18)!!.nombre)
+   assertEquals(2,anterior.usuarioDao().contar())
+   val detalle=anterior.ticketDao().observarUno(23).first()!!
+   assertEquals("Ticket conservado",detalle.ticket.titulo)
+   assertEquals(1000L,detalle.ticket.fecha)
+   assertEquals(listOf("Mensaje original","Otro autor"),detalle.comentarios.map { it.texto })
+   // El nombre del comentario es una foto histórica, aunque cambie el perfil.
+   assertEquals(listOf("Juan Pérez","Juan Pérez"),detalle.comentarios.map { it.autorNombre })
+   assertEquals(1,anterior.ticketDao().observarTodos().first().size)
+  } finally { anterior.close() }
+ }
  @Test fun semillaIdempotenteOrdenYVisibilidad() = runBlocking {
   DatosIniciales.sembrar(db)
   assertEquals(2,db.usuarioDao().contar());assertEquals(5,repo.observarCategorias().first().size)

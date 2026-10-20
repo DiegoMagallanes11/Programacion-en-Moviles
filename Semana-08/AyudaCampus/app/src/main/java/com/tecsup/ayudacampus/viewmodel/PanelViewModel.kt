@@ -7,7 +7,7 @@ import com.tecsup.ayudacampus.model.*
 @OptIn(ExperimentalCoroutinesApi::class)
 class PanelViewModel(repo: AyudaRepository) : ViewModel() {
  private val inicio=SharingStarted.WhileSubscribed(5000)
- val promedioResolucion=repo.observarPromedioResolucion().map(::promedioLegible).stateIn(viewModelScope,inicio,"Sin tickets cerrados")
+ val promedioResolucion=repo.observarPromedioResolucion().map(::promedioLegible).stateIn(viewModelScope,inicio,"Cargando promedio…")
  val abiertos=repo.observarCantidadPorEstado(EstadoTicket.ABIERTO).stateIn(viewModelScope,inicio,0)
  val enProceso=repo.observarCantidadPorEstado(EstadoTicket.EN_PROCESO).stateIn(viewModelScope,inicio,0)
  val resueltos=repo.observarCantidadPorEstado(EstadoTicket.RESUELTO).stateIn(viewModelScope,inicio,0)

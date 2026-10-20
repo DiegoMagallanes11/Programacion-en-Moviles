@@ -13,7 +13,7 @@ import com.tecsup.ayudacampus.ui.components.*
 @Composable fun NuevoTicketScreen(vm: NuevoTicketViewModel, onEnviado: () -> Unit) {
  val f by vm.formulario.collectAsState();val errores by vm.errores.collectAsState();val categorias by vm.categorias.collectAsState()
  val enviado by vm.enviado.collectAsState();val enviando by vm.enviando.collectAsState();val abierta by vm.recibirTickets.collectAsState()
- LaunchedEffect(enviado) { if(enviado) onEnviado() }
+ LaunchedEffect(enviado) { if(enviado) { vm.confirmarEnvio();onEnviado() } }
  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
   Text("Nuevo ticket",style=MaterialTheme.typography.headlineMedium);Text("Cuéntanos qué sucede")
   if(!abierta) Mensaje("Mesa de ayuda cerrada")

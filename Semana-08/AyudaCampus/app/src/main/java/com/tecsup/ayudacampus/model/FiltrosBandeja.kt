@@ -19,15 +19,12 @@ data class EstadoBandeja(
 )
 
 fun filtrarBandeja(tickets: List<TicketConDetalle>, filtros: FiltrosBandeja): List<TicketConDetalle> {
- val texto = filtros.texto.trim()
- val numero = texto.removePrefix("#").toIntOrNull()
  // filter conserva exactamente el orden de prioridad/fecha/ID entregado por Room.
  return tickets.filter { detalle ->
   val t = detalle.ticket
   (filtros.estado.isEmpty() || t.estado == filtros.estado) &&
    (filtros.prioridad == null || t.prioridad == filtros.prioridad.name) &&
    (filtros.categoriaId == null || t.categoriaId == filtros.categoriaId) &&
-   (texto.isEmpty() || t.titulo.contains(texto,ignoreCase=true) ||
-    t.descripcion.contains(texto,ignoreCase=true) || t.id == numero)
+   coincideBusquedaTicket(t,filtros.texto,incluirDescripcion=true)
  }
 }

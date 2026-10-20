@@ -12,12 +12,12 @@ import org.junit.runner.RunWith
 class RestauracionTest {
  @get:Rule val ui=createAndroidComposeRule<MainActivity>()
  @Test fun restauraSesionTicketsYTemaTrasReiniciarProceso() {
-  ui.waitUntil(15000) { ui.onAllNodesWithText("Hola, Juan").fetchSemanticsNodes().isNotEmpty() }
+  ui.waitUntil(15000) { ui.onAllNodesWithText("Hola, Diego").fetchSemanticsNodes().isNotEmpty() }
   ui.onNodeWithText("Perfil").performClick()
   ui.waitUntil(15000) { ui.onAllNodesWithText("Modo oscuro").fetchSemanticsNodes().isNotEmpty() }
   val modo=ui.onAllNodes(isToggleable())[0]
   modo.assertIsOn()
-  ui.onNodeWithText("7").assertExists()
+  ui.onNodeWithText("Mis tickets · 7 en total").assertExists()
   modo.performClick()
   ui.waitUntil(10000) { ui.onAllNodes(isToggleable())[0].fetchSemanticsNode().config[SemanticsProperties.ToggleableState]==ToggleableState.Off }
  }

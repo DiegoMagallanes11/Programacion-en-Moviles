@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tecsup.ayudacampus.data.local.entity.*
+import com.tecsup.ayudacampus.model.promedioLegible
 import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -60,13 +61,13 @@ class BusquedaUiTest {
  }
  @Test fun filtrosCombinadosRetornoYActualizacionReactiva() {
   ui.waitUntil(20_000L) {
-   ui.onAllNodesWithText("Hola, Juan").fetchSemanticsNodes().isNotEmpty() ||
+   ui.onAllNodesWithText("Hola, Diego").fetchSemanticsNodes().isNotEmpty() ||
     ui.onAllNodesWithText("Panel de soporte").fetchSemanticsNodes().isNotEmpty()
   }
   if(ui.onAllNodesWithText("Panel de soporte").fetchSemanticsNodes().isNotEmpty()) {
    click("Ajustes");click("Cambiar a Estudiante")
   }
-  esperar("Hola, Juan")
+  esperar("Hola, Diego")
   val app=InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as AyudaApp
   val id=runBlocking {
    app.listo.first { it }
@@ -93,7 +94,9 @@ class BusquedaUiTest {
   ui.onNode(hasText("SLA vencido hace",substring=true)).assertExists()
   captura("03-sla-detalle-estudiante")
   click("Perfil");esperar("Cambiar a Soporte TI");click("Cambiar a Soporte TI")
-  esperar("Tiempo promedio de resolución");captura("01-promedio-panel")
+  esperar("Tiempo promedio de resolución")
+  val promedioEsperado=runBlocking { promedioLegible(app.repository.observarPromedioResolucion().first()) }
+  esperar(promedioEsperado);captura("01-promedio-panel")
   click("Tickets");esperar("Bandeja de tickets")
   buscar("  rED DE LABORATORIO  ")
   // Con el teclado abierto los controles siguen siendo alcanzables por desplazamiento.

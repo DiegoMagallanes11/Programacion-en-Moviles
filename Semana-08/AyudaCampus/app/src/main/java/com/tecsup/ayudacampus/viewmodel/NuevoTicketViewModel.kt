@@ -14,6 +14,11 @@ class NuevoTicketViewModel(private val repo: AyudaRepository, private val prefs:
  private val _enviando=MutableStateFlow(false);val enviando=_enviando.asStateFlow()
  val categorias=repo.observarCategoriasActivas().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
  val recibirTickets=prefs.recibirTickets.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),true)
+ fun confirmarEnvio() {
+  formulario.value=FormularioTicket()
+  _errores.value=emptyMap()
+  _enviado.value=false
+ }
  fun enviar() {
   if(_enviando.value || _enviado.value) return
   val f=formulario.value

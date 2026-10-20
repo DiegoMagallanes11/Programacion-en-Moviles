@@ -16,9 +16,16 @@ import com.tecsup.ayudacampus.ui.components.*
  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
   Text("Mi perfil",style=MaterialTheme.typography.headlineMedium)
   Icon(Icons.Default.AccountCircle,null,Modifier.size(64.dp),tint=MaterialTheme.colorScheme.primary)
-  Text(usuario.nombre,style=MaterialTheme.typography.titleLarge);Text(usuario.correo);Text("Estudiante")
-  Card(Modifier.fillMaxWidth()) { Row(Modifier.fillMaxWidth().padding(16.dp),horizontalArrangement=Arrangement.SpaceBetween) {
-   listOf("Abiertos" to resumen.abiertos,"Resueltos" to resumen.resueltos,"Total" to resumen.total).forEach { (t,n) -> Column { Text("$n",style=MaterialTheme.typography.headlineSmall);Text(t) } }
+  Text(usuario.nombre,style=MaterialTheme.typography.titleLarge);Text("Estudiante")
+  Text("Correo de acceso de la cuenta de práctica",style=MaterialTheme.typography.labelMedium)
+  Text(usuario.correo)
+  Text("Mis tickets · ${resumen.total} en total",style=MaterialTheme.typography.titleMedium)
+  Card(Modifier.fillMaxWidth()) { Column(Modifier.fillMaxWidth().padding(16.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
+   listOf("Abiertos" to resumen.abiertos,"En proceso" to resumen.enProceso,"Resueltos" to resumen.resueltos,"Cerrados" to resumen.cerrados).chunked(2).forEach { fila ->
+    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(16.dp)) {
+     fila.forEach { (t,n) -> Column(Modifier.weight(1f)) { Text("$n",style=MaterialTheme.typography.headlineSmall);Text(t) } }
+    }
+   }
   } }
   AjusteSwitch("Modo oscuro",oscuro,sesion::modoOscuro)
   AjusteSwitch("Notificaciones",notificaciones,sesion::notificaciones)

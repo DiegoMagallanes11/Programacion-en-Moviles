@@ -1,9 +1,11 @@
 package com.tecsup.ayudacampus
 import androidx.compose.ui.test.*
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.*
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import android.graphics.Bitmap
 import java.io.File
@@ -35,13 +37,17 @@ class FlujoCompletoTest {
   esperar("Ingresar")
   campo("Correo","juan@campus.test");campo("Contraseña","incorrecta");closeSoftKeyboard();click("Ingresar")
   esperar("Correo o contraseña incorrectos")
-  campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Juan")
+  campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Diego")
   captura("01-estudiante-tickets")
   click("Nuevo");esperar("Enviar ticket");captura("02-estudiante-nuevo");ui.onNodeWithText("Enviar ticket").performScrollTo().performClick()
   esperar("Escribe al menos 5 caracteres");ui.onNodeWithText("Hardware").performScrollTo().performClick()
   campo("Título","Equipo de prueba final");campo("Ubicación","Laboratorio 8");ui.onNodeWithText("Descripción").performScrollTo()
   campo("Descripción","El equipo no enciende durante la práctica del laboratorio.");closeSoftKeyboard()
-  ui.onNodeWithText("Enviar ticket").performScrollTo().performClick();esperar("Hola, Juan");esperar("Equipo de prueba final")
+  ui.onNodeWithText("Enviar ticket").performScrollTo().performClick();esperar("Hola, Diego");esperar("Equipo de prueba final")
+  // Restaurar la pestaña no debe repetir la navegación del envío anterior.
+  click("Nuevo");esperar("Enviar ticket")
+  assertEquals("",ui.onNode(hasSetTextAction() and hasText("Título")).fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+  click("Tickets");esperar("Equipo de prueba final")
   click("Perfil");esperar("Cambiar a Soporte TI");click("Cambiar a Soporte TI");esperar("Panel de soporte")
   captura("04-soporte-panel")
   click("Tickets");esperar("Bandeja de tickets");captura("05-soporte-bandeja")
@@ -53,7 +59,7 @@ class FlujoCompletoTest {
   ui.onNodeWithText("Enviar respuesta").performScrollTo().performClick();esperar("Respuesta enviada")
   ui.onNodeWithText("Resuelto").performScrollTo().performClick();ui.onNodeWithText("Guardar cambios").performScrollTo().performClick();esperar("Cambios guardados")
   captura("06-soporte-atender")
-  click("Ajustes");esperar("Cambiar a Estudiante");click("Cambiar a Estudiante");esperar("Hola, Juan")
+  click("Ajustes");esperar("Cambiar a Estudiante");click("Cambiar a Estudiante");esperar("Hola, Diego")
   click("Equipo de prueba final");esperar("Tu ticket ha sido resuelto")
   ui.onNodeWithContentDescription("Calificar 4 estrellas").performScrollTo().performClick()
   captura("03-estudiante-detalle")
@@ -64,12 +70,12 @@ class FlujoCompletoTest {
   ui.activityRule.scenario.recreate();esperar("Modo oscuro")
   ui.onAllNodes(isToggleable())[0].assertIsOn()
   click("Cambiar a Soporte TI");esperar("Panel de soporte");click("Ajustes");esperar("Recibir tickets")
-  ui.onAllNodes(isToggleable())[2].performClick();click("Cambiar a Estudiante");esperar("Hola, Juan")
+  ui.onAllNodes(isToggleable())[2].performClick();click("Cambiar a Estudiante");esperar("Hola, Diego")
   click("Nuevo");esperar("Mesa de ayuda cerrada");ui.onNodeWithText("Enviar ticket").performScrollTo().assertIsNotEnabled()
   click("Perfil");esperar("Cambiar a Soporte TI");click("Cambiar a Soporte TI");esperar("Panel de soporte");click("Ajustes");esperar("Recibir tickets")
   ui.onAllNodes(isToggleable())[2].performClick();ui.onAllNodes(isToggleable())[0].performClick()
   ui.onNodeWithText("Cerrar sesión").performScrollTo().performClick();esperar("Ingresar")
-  campo("Correo","juan@campus.test");campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Juan")
+  campo("Correo","juan@campus.test");campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Diego")
   click("Perfil");esperar("Modo oscuro");ui.onAllNodes(isToggleable())[0].performClick()
  }
 }

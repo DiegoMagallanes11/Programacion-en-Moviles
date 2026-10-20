@@ -5,7 +5,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.tecsup.ayudacampus.AyudaApp
@@ -32,18 +37,28 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
      val destinos=if(admin) listOf(Rutas.PANEL,Rutas.BANDEJA,Rutas.CATEGORIAS,Rutas.AJUSTES) else listOf(Rutas.MIS_TICKETS,Rutas.NUEVO,Rutas.PERFIL)
      val etiquetas=if(admin) listOf("Panel","Tickets","Categorías","Ajustes") else listOf("Tickets","Nuevo","Perfil")
      val iconos=if(admin) listOf(Icons.Default.Dashboard,Icons.Default.ConfirmationNumber,Icons.Default.Category,Icons.Default.Settings) else listOf(Icons.Default.ConfirmationNumber,Icons.Default.AddCircle,Icons.Default.Person)
+     val foco=LocalFocusManager.current
+     val teclado=LocalSoftwareKeyboardController.current
      val ir: (String) -> Unit = { destino ->
-      nav.navigate(destino) { popUpTo(home) { inclusive=false };launchSingleTop=true }
+      teclado?.hide()
+      foco.clearFocus()
+      if(nav.currentDestination?.route != destino) {
+       nav.navigate(destino) {
+        popUpTo(nav.graph.findStartDestination().id) { saveState=true }
+        launchSingleTop=true
+        restoreState=true
+       }
+      }
      }
      val limpiar: () -> Unit = { nav.navigate(home) { popUpTo(nav.graph.id) { inclusive=true };launchSingleTop=true } }
      Scaffold(
       containerColor=MaterialTheme.colorScheme.background,
       topBar={AppTopBar(if(admin) "AyudaCampus · Soporte" else "AyudaCampus",if(ruta !in destinos) ({nav.popBackStack();Unit}) else null)},
-      bottomBar={NavigationBar {
+      bottomBar={NavigationBar(Modifier.imePadding()) {
        destinos.forEachIndexed { i,destino -> NavigationBarItem(selected=ruta==destino,onClick={ir(destino)},icon={Icon(iconos[i],null)},label={Text(etiquetas[i])}) }
       }}
      ) { padding ->
-      NavHost(nav,home,Modifier.padding(padding)) {
+      NavHost(nav,home,Modifier.padding(padding).consumeWindowInsets(padding)) {
        if(!admin) {
         composable(Rutas.MIS_TICKETS) {
          val vm: MisTicketsViewModel=viewModel(factory=AyudaViewModelFactory { MisTicketsViewModel(app.repository,u.id) })

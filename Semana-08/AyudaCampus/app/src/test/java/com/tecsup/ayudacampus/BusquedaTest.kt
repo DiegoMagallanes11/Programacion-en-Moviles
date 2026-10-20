@@ -25,6 +25,16 @@ class BusquedaTest {
  @Before fun preparar() { Dispatchers.setMain(StandardTestDispatcher()) }
  @After fun cerrar() { store.clear();Dispatchers.resetMain() }
 
+ @Test fun busquedaEstudianteAdmiteNumeroVisibleSinCoincidenciaVacia() {
+  val t=lista.first().ticket
+  for(texto in listOf("2","#2"," #0002 "," eQUiPo 2 ","   "))
+   assertTrue(coincideBusquedaTicket(t,texto))
+  assertFalse(coincideBusquedaTicket(t,"#"))
+  assertFalse(coincideBusquedaTicket(t,"Conexión"))
+  assertTrue(coincideBusquedaTicket(t,"Conexión",incluirDescripcion=true))
+  assertFalse(coincideBusquedaTicket(t.copy(id=12,titulo="Otro equipo"),"2"))
+ }
+
  @Test fun filtrosIndividualesTextoYNumero() {
   fun ids(f: FiltrosBandeja)=filtrarBandeja(lista,f).map { it.ticket.id }
   assertEquals(listOf(3),ids(FiltrosBandeja(estado="EN_PROCESO")))
