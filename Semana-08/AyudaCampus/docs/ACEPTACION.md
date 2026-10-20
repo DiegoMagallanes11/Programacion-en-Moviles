@@ -35,3 +35,77 @@ Entorno: emulador Medium Phone, Android 16 / API 36.1, ARM64. Compilación con S
 | Tickets, perfil y modo oscuro persisten tras cerrar el proceso | RestauracionTest |
 
 Las seis capturas del README se obtuvieron de la aplicación ejecutada, con datos ficticios. La preferencia de notificaciones se guarda localmente; esta fase no implementa entrega de notificaciones.
+
+
+## Fase 2 — ejecución del 19 de octubre de 2026
+
+Esta sección agrega resultados de una ejecución nueva. Los resultados y las seis capturas de Fase 1 anteriores se conservan como evidencia de aquella fase.
+
+### Entorno y protección
+
+- Windows; JDK 21.0.11; Gradle 8.13; SDK/target 35; minSdk 24. Dependencias originales sin actualizaciones.
+- AVD independiente `AyudaCampusFase2`, Android 15/API 35, x86_64, puerto 5560. Configuración Pixel 7; resolución reducida a 720 × 1600 con densidad 280 para aliviar el uso de recursos y mantener un ancho lógico de unos 411 dp.
+- Las pruebas Room usan una base en memoria independiente. El recorrido de UI usa únicamente datos ficticios del AVD dedicado. No se borró la base de datos del usuario ni la instalación de presentación.
+- `main` permanece en `ac4e370c55a27f214239b5dd934d8be40458a77f`, con los catorce commits del proyecto de Fase 1. La antigua `mejora-ia` local y remota y los cinco stashes encontrados permanecen intactos. El stash con el nombre indicado en el prompt no estaba presente en esta copia del equipo; no se aplicó ni eliminó ningún stash.
+- Tras `fetch`, `origin/mejora-ia` seguía en `4a580c8`, pero no era antecesora de `main`: tenía ocho commits exclusivos de otro laboratorio. Con autorización del usuario se creó `mejora-ia-ayudacampus` desde `main` en un worktree separado. No se forzó ningún historial ni se mezcló la Fase 2 en `main`.
+- Autor y cuenta GitHub comprobados: DiegoMagallanes11, con el correo de autor solicitado. No se incluyeron archivos de otros laboratorios, credenciales, cachés, compilaciones ni configuración local del SDK.
+
+### Resultados de compilación y pruebas
+
+| Comprobación | Resultado real y alcance |
+| --- | --- |
+| `:app:assembleDebug` | Aprobada antes de cada commit funcional |
+| `:app:assembleDebugAndroidTest` | Aprobada, incluida la adaptación de desplazamiento de las pruebas |
+| `PromedioTest` | 2 aprobadas: ausencia frente a cero y formato de unidades |
+| `SlaTest` | 4 aprobadas: prioridades y límites; estados/prioridad/reapertura; reloj y suscripciones; transición del texto a vencido |
+| `BusquedaTest` | 3 aprobadas: filtros individuales; AND y orden; ViewModel reactivo, categoría eliminada, limpiar y lista vacía |
+| `DatosYReglasTest` | 3 aprobadas de nuevo con el código de Fase 2; Room en memoria |
+| `PromedioRoomTest` | 2 aprobadas: promedio/exclusiones y actualización por Flow con un observador ya suscrito |
+| `FlujoCompletoTest` | 1 aprobada tras adaptar el desplazamiento a la nueva bandeja; recorrido completo y precondiciones originales |
+| `RestauracionTest` | 1 aprobada en instrumentación nueva tras detener el proceso, sin borrar datos desde el recorrido exitoso; conserva sesión, siete tickets y tema |
+| `BusquedaUiTest` | 1 aprobada: filtros AND, categoría inactiva, teclado abierto, regreso del detalle, actualización por cambio de estado, limpieza y número con/sin #; seis capturas reales |
+| `:app:lintDebug` | Completada sin errores; 17 advertencias. Tres avisos corresponden a comprobaciones personalizadas obsoletas de Navigation que se omiten por incompatibilidad. Otros: target API, dependencias, extracción de datos e icono. No equivale a haber ejecutado los checks omitidos |
+
+**Totales: 9 pruebas unitarias y 8 instrumentadas aprobadas.** Las nueve unitarias pasaron también juntas en la preparación final. No se presenta el intento inicial fallido ni una mera compilación de pruebas como si fueran pruebas aprobadas.
+
+### Matriz de las tres mejoras
+
+| Criterio | Evidencia y alcance |
+| --- | --- |
+| Sin cerrados válidos se conserva null y se presenta «Sin tickets cerrados» | `PromedioRoomTest.promedioExcluyeInvalidosYConservaCero` y `PromedioTest.ausenciaNoEsCero` |
+| Un cerrado válido y promedio real cero | Misma prueba Room: fecha 1000, cierre 1000, promedio 0 |
+| Varios cerrados con promedio conocido | Misma prueba Room: duraciones 0 y 2000 ms, promedio 1000 ms |
+| Se excluyen ABIERTO, RESUELTO, cierre nulo y cierre anterior a creación | Misma prueba Room, antes de insertar cerrados válidos |
+| El cierre actualiza un observador existente | `PromedioRoomTest.cierreActualizaObservadorExistente`: emisión null → 4000 ms, sin resuscribir |
+| Tarjeta, significado y duración legible del promedio | `PromedioTest.unidadesComprensibles` y [captura del panel](capturas/fase-2/01-promedio-panel.png); se mantiene el panel anterior |
+| SLA ALTA 4 h, MEDIA 24 h y BAJA 72 h | `SlaTest.prioridadesYLimitesExactos`, con fechas controladas y Long |
+| Antes, exactamente y después del vencimiento | Misma prueba: límite −1 ms, límite exacto y límite +60000 ms |
+| Cambio de prioridad desde fecha original | `SlaTest.prioridadActualEstadosYReaperturaNoReinicianFecha`: ALTA vencida a las 5 h, MEDIA activa |
+| RESUELTO, CERRADO y reapertura sin reiniciar fecha | Misma prueba pura; revisión del DAO de reapertura, que no modifica fecha, y prueba previa de reglas de estados ejecutada de nuevo |
+| Actualización del texto sin volver a abrir la pantalla | `SlaTest.textoPasaAVencidoSinReabrirPantalla`: avance virtual de 30000 ms, activo → vencido |
+| Un reloj por pantalla y detención sin suscriptores | `SlaTest.relojActualizaCada30SegundosYSeDetieneSinSuscriptores`; revisión de stateIn/viewModelScope y collectAsStateWithLifecycle, sin corrutinas en las tarjetas |
+| SLA en ambas listas y ambos detalles | Capturas [Mis tickets](capturas/fase-2/02-sla-mis-tickets.png), [detalle](capturas/fase-2/03-sla-detalle-estudiante.png), [atención](capturas/fase-2/04-sla-atencion-soporte.png) y [bandeja](capturas/fase-2/05-busqueda-combinada.png) |
+| Estado, prioridad, categoría y texto por separado | `BusquedaTest.filtrosIndividualesTextoYNumero` |
+| Todos los filtros combinados con AND | `BusquedaTest.filtrosSonAndSinAlterarOrden`; `BusquedaUiTest` y [captura combinada](capturas/fase-2/05-busqueda-combinada.png) |
+| Título/descripción, mayúsculas y espacios exteriores | `BusquedaTest.filtrosIndividualesTextoYNumero`; búsqueda en descripción con « CONEXIÓN » |
+| Número con y sin # y ceros iniciales | Misma prueba: 2, #2 y #0002; # aislado no coincide por un número vacío |
+| Categorías inactivas con tickets | Fixture inactivo en `BusquedaTest` y en el recorrido de UI; la consulta usa todas las categorías. `DatosYReglasTest` confirma que creación sigue usando las activas |
+| Eliminar la categoría seleccionada restablece Todas | `BusquedaTest.viewModelReaccionaADatosCategoriasYLimpiar`, con Flow controlado del Repository; no se elimina en Room una categoría con tickets |
+| Orden por prioridad y fecha conservado | `BusquedaTest` conserva IDs 2,1 y luego 5,2,1 al recibir datos nuevos; `DatosYReglasTest` comprueba el orden del DAO real |
+| Cambios de datos sin tocar filtros | `BusquedaTest` agrega un ticket y modifica su descripción, manteniendo los filtros activos |
+| Limpiar los cuatro filtros y distinguir bandeja vacía de cero coincidencias | `BusquedaTest.viewModelReaccionaADatosCategoriasYLimpiar`: filtros por defecto, total 5 con cero coincidencias frente a total 0 |
+| Filtros conservados al entrar y volver, teclado abierto y pantalla pequeña | `BusquedaUiTest` aprobada; conserva texto, prioridad y categoría al volver, usa controles con teclado abierto y reacciona a un cambio de estado sin tocar filtros; [sin coincidencias](capturas/fase-2/06-busqueda-sin-resultados.png) |
+| Conservación de login, perfiles, conversación, cierre/calificación, mesa cerrada y preferencias | `DatosYReglasTest`, `FlujoCompletoTest` adaptado solo en el desplazamiento y `RestauracionTest`, ejecutados de nuevo |
+
+### Incidencias reales y correcciones
+
+1. El JBR predeterminado de Android Studio era Java 25. La primera compilación falló con `IllegalArgumentException: 25.0.2`. Se seleccionó JDK 21 ya instalado y las compilaciones pasaron, sin actualizar dependencias.
+2. El primer arranque de instrumentación terminó antes de informar casos por un ANR de inicio del proceso en el emulador. Se liberaron los daemons de compilación y se preparó el código Android; después corrieron las pruebas. También se redujo la resolución del AVD dedicado tras un bloqueo de su interfaz del sistema.
+3. En el primer recorrido de UI se aprobaron las tres pruebas de datos y las dos de promedio, pero el recorrido original falló al intentar encontrar una tarjeta no compuesta fuera de pantalla. Los nuevos filtros ocupan más espacio; se cambió una acción del test a `performScrollToNode`. Se restauraron solo los datos ficticios de este AVD para recuperar sus precondiciones, y el recorrido pasó. No se borró nada entre el recorrido exitoso y restauración.
+4. La prueba nueva de búsqueda encontró dos nodos con el mismo título: el texto escrito y la tarjeta. Se usó el número para la búsqueda del estudiante. También se corrigió el desplazamiento explícito de tarjetas y campos tras cambios de teclado para no depender de qué elementos de LazyColumn estaban compuestos. Solo se repitieron las comprobaciones afectadas.
+
+### Pendientes
+
+El requisito académico de **Gemini en Android Studio** sigue pendiente. La herramienta real fue OpenAI Codex. Se necesita una contribución verificable de Gemini, registrada con su prompt y respuesta, o confirmación del docente de que acepta Codex como alternativa. No se atribuye este trabajo a Gemini ni se declara cumplido ese requisito.
+
+Lint completó su tarea con los avisos descritos; las comprobaciones personalizadas omitidas no se dan por aprobadas. Las entidades y el esquema Room permanecen sin cambios, y no se añadió una migración innecesaria.
