@@ -62,3 +62,5 @@ La rama conserva el nombre alternativo autorizado porque la antigua mejora-ia di
 Los [registros de pruebas](resultados/auditoria/pruebas.txt) conservan las salidas reales de los bloques y el resumen de los XML unitarios. La herramienta local de restauración de autores no se suma a los diez casos funcionales ni forma parte de la app entregada.
 
 Correcciones funcionales registradas en [4d2ea10](https://github.com/DiegoMagallanes11/Programacion-en-Moviles/commit/4d2ea10a1237bce20005d896f2f55a5daadbd0aa), sin modificar main.
+
+La revisión visual final sustituyó la captura transitoria de cero coincidencias y agregó [los filtros con teclado abierto](capturas/auditoria/fase-2/07-filtros-con-teclado.png). BusquedaUiTest volvió a aprobar en 37.225 s tras sincronizar la captura; se conserva la fotografía válida anterior del resultado combinado. Las imágenes mantienen su contenido original.

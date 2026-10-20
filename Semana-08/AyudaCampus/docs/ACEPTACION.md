@@ -177,3 +177,8 @@ El total final es de 12 casos unitarios y 10 instrumentados distintos aprobados.
 Una ampliación del test de recorrido necesitó importar Assert.assertEquals para compilar. La primera prueba nueva del promedio verificó sus valores, pero falló al limpiar las corrutinas después de restaurar Main demasiado pronto; se esperó su cancelación antes de resetMain y la suite final de doce pasó. Una captura inicial tomó el valor transitorio antes de la emisión de Room: se reemplazó por una captura real tomada después de esperar el valor calculado. No se presentan esos intentos como aprobados.
 
 Ver [AUDITORIA.md](AUDITORIA.md) para el contraste completo con la guía y [RUBRICA.md](RUBRICA.md) para los criterios de evaluación. La contribución de Gemini conserva su alcance real documentado; no se le atribuye esta auditoría de Codex.
+
+
+### Revisión final de la evidencia visual
+
+Una captura de cero coincidencias se había tomado antes de terminar el dibujo nativo, aunque Compose ya exponía el mensaje correcto y la prueba había pasado. Se sincronizó la captura con la inactividad de la interfaz y se dejó un margen de 250 ms para completar el dibujo; BusquedaUiTest pasó de nuevo en 37.225 s. Se sustituyó la imagen de cero resultados por la captura real verificada visualmente. Para el resultado combinado se conserva la captura válida de la ejecución anterior, con formulario, conteo y tarjeta visibles. La nueva captura adicional 07-filtros-con-teclado.png muestra los filtros y la barra por encima del teclado. No se reconstruyeron ni editaron las imágenes. Esta repetición no aumenta los diez casos instrumentados distintos.

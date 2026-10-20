@@ -584,6 +584,8 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Resultado:** doce unitarias y diez instrumentadas distintas aprobadas. Lint terminó sin errores y con diecisiete advertencias; tres checks personalizados de Navigation se omiten y no se dan por ejecutados. Las repeticiones focalizadas no aumentan el número de casos distintos.
 
+**Seguimiento de evidencia del prompt 8:** la revisión del Word detectó una captura adelantada al dibujo nativo. Codex agregó espera de inactividad y 250 ms antes de capturar; el único recorrido afectado se repitió y aprobó en 37.225 s. Se guardó la captura real de cero coincidencias y una adicional del teclado, conservando la captura anterior válida del resultado combinado. No se atribuye esta corrección a Gemini ni se fabrican imágenes.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.

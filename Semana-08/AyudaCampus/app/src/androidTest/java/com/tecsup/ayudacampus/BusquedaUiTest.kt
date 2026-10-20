@@ -53,6 +53,10 @@ class BusquedaUiTest {
  private fun captura(nombre: String) {
   ui.waitForIdle()
   val inst=InstrumentationRegistry.getInstrumentation()
+  // La semántica de Compose puede actualizarse antes de que SurfaceFlinger dibuje.
+  inst.uiAutomation.waitForIdle(100L,3_000L)
+  inst.waitForIdleSync()
+  android.os.SystemClock.sleep(250L)
   val bitmap=inst.uiAutomation.takeScreenshot()
   val archivo=File(inst.targetContext.filesDir,"capturas/fase-2/$nombre.png")
   archivo.parentFile!!.mkdirs()
