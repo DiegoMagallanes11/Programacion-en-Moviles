@@ -24,11 +24,11 @@ import com.tecsup.ayudacampus.ui.theme.*
   }
  }
 }
-@Composable fun FiltrosEstado(actual: String, onCambio: (String) -> Unit) {
+@Composable fun FiltrosEstado(actual: String, incluirCerrados: Boolean = false, onCambio: (String) -> Unit) {
  androidx.compose.foundation.lazy.LazyRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-  items(4) { i ->
-   val estados=listOf("","ABIERTO","EN_PROCESO","RESUELTO")
-   val etiquetas=listOf("Todos","Abiertos","En proceso","Resueltos")
+  items(if(incluirCerrados) 5 else 4) { i ->
+   val estados=listOf("","ABIERTO","EN_PROCESO","RESUELTO","CERRADO")
+   val etiquetas=listOf("Todos","Abiertos","En proceso","Resueltos","Cerrados")
    FilterChip(selected=actual==estados[i],onClick={onCambio(estados[i])},label={Text(etiquetas[i])})
   }
  }
