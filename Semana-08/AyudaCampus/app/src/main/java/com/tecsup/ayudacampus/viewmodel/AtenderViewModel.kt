@@ -9,6 +9,8 @@ import com.tecsup.ayudacampus.model.*
 class AtenderViewModel(private val repo: AyudaRepository, private val id: Int, private val usuario: Usuario) : ViewModel() {
  val ticket=repo.observarTicket(id).stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),null)
  val estadoElegido=MutableStateFlow<EstadoTicket?>(null);val prioridadElegida=MutableStateFlow<Prioridad?>(null)
+ val sla=combine(ticket,observarReloj()) { detalle,ahora -> detalle?.let { calcularSla(it.ticket,ahora) } }
+  .stateIn(viewModelScope,SharingStarted.WhileSubscribed(0),null)
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _mensaje=MutableStateFlow<String?>(null);val mensaje=_mensaje.asStateFlow()
  private val _ocupado=MutableStateFlow(false);val ocupado=_ocupado.asStateFlow()

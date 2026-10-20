@@ -3,11 +3,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import com.tecsup.ayudacampus.model.Sla
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.data.local.relation.TicketConDetalle
 import com.tecsup.ayudacampus.ui.theme.*
-@Composable fun TicketCard(detalle: TicketConDetalle, mostrarCliente: Boolean = false, onClick: () -> Unit) {
+@Composable fun TicketCard(detalle: TicketConDetalle, mostrarCliente: Boolean = false, sla: Sla, onClick: () -> Unit) {
  val t=detalle.ticket
  Card(onClick=onClick,modifier=Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface)) {
   Row(Modifier.height(IntrinsicSize.Min)) {
@@ -15,6 +16,7 @@ import com.tecsup.ayudacampus.ui.theme.*
    Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
     Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) { Icon(iconoCategoria(detalle.categoria.icono),null,tint=MaterialTheme.colorScheme.primary); Text("#${t.id.toString().padStart(4,'0')} · ${detalle.categoria.nombre}",style=MaterialTheme.typography.labelMedium) }
     Text(t.titulo,style=MaterialTheme.typography.titleMedium)
+    SlaTexto(sla)
     if(mostrarCliente) Text(detalle.cliente.nombre,style=MaterialTheme.typography.bodySmall)
     Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) { EstadoChip(t.estado);PrioridadChip(t.prioridad) }
     Text("${t.ubicacion} · "+java.text.SimpleDateFormat("dd/MM HH:mm",java.util.Locale.getDefault()).format(java.util.Date(t.fecha)),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)

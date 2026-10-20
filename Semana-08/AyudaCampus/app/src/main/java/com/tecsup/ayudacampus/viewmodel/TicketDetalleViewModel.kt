@@ -1,5 +1,6 @@
 package com.tecsup.ayudacampus.viewmodel
 import androidx.lifecycle.*
+import com.tecsup.ayudacampus.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import com.tecsup.ayudacampus.data.repository.AyudaRepository
@@ -7,6 +8,8 @@ import com.tecsup.ayudacampus.data.local.entity.Usuario
 import com.tecsup.ayudacampus.data.local.relation.TicketConDetalle
 class TicketDetalleViewModel(private val repo: AyudaRepository, private val id: Int, private val usuario: Usuario) : ViewModel() {
  val ticket=repo.observarTicket(id).map { it?.takeIf { d -> d.ticket.clienteId==usuario.id && usuario.rol=="CLIENTE" } }.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),null)
+ val sla=combine(ticket,observarReloj()) { detalle,ahora -> detalle?.let { calcularSla(it.ticket,ahora) } }
+  .stateIn(viewModelScope,SharingStarted.WhileSubscribed(0),null)
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _ocupado=MutableStateFlow(false);val ocupado=_ocupado.asStateFlow()
  private fun accion(bloque: suspend (TicketConDetalle) -> Unit) {

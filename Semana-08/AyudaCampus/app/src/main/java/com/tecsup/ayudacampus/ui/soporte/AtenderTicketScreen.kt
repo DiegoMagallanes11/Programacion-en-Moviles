@@ -1,5 +1,6 @@
 package com.tecsup.ayudacampus.ui.soporte
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +13,7 @@ import com.tecsup.ayudacampus.model.*
 import com.tecsup.ayudacampus.ui.components.*
 @OptIn(ExperimentalLayoutApi::class)
 @Composable fun AtenderTicketScreen(vm: AtenderViewModel, usuarioId: Int) {
+ val sla by vm.sla.collectAsStateWithLifecycle()
  val d by vm.ticket.collectAsState();val elegido by vm.estadoElegido.collectAsState();val prioridad by vm.prioridadElegida.collectAsState()
  val error by vm.error.collectAsState();val mensaje by vm.mensaje.collectAsState();val ocupado by vm.ocupado.collectAsState()
  var texto by rememberSaveable { mutableStateOf("") }
@@ -20,6 +22,7 @@ import com.tecsup.ayudacampus.ui.components.*
  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
   Text("Atender #${t.id.toString().padStart(4,'0')}",style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.primary)
   Text(t.titulo,style=MaterialTheme.typography.headlineSmall);Text("${detalle.cliente.nombre} · ${detalle.cliente.correo}")
+  sla?.let { SlaTexto(it) }
   Text("${detalle.categoria.nombre} · ${t.ubicacion}");Text(t.descripcion)
   Text("Estado",style=MaterialTheme.typography.titleSmall)
   FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) { EstadoTicket.entries.forEach { e -> FilterChip(selected=(elegido?.name ?: t.estado)==e.name,onClick={vm.cambiarEstado(e)},enabled=!cerrado && e!=EstadoTicket.CERRADO && !ocupado,label={Text(etiquetaEstado(e.name))}) } }

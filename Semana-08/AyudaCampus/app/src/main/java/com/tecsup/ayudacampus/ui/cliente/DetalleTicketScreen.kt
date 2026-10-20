@@ -1,5 +1,6 @@
 package com.tecsup.ayudacampus.ui.cliente
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModel
 import com.tecsup.ayudacampus.ui.components.*
 @Composable fun DetalleTicketScreen(vm: TicketDetalleViewModel, usuarioId: Int) {
+ val sla by vm.sla.collectAsStateWithLifecycle()
  val d by vm.ticket.collectAsState();val error by vm.error.collectAsState();val ocupado by vm.ocupado.collectAsState()
  var texto by rememberSaveable { mutableStateOf("") };var final by rememberSaveable { mutableStateOf("") };var estrellas by rememberSaveable { mutableIntStateOf(0) }
  if(d==null) { Text("Cargando ticket o sin acceso…",Modifier.padding(24.dp));return }
@@ -18,6 +20,7 @@ import com.tecsup.ayudacampus.ui.components.*
   Text("Ticket #${t.id.toString().padStart(4,'0')}",style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.primary)
   Text(t.titulo,style=MaterialTheme.typography.headlineSmall)
   Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) { EstadoChip(t.estado);PrioridadChip(t.prioridad) }
+  sla?.let { SlaTexto(it) }
   Text("${detalle.categoria.nombre} · ${t.ubicacion}");Text(t.descripcion)
   StepperTicket(t.estado)
   Text("Conversación",style=MaterialTheme.typography.titleMedium)
