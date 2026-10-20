@@ -1,6 +1,6 @@
 # AyudaCampus
 
-**Estudiante:** Diego Magallanes Linares · C24-B  
+**Estudiante:** Diego Magallanes · C24-B<br>
 **Curso:** Programación en Móviles · Laboratorio 08  
 **Alcance:** aplicación local de mesa de ayuda TI con perfiles Estudiante y Soporte; Fase 1 y tres mejoras funcionales de Fase 2.
 
@@ -205,3 +205,28 @@ La prueba `fechasGrandesYCambioDePrioridadConservanElPlazoOriginal` verifica el 
 ```
 
 Este aporte se guarda en un commit adicional porque los cuatro commits iniciales ya estaban publicados y se conservan sin reescribir. Las capturas de la app y los resultados instrumentados anteriores permanecen intactos. La contribución de Gemini corresponde a verificación del SLA, no a la autoría de las tres implementaciones originales.
+
+
+## Revisión de navegación y perfil
+
+La cuenta de práctica muestra **Diego Magallanes**. Conserva el correo de acceso juan@campus.test y la contraseña de demostración; una actualización idempotente cambia el nombre anterior sin borrar tickets, conversaciones ni preferencias. El perfil presenta los cuatro estados y el total de tickets.
+
+La barra inferior guarda y restaura las pestañas, evita duplicar el destino activo y cierra el teclado al cambiar de opción. El formulario consume la confirmación de envío para poder volver a Nuevo. Las capturas históricas se conservan; las nuevas muestran la personalización.
+
+![Perfil de Diego](docs/capturas/revision/01-perfil-diego.png)
+![Tickets de Diego](docs/capturas/revision/02-tickets-diego.png)
+
+Consulta [el contraste con la rúbrica, observaciones y conclusiones](docs/RUBRICA.md). No se garantiza una nota ni se acredita puntualidad sin conocer la fecha de entrega.
+
+Comprobación nueva: NavegacionPerfilTest requiere que estén disponibles los perfiles ficticios; acepta una sesión existente, cambia de pestañas y de rol, conserva un borrador, no crea tickets y termina en Estudiante. DatosYReglasTest incluye una prueba Room en memoria que simula la cuenta antigua y comprueba que se conservan tickets y mensajes. El 20 de octubre pasaron las 10 unitarias y las 5 instrumentadas focalizadas. No se repitieron el recorrido completo ni lint en esta revisión.
+
+
+## Auditoría final de Fase 2
+
+La Fase 1 se conserva terminada en main. La [auditoría completa](docs/AUDITORIA.md) contrasta los contratos de las 26 páginas de la guía con la app y sus pruebas. Resultado final: **12 unitarias y 10 instrumentadas distintas aprobadas**, debug e instrumentación compilados, lint sin errores y con 17 advertencias. Los tres checks personalizados de Navigation omitidos no se dan por ejecutados.
+
+Se corrigieron la búsqueda del número visible del estudiante y el mensaje de carga del promedio. La personalización conserva los nombres históricos de comentarios: los mensajes nuevos usan Diego y los anteriores mantienen su foto del momento. Las nuevas evidencias están en [capturas/auditoria](docs/capturas/auditoria/) y los [registros de pruebas](docs/resultados/auditoria/pruebas.txt).
+
+Para repetir el recorrido completo se necesita una instalación de pruebas nueva con sesión cerrada y seis tickets iniciales. Ejecuta DatosYReglasTest, PromedioRoomTest y FlujoCompletoTest; después detén el proceso y ejecuta RestauracionTest en otra instrumentación **sin borrar datos**. Luego pueden ejecutarse NavegacionPerfilTest y BusquedaUiTest. No uses la instalación de presentación para restablecer precondiciones. La revisión posterior del promedio repitió solo las comprobaciones afectadas.
+
+La implementación y esta auditoría se atribuyen a Codex. El aporte real de Gemini en Android Studio fue la prueba de SLA documentada; se mantiene esa distinción y no se garantiza una calificación académica.

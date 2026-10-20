@@ -1,0 +1,240 @@
+Registros reales del 20 de octubre de 2026
+
+com.tecsup.ayudacampus.BusquedaTest: 4 pruebas, 0 fallos, 0 errores
+com.tecsup.ayudacampus.PromedioTest: 3 pruebas, 0 fallos, 0 errores
+com.tecsup.ayudacampus.SlaTest: 5 pruebas, 0 fallos, 0 errores
+
+Lint sin errores; 17 advertencias: {'ObsoleteLintCustomCheck': 3, 'OldTargetApi': 1, 'GradleDependency': 11, 'DataExtractionRules': 1, 'MissingApplicationIcon': 1}
+
+=== 01-base-promedio.log ===
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.DatosYReglasTest:
+INSTRUMENTATION_STATUS: test=personalizacionConservaDatosDeUnaInstalacionAnterior
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=personalizacionConservaDatosDeUnaInstalacionAnterior
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=categoriasInactivasYProteccionAlEliminar
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=categoriasInactivasYProteccionAlEliminar
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=semillaIdempotenteOrdenYVisibilidad
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=semillaIdempotenteOrdenYVisibilidad
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=reglasDeRolesConversacionCierreYReapertura
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.DatosYReglasTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=reglasDeRolesConversacionCierreYReapertura
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.PromedioRoomTest:
+INSTRUMENTATION_STATUS: test=promedioExcluyeInvalidosYConservaCero
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=promedioExcluyeInvalidosYConservaCero
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cierreActualizaObservadorExistente
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cierreActualizaObservadorExistente
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.FlujoCompletoTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.FlujoCompletoTest:
+INSTRUMENTATION_STATUS: test=recorridoEstudianteYSoporte
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.FlujoCompletoTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=recorridoEstudianteYSoporte
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 89.699
+
+OK (7 tests)
+
+
+INSTRUMENTATION_CODE: -1
+
+
+=== 02-restauracion.log ===
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.RestauracionTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.RestauracionTest:
+INSTRUMENTATION_STATUS: test=restauraSesionTicketsYTemaTrasReiniciarProceso
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.RestauracionTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=restauraSesionTicketsYTemaTrasReiniciarProceso
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 16.227
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
+
+
+=== 03-navegacion-busqueda.log ===
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.NavegacionPerfilTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=2
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.NavegacionPerfilTest:
+INSTRUMENTATION_STATUS: test=pestanasPerfilTecladoYFormularioConservanSuEstado
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.NavegacionPerfilTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=2
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=pestanasPerfilTecladoYFormularioConservanSuEstado
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.BusquedaUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=2
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.BusquedaUiTest:
+INSTRUMENTATION_STATUS: test=filtrosCombinadosRetornoYActualizacionReactiva
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.BusquedaUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=2
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=filtrosCombinadosRetornoYActualizacionReactiva
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 67.983
+
+OK (2 tests)
+
+
+INSTRUMENTATION_CODE: -1
+
+
+=== 04-promedio-final.log ===
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.PromedioRoomTest:
+INSTRUMENTATION_STATUS: test=promedioExcluyeInvalidosYConservaCero
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=promedioExcluyeInvalidosYConservaCero
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cierreActualizaObservadorExistente
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.PromedioRoomTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cierreActualizaObservadorExistente
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.BusquedaUiTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.tecsup.ayudacampus.BusquedaUiTest:
+INSTRUMENTATION_STATUS: test=filtrosCombinadosRetornoYActualizacionReactiva
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tecsup.ayudacampus.BusquedaUiTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=filtrosCombinadosRetornoYActualizacionReactiva
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 13.351
+
+OK (3 tests)
+
+
+INSTRUMENTATION_CODE: -1

@@ -128,3 +128,52 @@ Lint completó su tarea con los avisos descritos; las comprobaciones personaliza
 El total acumulado es de **10 casos unitarios aprobados**: los 5 de SLA ejecutados el 20 de octubre y los 2 de promedio y 3 de búsqueda aprobados previamente. Los 8 casos instrumentados y lint conservan los resultados del 19 de octubre; no se ejecutaron de nuevo porque este aporte solo añade una prueba unitaria y documentación.
 
 Los cuatro commits originales se conservan íntegros y publicados. El aporte de Gemini y su documentación se registran en un commit posterior, sobre la misma rama, sin mezclarla en `main`. La contribución real de Gemini se limita a la prueba de SLA: no se le atribuyen las tres implementaciones anteriores realizadas por Codex. Este registro acredita la participación observada y su alcance; la evaluación académica corresponde al docente.
+
+
+## Revisión posterior del 20 de octubre de 2026 — nombre perfil y navegación
+
+El usuario aclaró que el nombre a cambiar dentro de la app era Juan y pidió Diego Magallanes. Antes de editar se probaron Perfil → Nuevo → Tickets → Perfil en el emulador activo; los cuatro destinos respondieron y Perfil tenía contenido. No se afirma haber reproducido un bloqueo permanente ni se inventa su causa. Se reforzó la navegación para conservar pestañas, gestionar teclado/foco y consumir la confirmación de envío. Se amplió el resumen del perfil con los cuatro estados.
+
+| Comprobación | Resultado real |
+| --- | --- |
+| assembleDebug y assembleDebugAndroidTest | Aprobadas; dependencias y esquema sin cambios |
+| testDebugUnitTest | 10 aprobadas de nuevo: promedio 2, SLA 5, búsqueda 3; XML con 0 fallos y 0 errores |
+| DatosYReglasTest | 4 aprobadas: tres existentes y una nueva de personalización de una instalación anterior, idempotencia, conservación de IDs, fecha, textos y otro usuario sin modificar |
+| NavegacionPerfilTest | 1 aprobada: dos ciclos por las pestañas de Estudiante y Soporte, perfil con Diego, foco de edición, conservación y limpieza del borrador, regreso a Estudiante |
+| Capturas nuevas | Dos capturas reales de la prueba, en docs/capturas/revision; las anteriores permanecen íntegras |
+| Instalación existente | Actualización con install -r y copia local previa de datos y preferencias; no se desinstaló ni se borró la base |
+
+Resultado de instrumentación: OK (5 tests), 18.385 segundos. Las pruebas Room usan memoria independiente; la de navegación no crea ni modifica tickets. El correo de acceso ficticio permanece juan@campus.test. Los saludos esperados de FlujoCompletoTest, RestauracionTest y BusquedaUiTest se adaptaron a Diego, pero esas tres clases no se volvieron a ejecutar en esta revisión; sus resultados anteriores siguen fechados y con su alcance original. Lint tampoco se repitió.
+
+El total acumulado es de 10 casos unitarios y 10 casos instrumentados distintos aprobados; la ejecución actual fue de 10 unitarios y 5 instrumentados, no de toda la suite acumulada. El contraste de la rúbrica y las observaciones técnicas están en RUBRICA.md.
+
+
+## Auditoría integral posterior — 20 de octubre de 2026
+
+El usuario confirmó que la Fase 1 ya estaba terminada. Se mantuvo main y sus catorce commits sin cambios. Se revisó la guía completa y se ejecutó el flujo base como regresión de las tres mejoras en un AVD nuevo, AyudaCampusAuditoria, API 35 x86_64, puerto 5562. No se copió ni borró la base de presentación.
+
+| Comprobación | Resultado real |
+| --- | --- |
+| assembleDebug y assembleDebugAndroidTest | Aprobadas con JDK 21 y dependencias originales |
+| Suite unitaria final | 12 aprobadas: promedio 3, SLA 5, búsqueda 4; XML con 0 fallos y 0 errores |
+| DatosYReglasTest y PromedioRoomTest con FlujoCompletoTest | 7 aprobadas en 89.699 s; recorrido con creación, respuesta, cierre con estrellas y regreso a Nuevo sin repetir el envío |
+| RestauracionTest | 1 aprobada en 16.227 s, en instrumentación nueva tras detener el proceso, sin borrar datos desde el recorrido exitoso; conserva siete tickets, sesión y tema |
+| NavegacionPerfilTest y BusquedaUiTest | 2 aprobadas en 67.983 s; pestañas de ambos perfiles, borrador, CRUD de categorías, teclado virtual habilitado, filtros AND, retorno, inactivas y cambios reactivos |
+| Repetición focalizada tras corregir la carga del promedio | PromedioRoomTest 2 y BusquedaUiTest 1 aprobadas en 13.351 s; la captura espera al promedio emitido por Room |
+| lintDebug final | Completada sin errores y con 17 advertencias; se conserva el alcance limitado de los tres checks de Navigation omitidos |
+| Evidencias | Ocho capturas reales nuevas en docs/capturas/auditoria y registros en docs/resultados/auditoria/pruebas.txt |
+
+El total final es de 12 casos unitarios y 10 instrumentados distintos aprobados. Las repeticiones focalizadas no se cuentan como casos nuevos. Las diez instrumentadas se ejecutaron por bloques para respetar las precondiciones de flujo completo y restauración. Los resultados previos se conservan con su alcance original.
+
+### Hallazgos corregidos durante la auditoría
+
+- La búsqueda del estudiante no admitía el número mostrado con ceros iniciales y # podía coincidir con todos. La normalización compartida corrige ambos casos; no amplía al estudiante la búsqueda por descripción exclusiva de soporte.
+- El promedio tenía como valor inicial «Sin tickets cerrados» antes de leer Room. Ahora indica «Cargando promedio…»; una prueba de PanelViewModel comprueba carga, null, cero y un promedio posterior.
+- La guía define los nombres del comentario como una foto histórica. Se retiró el renombrado de autores antiguos. Dos nombres afectados por la primera personalización se recuperaron del respaldo con una comprobación selectiva de IDs, texto, rol y fecha; no se revirtió la base entera. El nombre actual del perfil sigue siendo Diego Magallanes.
+- La prueba de restauración se adaptó al resumen ampliado del perfil. El recorrido base comprueba que Nuevo vuelva a ser utilizable después de crear un ticket. Navegación comprueba crear, editar, desactivar y eliminar una categoría sin tickets.
+
+### Incidencias de las comprobaciones
+
+Una ampliación del test de recorrido necesitó importar Assert.assertEquals para compilar. La primera prueba nueva del promedio verificó sus valores, pero falló al limpiar las corrutinas después de restaurar Main demasiado pronto; se esperó su cancelación antes de resetMain y la suite final de doce pasó. Una captura inicial tomó el valor transitorio antes de la emisión de Room: se reemplazó por una captura real tomada después de esperar el valor calculado. No se presentan esos intentos como aprobados.
+
+Ver [AUDITORIA.md](AUDITORIA.md) para el contraste completo con la guía y [RUBRICA.md](RUBRICA.md) para los criterios de evaluación. La contribución de Gemini conserva su alcance real documentado; no se le atribuye esta auditoría de Codex.

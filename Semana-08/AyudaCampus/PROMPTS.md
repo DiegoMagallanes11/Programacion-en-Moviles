@@ -536,6 +536,54 @@ Corrige tu propuesta anterior. Actualmente solo evalúa calcularSla(ticketBaja, 
 
 Los cuatro commits iniciales ya estaban publicados. Este aporte posterior se conserva en un commit adicional, sin reescribirlos. El alcance real de Gemini es la prueba de regresión del SLA; la implementación previa de las tres mejoras continúa atribuida a Codex.
 
+## Prompt 7 — rúbrica nombre y navegación
+
+**Texto enviado por el usuario a Codex:**
+
+> cumple con esto nuestro android? ademas no me llamo josé, me llamo Diego Magallanes, aparte el navbar no funciona correctamente, cuando entro a uno no puedo entrar a otra ocpion, perfil tampoco creo que no hay nada, fijate que mas podriamos mejorar
+
+El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo de datos, ViewModel, Vista y ejercicio 1, puntualidad e informe sin copias, observaciones y conclusiones. Su suma es 20 puntos. Se trató como criterio de evaluación, no como evidencia de una nota obtenida.
+
+**Aclaración real del usuario:**
+
+> No era jose, era juan, y esta dentro de la app
+
+**IA y herramienta:** Codex, inspección de archivos, Gradle y ADB. Gemini no intervino en esta revisión.
+
+**Qué generó:** personalización idempotente de la cuenta ficticia existente, conservación de pestañas, gestión del teclado y foco, consumo del evento de envío, resumen del perfil con cuatro estados, una prueba de datos antiguos y un recorrido de navegación. También agregó el contraste con la rúbrica y observaciones técnicas al informe.
+
+**Qué corrigió y observó:** antes de editar, la secuencia Perfil → Nuevo → Tickets → Perfil funcionó y el perfil tenía contenido; no se atribuye una causa no reproducida al bloqueo descrito. Se conservó el correo de acceso para no cambiar las credenciales. Una primera llamada de diagnóstico falló por comillas de Python dentro de PowerShell; se corrigió guardando el script en un archivo. Los tests focalizados pasaron en su primera ejecución. Se consumió la confirmación de envío para evitar que restaurar el formulario repita la navegación tras adoptar saveState y restoreState.
+
+**Respeta MVVM:** sí. La personalización pertenece a la inicialización transaccional de Room; las pantallas no acceden a DAOs ni Repository. El resumen sigue calculándose en PerfilViewModel y la navegación usa el NavController del punto de composición. No se cambió la interfaz del Repository porque no se agregó una operación funcional accesible desde las pantallas.
+
+**Archivos afectados:** DatosIniciales.kt, UsuarioDao.kt, NavAyuda.kt, NuevoTicketScreen.kt, PerfilScreen.kt, NuevoTicketViewModel.kt, PerfilViewModel.kt, DatosYReglasTest.kt y NavegacionPerfilTest.kt; saludos esperados en tres pruebas históricas, README.md, docs/ACEPTACION.md, docs/RUBRICA.md y dos capturas de revisión. El Word se mantiene como entrega local fuera del repositorio.
+
+**Verificación:** compilación debug y de instrumentación, diez unitarias y cinco instrumentadas focalizadas aprobadas. No se repitieron el recorrido completo, restauración, búsqueda UI ni lint en esta revisión. Los resultados anteriores conservan su fecha y alcance.
+
+## Prompt 8 — auditoría completa y aclaración de Fase 1
+
+**Texto real del usuario:**
+
+> revisa el alboratorio y haz un analicis de lo que le falta a nuestra aplicacion, fijate que la apret con ia y sin ia esten compeltas y luego revisa la aprte con ia de nuestra app y haz pruebas de que funcione adecuadamente todo tiene que ser funcional de derecha a izquierda. si tienes preguntas de algo o alguna observacion, dimela
+
+**Aclaración posterior real:**
+
+> la fase sin ia ya esta terminada
+
+**IA y herramienta:** Codex; lectura del PDF local completo, inspección de archivos y Git, Gradle, ADB y un AVD independiente. Gemini no intervino en esta auditoría.
+
+**Qué generó y verificó:** contraste de contratos, ejecución base como regresión, restauración en un proceso nuevo, CRUD de categorías, navegación con borrador y teclado, promedio, SLA y filtros de soporte. Añadió AUDITORIA.md, resultados y capturas reales, y amplió el informe Word. Main y sus catorce commits se conservaron.
+
+**Qué corrigió:** el número visible con ceros iniciales y la búsqueda # vacía del estudiante; el valor inicial del promedio que confundía carga con ausencia; el consumo de confirmación para restaurar Nuevo. La guía exige mantener autorNombre como foto histórica: se retiró el renombrado de comentarios y se recuperaron dos nombres del respaldo, sin cambiar mensajes ni revertir la base entera. Esa herramienta de mantenimiento fue temporal y se retiró de la entrega.
+
+**Incidencias reales:** se agregó un import ausente de Assert al ampliar el recorrido. La primera prueba nueva del promedio falló durante su limpieza al restablecer Main antes de terminar la cancelación; se corrigió la limpieza, sin cambiar la lógica de la app. La captura del panel se volvió a tomar esperando el resultado de Room. No se inventó un fallo de Gemini ni de acceso a DAO desde la View.
+
+**Respeta MVVM:** sí. Búsqueda y SLA se calculan fuera de la View; PanelViewModel representa los estados de carga y datos; la inicialización de Room personaliza solo la cuenta de práctica. Las pantallas no consultan Repository ni DAO. Los tests pueden consultar Room para disponer y verificar fixtures, lo que no forma parte del flujo productivo.
+
+**Archivos afectados adicionales:** model/BusquedaTicket.kt, model/FiltrosBandeja.kt, MisTicketsViewModel.kt, PanelViewModel.kt, BusquedaTest.kt, PromedioTest.kt; ampliaciones de FlujoCompletoTest, RestauracionTest, NavegacionPerfilTest y BusquedaUiTest; README, PROMPTS y documentación de auditoría con ocho capturas.
+
+**Resultado:** doce unitarias y diez instrumentadas distintas aprobadas. Lint terminó sin errores y con diecisiete advertencias; tres checks personalizados de Navigation se omiten y no se dan por ejecutados. Las repeticiones focalizadas no aumentan el número de casos distintos.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.
