@@ -11,8 +11,14 @@ import com.tecsup.ayudacampus.ui.theme.*
 @Composable fun PanelScreen(vm: PanelViewModel, onVer: () -> Unit) {
  val a by vm.abiertos.collectAsState();val p by vm.enProceso.collectAsState();val r by vm.resueltos.collectAsState()
  val estados by vm.porEstado.collectAsState();val categorias by vm.porCategoria.collectAsState();val alertas by vm.altasSinAtender.collectAsState()
+ val promedio by vm.promedioResolucion.collectAsState()
  LazyColumn(contentPadding=PaddingValues(20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
   item { Text("Panel de soporte",style=MaterialTheme.typography.headlineMedium);Text("Resumen de incidencias del campus") }
+  item { Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+   Text("Tiempo promedio de resolución",style=MaterialTheme.typography.titleMedium)
+   Text(promedio,style=MaterialTheme.typography.headlineSmall)
+   Text("Desde la creación hasta el cierre por el estudiante",style=MaterialTheme.typography.bodySmall)
+  } } }
   item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
    listOf(Triple("Abiertos",a,Abierto),Triple("En proceso",p,EnProceso),Triple("Resueltos",r,Resuelto)).forEach { (titulo,n,color) ->
     Card(Modifier.weight(1f),colors=CardDefaults.cardColors(containerColor=color.copy(alpha=.12f))) { Column(Modifier.padding(12.dp)) { Text("$n",style=MaterialTheme.typography.headlineMedium,color=color);Text(titulo,style=MaterialTheme.typography.labelSmall) } }

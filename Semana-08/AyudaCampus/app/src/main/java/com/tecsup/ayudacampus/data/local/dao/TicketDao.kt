@@ -5,6 +5,8 @@ import com.tecsup.ayudacampus.data.local.entity.*
 import com.tecsup.ayudacampus.data.local.relation.TicketConDetalle
 import com.tecsup.ayudacampus.model.ConteoCategoria
 @Dao interface TicketDao {
+ @Query("SELECT AVG(fechaCierre - fecha) FROM tickets WHERE estado = 'CERRADO' AND fechaCierre IS NOT NULL AND fechaCierre >= fecha")
+ fun observarPromedioResolucion(): Flow<Double?>
  @Insert suspend fun insertarTicket(t: Ticket): Long
  @Insert suspend fun insertarComentario(c: Comentario)
  @Query("UPDATE tickets SET estado = :estado WHERE id = :id") suspend fun actualizarEstado(id: Int, estado: String)

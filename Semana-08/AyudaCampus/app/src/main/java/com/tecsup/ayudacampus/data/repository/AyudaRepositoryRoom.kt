@@ -3,6 +3,7 @@ import com.tecsup.ayudacampus.data.local.AyudaDatabase
 import com.tecsup.ayudacampus.data.local.entity.*
 import com.tecsup.ayudacampus.model.*
 class AyudaRepositoryRoom(private val db: AyudaDatabase) : AyudaRepository {
+ override fun observarPromedioResolucion() = db.ticketDao().observarPromedioResolucion()
  override suspend fun login(correo: String, clave: String) = db.usuarioDao().login(correo.trim(), clave)
  override suspend fun obtenerUsuario(id: Int) = db.usuarioDao().obtener(id)
  override suspend fun obtenerUsuarioPorRol(rol: Rol) = db.usuarioDao().obtenerPorRol(rol.name)

@@ -4,6 +4,7 @@ import com.tecsup.ayudacampus.data.local.relation.TicketConDetalle
 import com.tecsup.ayudacampus.model.*
 import kotlinx.coroutines.flow.Flow
 interface AyudaRepository {
+ fun observarPromedioResolucion(): Flow<Double?>
  suspend fun login(correo: String, clave: String): Usuario?
  suspend fun obtenerUsuario(id: Int): Usuario?
  suspend fun obtenerUsuarioPorRol(rol: Rol): Usuario?
