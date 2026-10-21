@@ -634,6 +634,18 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Archivos:** configuración local respaldada del AVD y acceso directo fuera del repositorio; README.md, docs/ACEPTACION.md y PROMPTS.md documentan el resultado.
 
+## Prompt 13 Mejora visual de tarjetas y Perfil
+
+**Solicitud real:** el usuario preguntó «Como me recomiendas mejorar la interfaz?» y autorizó con «dale» la propuesta de empezar por tarjetas y Perfil conservando la estructura de la guía.
+
+**IA y herramienta:** Codex, edición de Jetpack Compose y verificación local con Gradle y emulador. Gemini no intervino.
+
+**Qué generó:** TicketCard con borde y esquinas suaves, icono de categoría agrupado, título destacado, etiquetas que pueden pasar a otra línea y un bloque de SLA. Perfil agrupa identidad y correo, resumen de cuatro estados, preferencias y cambio de rol. Se conservan todos los textos y controles funcionales, la franja de prioridad, los colores semánticos centralizados y el modo oscuro.
+
+**Revisión y MVVM:** no se añadieron funciones nuevas, literales de color en pantallas, dependencias ni acceso a datos desde las Views. No cambió ninguna regla de negocio ni ViewModel. La presentación continúa usando MaterialTheme y los estados existentes.
+
+**Archivos:** TicketCard.kt, PerfilScreen.kt y documentación con resultados y capturas de la revisión visual.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.

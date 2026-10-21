@@ -212,3 +212,13 @@ El usuario indicó que la barra todavía no respondía al ratón. Se reprodujo d
 Se respaldó config.ini y se alineó con el skin en 1080×2400. Un cambio temporal mediante wm no bastó; se reinició el AVD desde Device Manager y se quitó el tamaño forzado antiguo. También se corrigió el acceso directo local para que no vuelva a introducir 720×1600. No se borraron datos, no se desinstaló la app y se comprobó que Perfil conserva los seis tickets.
 
 Con control nativo del ratón se verificaron Ajustes, el cambio a Estudiante y Tickets → Nuevo → Perfil → Tickets. ADB se usó para leer el resultado de esos clics y confirmar Physical size: 1080x2400 sin Override size. Estas son comprobaciones manuales del entorno y no incrementan el número de casos instrumentados. No hubo cambios en el código de la app ni se repitió su compilación en este paso.
+
+### Presentación de tarjetas y Perfil 21 de octubre de 2026
+
+TicketCard conserva su franja de prioridad, icono, estados y navegación; se añadieron borde suave, título destacado, icono agrupado, indicador visual de apertura y bloque de SLA. Los chips pueden ajustarse a otra línea. Perfil agrupa identidad y correo, resumen de estados, preferencias y modo práctica. Se reutilizan los colores del tema y los semánticos centralizados. No se cambió la arquitectura, ninguna regla de negocio ni dependencia.
+
+assembleDebug y assembleDebugAndroidTest terminaron correctamente en 1 min 1 s. Se repitieron únicamente ControlesPerfilTest y BarraInferiorTest: OK (2 tests), 25.61 s. Verifican preferencias, sesiones, mesa cerrada, borrador, navegación desde detalles y acceso a las tarjetas en ambos roles. Son repeticiones de casos existentes, no dos casos nuevos. No se repitieron la suite completa ni lint en esta revisión visual; los resultados anteriores mantienen su fecha y alcance.
+
+Se inspeccionaron capturas reales de tarjetas y Perfil en claro y oscuro. No hay texto superpuesto ni controles cortados en las pantallas capturadas; las listas conservan su desplazamiento. Las pruebas y la revisión no crean tickets ni editan conversaciones. La instalación de presentación muestra siete tickets existentes. Quedó abierta en Perfil, modo claro, sin tocar la resolución corregida del emulador.
+
+Evidencia: [tarjetas claras](capturas/interfaz/01-tickets-claro.png), [Perfil claro](capturas/interfaz/02-perfil-claro.png), [Perfil oscuro](capturas/interfaz/03-perfil-oscuro.png) y [tarjetas oscuras](capturas/interfaz/04-tickets-oscuro.png).

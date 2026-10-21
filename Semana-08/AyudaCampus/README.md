@@ -244,3 +244,14 @@ La barra ya no restaura un detalle antiguo al cambiar desde Nuevo a Tickets: cad
 `BarraInferiorTest` aprobó un caso nuevo de navegación repetida en ambos roles; `EnvioComentarioUiTest` aprobó dos casos de error y reintento sobre Repository simulado, sin escribir en la base de presentación. Debug, APK de pruebas y lint compilaron correctamente (0 errores y 17 advertencias). Ver [resultados reales](docs/resultados/revision-21-octubre.txt) y [alcance de las verificaciones](docs/ACEPTACION.md). Para repetir BarraInferiorTest se necesita una sesión de práctica y al menos un ticket. EnvioComentarioUiTest usa datos aislados y no requiere preparar tickets reales.
 
 Si los toques de Android funcionan pero el ratón pulsa otra zona dentro de Running Devices, comprueba que la resolución configurada del AVD coincida con su skin. En el equipo de presentación se corrigió una mezcla de 720×1600 y 1080×2400: Pixel 7 quedó en 1080×2400 y se reinició sin borrar datos. Se verificaron las tres pestañas con clics reales del ratón. Ver el diagnóstico en [ACEPTACION.md](docs/ACEPTACION.md#clics-reales-en-el-emulador-integrado-21-de-octubre-de-2026).
+
+### Mejora visual de tarjetas y Perfil
+
+Las tarjetas destacan el título, agrupan categoría e icono y presentan el SLA en un bloque separado. Se conservan la franja de prioridad y los chips de estado. Perfil organiza los datos, el resumen de tickets y los ajustes en secciones. El cambio mantiene Material 3, los colores por rol y el modo oscuro, sin modificar reglas ni añadir funcionalidades.
+
+| Pantalla | Claro | Oscuro |
+| --- | --- | --- |
+| Tickets | [Captura](docs/capturas/interfaz/01-tickets-claro.png) | [Captura](docs/capturas/interfaz/04-tickets-oscuro.png) |
+| Perfil | [Captura](docs/capturas/interfaz/02-perfil-claro.png) | [Captura](docs/capturas/interfaz/03-perfil-oscuro.png) |
+
+Compilación debug y de pruebas aprobada. Se repitieron ControlesPerfilTest y BarraInferiorTest: 2 casos aprobados en 25.61 s, sin crear tickets. No se añaden al total de casos distintos ni se presentan como una repetición de toda la suite. Ver [aceptación de la revisión visual](docs/ACEPTACION.md#presentación-de-tarjetas-y-perfil-21-de-octubre-de-2026).
