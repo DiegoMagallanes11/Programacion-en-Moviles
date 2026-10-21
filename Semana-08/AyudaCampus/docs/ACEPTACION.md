@@ -204,3 +204,11 @@ La revisión del código encontró que ambos formularios vaciaban el mensaje ant
 EnvioComentarioUiTest aprobó dos casos en 7.692 s con pantallas aisladas y Repository simulado. En cada rol el primer envío genera un error de prueba: se verifica el texto conservado, se reintenta y se verifica su limpieza y las dos llamadas. No se escriben comentarios ni tickets en la base real.
 
 La compilación final debug, instrumentación y lintDebug terminó correctamente en 4 min 1 s. Lint mantiene 0 errores y 17 advertencias; no se consideran ejecutados los checks de Navigation omitidos. No se repitió toda la suite: a los once casos instrumentados anteriores se añaden uno de barra y dos de envío. Los [registros focalizados](resultados/revision-21-octubre.txt) conservan las salidas de ambos bloques.
+
+### Clics reales en el emulador integrado 21 de octubre de 2026
+
+El usuario indicó que la barra todavía no respondía al ratón. Se reprodujo desde la ventana de Android Studio: un clic sobre Panel abrió una tarjeta, mientras los toques directos de Android sí navegaban. El AVD local tenía hw.lcd.width=720 y hw.lcd.height=1600, pero su skin Pixel 7 y la pantalla física eran de 1080×2400. Las pruebas anteriores de Compose y ADB no ejercitaban esa traducción del clic de Windows al toque Android.
+
+Se respaldó config.ini y se alineó con el skin en 1080×2400. Un cambio temporal mediante wm no bastó; se reinició el AVD desde Device Manager y se quitó el tamaño forzado antiguo. También se corrigió el acceso directo local para que no vuelva a introducir 720×1600. No se borraron datos, no se desinstaló la app y se comprobó que Perfil conserva los seis tickets.
+
+Con control nativo del ratón se verificaron Ajustes, el cambio a Estudiante y Tickets → Nuevo → Perfil → Tickets. ADB se usó para leer el resultado de esos clics y confirmar Physical size: 1080x2400 sin Override size. Estas son comprobaciones manuales del entorno y no incrementan el número de casos instrumentados. No hubo cambios en el código de la app ni se repitió su compilación en este paso.

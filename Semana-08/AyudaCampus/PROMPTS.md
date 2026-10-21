@@ -622,6 +622,18 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Archivos:** TicketDetalleViewModel.kt, AtenderViewModel.kt, DetalleTicketScreen.kt, AtenderTicketScreen.kt, EnvioComentarioUiTest.kt y documentación de resultados.
 
+## Prompt 12 Clics del emulador integrado
+
+**Texto del usuario a Codex:** «no me funciona al hacer click, porque sera?». Aclaró que pulsaba en la app del emulador de Android Studio, no en una captura del informe.
+
+**Qué corrigió Codex:** se comprobó el clic real desde Windows y se detectó un desfase entre el LCD 720×1600 configurado y el skin Pixel 7 de 1080×2400. Se respaldó la configuración, se alineó la resolución y se reinició el AVD desde Device Manager. El ajuste temporal de wm por sí solo no resolvió el problema. Un arranque manual oculto tampoco apareció en el panel y se cerró antes de iniciar desde Android Studio. El acceso directo local dejó de forzar la resolución antigua.
+
+**Verificación real:** con el ratón funcionaron Ajustes, cambiar a Estudiante y Tickets → Nuevo → Perfil → Tickets. Perfil conservó los seis tickets. No se borró la base ni se reinstaló la app. Las pruebas anteriores usaban Compose/ADB y no detectaban el desfase del clic en la ventana integrada; no se atribuye a esas pruebas esta comprobación nueva.
+
+**Herramientas y MVVM:** Codex, control nativo de Windows y ADB. No cambió código Android, arquitectura, entidades ni dependencias. Gemini no participó.
+
+**Archivos:** configuración local respaldada del AVD y acceso directo fuera del repositorio; README.md, docs/ACEPTACION.md y PROMPTS.md documentan el resultado.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.
