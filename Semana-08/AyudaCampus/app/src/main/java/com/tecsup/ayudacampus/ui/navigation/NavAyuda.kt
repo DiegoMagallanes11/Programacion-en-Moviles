@@ -34,6 +34,12 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
      val u=usuario!!;val admin=u.rol=="ADMIN";val nav=rememberNavController()
      val home=if(admin) Rutas.PANEL else Rutas.MIS_TICKETS
      val entry by nav.currentBackStackEntryAsState();val ruta=entry?.destination?.route
+     val pestana=when(ruta) {
+      Rutas.DETALLE -> Rutas.MIS_TICKETS
+      Rutas.ATENDER -> Rutas.BANDEJA
+      Rutas.FORM_CATEGORIA -> Rutas.CATEGORIAS
+      else -> ruta ?: home
+     }
      val destinos=if(admin) listOf(Rutas.PANEL,Rutas.BANDEJA,Rutas.CATEGORIAS,Rutas.AJUSTES) else listOf(Rutas.MIS_TICKETS,Rutas.NUEVO,Rutas.PERFIL)
      val etiquetas=if(admin) listOf("Panel","Tickets","Categorías","Ajustes") else listOf("Tickets","Nuevo","Perfil")
      val iconos=if(admin) listOf(Icons.Default.Dashboard,Icons.Default.ConfirmationNumber,Icons.Default.Category,Icons.Default.Settings) else listOf(Icons.Default.ConfirmationNumber,Icons.Default.AddCircle,Icons.Default.Person)
@@ -42,11 +48,18 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
      val ir: (String) -> Unit = { destino ->
       teclado?.hide()
       foco.clearFocus()
+      // A tab opens its root, never a detail restored beneath that tab.
+      if(nav.currentDestination?.route !in destinos) nav.popBackStack(pestana,false)
       if(nav.currentDestination?.route != destino) {
-       nav.navigate(destino) {
-        popUpTo(nav.graph.findStartDestination().id) { saveState=true }
-        launchSingleTop=true
-        restoreState=true
+       if(destino==home) {
+        // The home entry already exists. Restoring it can also restore its old detail.
+        nav.popBackStack(home,false,saveState=true)
+       } else {
+        nav.navigate(destino) {
+         popUpTo(nav.graph.findStartDestination().id) { saveState=true }
+         launchSingleTop=true
+         restoreState=true
+        }
        }
       }
      }
@@ -55,7 +68,7 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
       containerColor=MaterialTheme.colorScheme.background,
       topBar={AppTopBar(if(admin) "AyudaCampus · Soporte" else "AyudaCampus",if(ruta !in destinos) ({teclado?.hide();foco.clearFocus();nav.popBackStack();Unit}) else null)},
       bottomBar={NavigationBar(Modifier.imePadding()) {
-       destinos.forEachIndexed { i,destino -> NavigationBarItem(selected=ruta==destino,onClick={ir(destino)},icon={Icon(iconos[i],null)},label={Text(etiquetas[i])}) }
+       destinos.forEachIndexed { i,destino -> NavigationBarItem(selected=pestana==destino,onClick={ir(destino)},icon={Icon(iconos[i],null)},label={Text(etiquetas[i])}) }
       }}
      ) { padding ->
       NavHost(nav,home,Modifier.padding(padding).consumeWindowInsets(padding)) {

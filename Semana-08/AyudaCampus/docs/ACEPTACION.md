@@ -189,4 +189,10 @@ ControlesPerfilTest aprobó un caso nuevo en 28.913 s en el emulador abierto API
 
 La compilación debug y del APK de pruebas pasó en 2 min 43 s. lintDebug volvió a terminar correctamente en 2 min 10 s; mantiene 0 errores y 17 advertencias, con los checks omitidos ya documentados. Este caso es adicional a los diez instrumentados anteriores; no se volvió a ejecutar la suite completa.
 
+### Barra inferior desde pantallas secundarias 21 de octubre de 2026
+
+Se reprodujo un fallo que las pruebas anteriores no cubrían: desde el detalle del ticket 3, Nuevo abría el formulario, pero Tickets restauraba el detalle en vez de la lista. No era un botón deshabilitado; era una restauración incorrecta de la pila.
+
+Se corrigió la navegación a las raíces de las pestañas y su selección visual. BarraInferiorTest aprobó un caso en 19.435 s: repite detalle → Nuevo → Tickets, detalle → Perfil → Tickets, selección de Tickets desde el propio detalle, borrador de Nuevo con teclado, atención → Panel/Ajustes/Tickets y formulario de categoría → Categorías/Panel. No crea ni modifica datos. Debug y el APK de pruebas compilaron en 1 min 30 s antes de la ejecución. Los resultados previos no se presentan como repetidos.
+
 Notificaciones conserva una preferencia, como pide el contrato DataStore; no implementa avisos del sistema. Se aclaró en ambos perfiles. La flecha Volver ahora limpia foco y oculta teclado. Evidencia real: [Perfil oscuro](capturas/controles/01-perfil-oscuro.png) y [Perfil claro](capturas/controles/02-perfil-claro.png). La instalación quedó en Perfil del estudiante y modo claro.

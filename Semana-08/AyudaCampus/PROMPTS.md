@@ -598,6 +598,18 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Archivos afectados:** PerfilScreen.kt, AjustesScreen.kt, NavAyuda.kt, ControlesPerfilTest.kt y documentación de resultados.
 
+## Prompt 10 Barra inferior desde Nuevo y detalle 21 de octubre de 2026
+
+**Texto del usuario a Codex:** «ests barra no funciona», con una captura de la barra desde un ticket, y «cuando le doy a nuevo, luego no puedo utilziar esa barra».
+
+**Qué generó y corrigió Codex:** reprodujo detalle → Nuevo → Tickets y verificó que reaparecía el detalle en vez de la lista. La navegación ahora vuelve a la raíz de la pestaña antes de cambiar y no restaura el detalle al seleccionar el inicio. La pestaña propietaria queda seleccionada también en detalles y formularios secundarios. Se mantienen el borrador de Nuevo y los ViewModels guardados de las pestañas.
+
+**Error de la revisión anterior:** las pruebas recorrían pestañas principales y usaban Volver desde el detalle, pero no cubrían detalle → Nuevo → Tickets. BarraInferiorTest agregó ese recorrido repetido, el cambio desde detalles hacia Perfil y los equivalentes de soporte y categorías. Aprobó un caso en 19.435 s. No modificó tickets ni comentarios.
+
+**Herramienta y MVVM:** Codex, código local, Gradle y ADB en el emulador abierto. Solo se corrigió el grafo de navegación; no se añadió acceso a datos desde las Views. Gemini no intervino.
+
+**Archivos:** NavAyuda.kt, BarraInferiorTest.kt, PROMPTS.md y docs/ACEPTACION.md.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.
