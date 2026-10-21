@@ -14,6 +14,8 @@ class AtenderViewModel(private val repo: AyudaRepository, private val id: Int, p
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _mensaje=MutableStateFlow<String?>(null);val mensaje=_mensaje.asStateFlow()
  private val _ocupado=MutableStateFlow(false);val ocupado=_ocupado.asStateFlow()
+ private val _respuestaEnviada=MutableStateFlow<String?>(null);val respuestaEnviada=_respuestaEnviada.asStateFlow()
+ fun confirmarEnvioRespuesta() { _respuestaEnviada.value=null }
  private fun accion(bloque: suspend (TicketConDetalle) -> Unit) {
   if(_ocupado.value) return
   _ocupado.value=true;_error.value=null;_mensaje.value=null
@@ -28,7 +30,7 @@ class AtenderViewModel(private val repo: AyudaRepository, private val id: Int, p
  }
  fun cambiarEstado(estado: EstadoTicket) { if(estado!=EstadoTicket.CERRADO && ticket.value?.ticket?.estado!="CERRADO") estadoElegido.value=estado }
  fun cambiarPrioridad(p: Prioridad) { if(ticket.value?.ticket?.estado!="CERRADO") prioridadElegida.value=p }
- fun responder(texto: String) { if(texto.isBlank()) return;accion { repo.agregarComentario(id,usuario,texto.trim());_mensaje.value="Respuesta enviada" } }
+ fun responder(texto: String) { if(texto.isBlank()) return;accion { repo.agregarComentario(id,usuario,texto.trim());_respuestaEnviada.value=texto;_mensaje.value="Respuesta enviada" } }
  fun guardar() = accion { d ->
   val estado=estadoElegido.value ?: EstadoTicket.valueOf(d.ticket.estado)
   val prioridad=prioridadElegida.value ?: Prioridad.valueOf(d.ticket.prioridad)

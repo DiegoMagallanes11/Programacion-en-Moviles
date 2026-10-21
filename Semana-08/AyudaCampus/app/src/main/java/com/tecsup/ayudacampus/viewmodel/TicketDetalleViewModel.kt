@@ -12,6 +12,8 @@ class TicketDetalleViewModel(private val repo: AyudaRepository, private val id: 
   .stateIn(viewModelScope,SharingStarted.WhileSubscribed(0),null)
  private val _error=MutableStateFlow<String?>(null);val error=_error.asStateFlow()
  private val _ocupado=MutableStateFlow(false);val ocupado=_ocupado.asStateFlow()
+ private val _comentarioEnviado=MutableStateFlow<String?>(null);val comentarioEnviado=_comentarioEnviado.asStateFlow()
+ fun confirmarEnvioComentario() { _comentarioEnviado.value=null }
  private fun accion(bloque: suspend (TicketConDetalle) -> Unit) {
   if(_ocupado.value) return
   _ocupado.value=true;_error.value=null
@@ -26,7 +28,7 @@ class TicketDetalleViewModel(private val repo: AyudaRepository, private val id: 
  }
  fun comentar(texto: String) {
   if(texto.isBlank()) return
-  accion { d -> require(d.ticket.estado!="CERRADO") { "El ticket está cerrado" };repo.agregarComentario(id,usuario,texto.trim()) }
+  accion { d -> require(d.ticket.estado!="CERRADO") { "El ticket está cerrado" };repo.agregarComentario(id,usuario,texto.trim());_comentarioEnviado.value=texto }
  }
  fun cerrar(calificacion: Int, comentarioFinal: String = "") = accion { d ->
   require(d.ticket.estado=="RESUELTO") { "Solo puedes cerrar tickets resueltos" }

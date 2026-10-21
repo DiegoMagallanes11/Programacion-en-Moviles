@@ -236,3 +236,9 @@ La implementación y esta auditoría se atribuyen a Codex. El aporte real de Gem
 Perfil muestra los datos del estudiante, total y cuatro estados de sus tickets. Los ajustes responden al pulsar toda su fila. Notificaciones guarda la preferencia; esta versión local no envía avisos del sistema. Volver desde un detalle cierra el teclado. ControlesPerfilTest agregó un caso aprobado (28.913 s) para preferencias, mesa cerrada, roles, teclado y sesión; la compilación y lint pasaron. Las pruebas anteriores se conservan como resultados de su ejecución, sin repetir toda la suite. Ver [evidencias y alcance](docs/ACEPTACION.md#controles-de-perfil-y-ajustes-20-de-octubre-de-2026).
 
 Para repetir solo esta revisión, con los dos perfiles ficticios y al menos un ticket abierto del estudiante, ejecuta `ControlesPerfilTest` desde Android Studio. No crea tickets ni modifica conversaciones. Restaura las preferencias y termina con sesión de Estudiante. Evita interactuar con la app durante la instrumentación.
+
+### Correcciones del 21 de octubre
+
+La barra ya no restaura un detalle antiguo al cambiar desde Nuevo a Tickets: cada opción abre la raíz de su pestaña y mantiene su selección visual. Se conserva el borrador de Nuevo. Además, los comentarios y respuestas se limpian solo cuando se confirma el guardado; un error conserva el texto para reintentar.
+
+`BarraInferiorTest` aprobó un caso nuevo de navegación repetida en ambos roles; `EnvioComentarioUiTest` aprobó dos casos de error y reintento sobre Repository simulado, sin escribir en la base de presentación. Debug, APK de pruebas y lint compilaron correctamente (0 errores y 17 advertencias). Ver [resultados reales](docs/resultados/revision-21-octubre.txt) y [alcance de las verificaciones](docs/ACEPTACION.md). Para repetir BarraInferiorTest se necesita una sesión de práctica y al menos un ticket. EnvioComentarioUiTest usa datos aislados y no requiere preparar tickets reales.

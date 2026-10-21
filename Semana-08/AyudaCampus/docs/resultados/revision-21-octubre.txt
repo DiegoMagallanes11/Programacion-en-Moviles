@@ -1,0 +1,24 @@
+Revisión del 21 de octubre de 2026 por Codex
+Emulador abierto emulator-5556 Android API 35
+Las siguientes son las salidas reales de las instrumentaciones focalizadas.
+
+Barra inferior antes de la segunda corrección:
+com.tecsup.ayudacampus.BarraInferiorTest:.
+
+Time: 19.435
+
+OK (1 test)
+
+Envíos con Repository simulado sobre la compilación final:
+com.tecsup.ayudacampus.EnvioComentarioUiTest:..
+
+Time: 7.692
+
+OK (2 tests)
+
+Compilación final: assembleDebug assembleDebugAndroidTest lintDebug
+BUILD SUCCESSFUL in 4m 1s
+74 actionable tasks: 23 executed, 51 up-to-date
+Informe lint: 0 errors, 17 warnings
+
+Las pruebas anteriores no se repitieron ni se contabilizan como nuevas.

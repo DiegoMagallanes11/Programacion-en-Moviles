@@ -14,6 +14,8 @@ import com.tecsup.ayudacampus.ui.components.*
  val sla by vm.sla.collectAsStateWithLifecycle()
  val d by vm.ticket.collectAsState();val error by vm.error.collectAsState();val ocupado by vm.ocupado.collectAsState()
  var texto by rememberSaveable { mutableStateOf("") };var final by rememberSaveable { mutableStateOf("") };var estrellas by rememberSaveable { mutableIntStateOf(0) }
+ val enviado by vm.comentarioEnviado.collectAsState()
+ LaunchedEffect(enviado) { enviado?.let { if(texto==it) texto="";vm.confirmarEnvioComentario() } }
  if(d==null) { Text("Cargando ticket o sin acceso…",Modifier.padding(24.dp));return }
  val detalle=d!!;val t=detalle.ticket
  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
@@ -28,7 +30,7 @@ import com.tecsup.ayudacampus.ui.components.*
   detalle.comentarios.sortedWith(compareBy({it.fecha},{it.id})).forEach { c -> BurbujaComentario(c.autorNombre,c.texto,c.autorId==usuarioId,c.fecha) }
   if(t.estado!="CERRADO") {
    AyudaTextField(texto,{texto=it},"Escribe un comentario",multilinea=true)
-   AyudaButton("Enviar comentario",texto.isNotBlank() && !ocupado) { vm.comentar(texto);texto="" }
+   AyudaButton("Enviar comentario",texto.isNotBlank() && !ocupado) { vm.comentar(texto) }
   }
   if(t.estado=="RESUELTO") {
    Card(colors=CardDefaults.cardColors(containerColor=com.tecsup.ayudacampus.ui.theme.Resuelto.copy(alpha=.12f))) {

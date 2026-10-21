@@ -189,10 +189,18 @@ ControlesPerfilTest aprobó un caso nuevo en 28.913 s en el emulador abierto API
 
 La compilación debug y del APK de pruebas pasó en 2 min 43 s. lintDebug volvió a terminar correctamente en 2 min 10 s; mantiene 0 errores y 17 advertencias, con los checks omitidos ya documentados. Este caso es adicional a los diez instrumentados anteriores; no se volvió a ejecutar la suite completa.
 
+Notificaciones conserva una preferencia, como pide el contrato DataStore; no implementa avisos del sistema. Se aclaró en ambos perfiles. La flecha Volver ahora limpia foco y oculta teclado. Evidencia real: [Perfil oscuro](capturas/controles/01-perfil-oscuro.png) y [Perfil claro](capturas/controles/02-perfil-claro.png). La instalación quedó en Perfil del estudiante y modo claro.
+
 ### Barra inferior desde pantallas secundarias 21 de octubre de 2026
 
 Se reprodujo un fallo que las pruebas anteriores no cubrían: desde el detalle del ticket 3, Nuevo abría el formulario, pero Tickets restauraba el detalle en vez de la lista. No era un botón deshabilitado; era una restauración incorrecta de la pila.
 
 Se corrigió la navegación a las raíces de las pestañas y su selección visual. BarraInferiorTest aprobó un caso en 19.435 s: repite detalle → Nuevo → Tickets, detalle → Perfil → Tickets, selección de Tickets desde el propio detalle, borrador de Nuevo con teclado, atención → Panel/Ajustes/Tickets y formulario de categoría → Categorías/Panel. No crea ni modifica datos. Debug y el APK de pruebas compilaron en 1 min 30 s antes de la ejecución. Los resultados previos no se presentan como repetidos.
 
-Notificaciones conserva una preferencia, como pide el contrato DataStore; no implementa avisos del sistema. Se aclaró en ambos perfiles. La flecha Volver ahora limpia foco y oculta teclado. Evidencia real: [Perfil oscuro](capturas/controles/01-perfil-oscuro.png) y [Perfil claro](capturas/controles/02-perfil-claro.png). La instalación quedó en Perfil del estudiante y modo claro.
+### Conservación del comentario ante errores 21 de octubre de 2026
+
+La revisión del código encontró que ambos formularios vaciaban el mensaje antes de terminar la escritura. Ahora el ViewModel confirma el envío y la View limpia solo el borrador correspondiente. Si falla el guardado, el texto permanece para reintentar; si el usuario escribió otro texto durante el envío, no se borra.
+
+EnvioComentarioUiTest aprobó dos casos en 7.692 s con pantallas aisladas y Repository simulado. En cada rol el primer envío genera un error de prueba: se verifica el texto conservado, se reintenta y se verifica su limpieza y las dos llamadas. No se escriben comentarios ni tickets en la base real.
+
+La compilación final debug, instrumentación y lintDebug terminó correctamente en 4 min 1 s. Lint mantiene 0 errores y 17 advertencias; no se consideran ejecutados los checks de Navigation omitidos. No se repitió toda la suite: a los once casos instrumentados anteriores se añaden uno de barra y dos de envío. Los [registros focalizados](resultados/revision-21-octubre.txt) conservan las salidas de ambos bloques.

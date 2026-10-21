@@ -17,6 +17,8 @@ import com.tecsup.ayudacampus.ui.components.*
  val d by vm.ticket.collectAsState();val elegido by vm.estadoElegido.collectAsState();val prioridad by vm.prioridadElegida.collectAsState()
  val error by vm.error.collectAsState();val mensaje by vm.mensaje.collectAsState();val ocupado by vm.ocupado.collectAsState()
  var texto by rememberSaveable { mutableStateOf("") }
+ val enviada by vm.respuestaEnviada.collectAsState()
+ LaunchedEffect(enviada) { enviada?.let { if(texto==it) texto="";vm.confirmarEnvioRespuesta() } }
  if(d==null) { Text("Cargando ticket…",Modifier.padding(24.dp));return }
  val detalle=d!!;val t=detalle.ticket;val cerrado=t.estado=="CERRADO"
  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
@@ -32,7 +34,7 @@ import com.tecsup.ayudacampus.ui.components.*
   mensaje?.let { Text(it,color=MaterialTheme.colorScheme.primary) };error?.let { Mensaje(it) }
   Text("Conversación",style=MaterialTheme.typography.titleMedium)
   detalle.comentarios.sortedWith(compareBy({it.fecha},{it.id})).forEach { c -> BurbujaComentario(c.autorNombre,c.texto,c.autorId==usuarioId,c.fecha) }
-  if(!cerrado) { AyudaTextField(texto,{texto=it},"Escribe una respuesta",multilinea=true);AyudaButton("Enviar respuesta",texto.isNotBlank() && !ocupado) { vm.responder(texto);texto="" } }
+  if(!cerrado) { AyudaTextField(texto,{texto=it},"Escribe una respuesta",multilinea=true);AyudaButton("Enviar respuesta",texto.isNotBlank() && !ocupado) { vm.responder(texto) } }
   else { Text("El estudiante cerró este ticket");Estrellas(t.calificacion ?: 0) }
  }
 }

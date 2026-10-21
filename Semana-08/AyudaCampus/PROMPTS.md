@@ -610,6 +610,18 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Archivos:** NavAyuda.kt, BarraInferiorTest.kt, PROMPTS.md y docs/ACEPTACION.md.
 
+## Prompt 11 Revisión adicional de fallos
+
+**Texto del usuario a Codex:** «puedes ver si hay algun fallo mas?».
+
+**Qué generó y corrigió:** Codex detectó que DetalleTicketScreen y AtenderTicketScreen borraban el borrador inmediatamente al pulsar Enviar, antes de que terminara la escritura. Ahora los ViewModels exponen una confirmación observable solo después de guardar. La View consume esa confirmación y limpia únicamente el texto enviado; un error mantiene el borrador y permite reintentar. Si se escribió otro texto durante el envío, no lo borra.
+
+**Verificación diseñada:** EnvioComentarioUiTest monta ambas pantallas con una implementación simulada de AyudaRepository. El primer envío falla y el reintento tiene éxito; comprueba que se conserva el texto tras el error y que se limpia tras confirmar. No escribe en Room ni altera conversaciones de presentación. No se atribuye a Gemini esta revisión de Codex.
+
+**MVVM:** View → ViewModel → AyudaRepository se mantiene. Las Views recogen StateFlow y envían eventos. No se modificaron el contrato, las entidades ni el esquema de Room.
+
+**Archivos:** TicketDetalleViewModel.kt, AtenderViewModel.kt, DetalleTicketScreen.kt, AtenderTicketScreen.kt, EnvioComentarioUiTest.kt y documentación de resultados.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.
