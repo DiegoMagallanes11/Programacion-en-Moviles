@@ -22,3 +22,14 @@ BUILD SUCCESSFUL in 4m 1s
 Informe lint: 0 errors, 17 warnings
 
 Las pruebas anteriores no se repitieron ni se contabilizan como nuevas.
+
+
+LOGIN Y CORREO DE PRACTICA
+assembleDebug assembleDebugAndroidTest: BUILD SUCCESSFUL in 1m 19s
+adb install -r app-debug.apk: Success
+adb install -r app-debug-androidTest.apk: Success
+am instrument -w -e class com.tecsup.ayudacampus.DatosYReglasTest,com.tecsup.ayudacampus.ControlesPerfilTest com.tecsup.ayudacampus.test/androidx.test.runner.AndroidJUnitRunner
+com.tecsup.ayudacampus.DatosYReglasTest:....
+com.tecsup.ayudacampus.ControlesPerfilTest:.
+Time: 13.654
+OK (5 tests)

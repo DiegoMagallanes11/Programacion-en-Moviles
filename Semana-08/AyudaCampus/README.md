@@ -15,7 +15,7 @@ Implementación creada desde cero a partir de la estructura y los contratos del 
 
 | Perfil | Correo | Contraseña |
 | --- | --- | --- |
-| Estudiante | juan@campus.test | 1234 |
+| Estudiante | magallanes@gmail.com | 1234 |
 | Soporte TI | soporte@campus.test | admin |
 
 Ambos perfiles comparten **la base Room de este dispositivo**. El botón de cambio de perfil es para practicar y selecciona también la cuenta correspondiente. La aplicación no se conecta a un servidor. Las credenciales de demostración se guardan como indica el laboratorio; solo se deben usar datos ficticios.
@@ -209,7 +209,7 @@ Este aporte se guarda en un commit adicional porque los cuatro commits iniciales
 
 ## Revisión de navegación y perfil
 
-La cuenta de práctica muestra **Diego Magallanes**. Conserva el correo de acceso juan@campus.test y la contraseña de demostración; una actualización idempotente cambia el nombre anterior sin borrar tickets, conversaciones ni preferencias. El perfil presenta los cuatro estados y el total de tickets.
+La cuenta de práctica muestra **Diego Magallanes**. Usa el correo de acceso magallanes@gmail.com y la contraseña de práctica 1234; una actualización idempotente cambia el nombre y el correo anteriores sin borrar tickets, conversaciones ni preferencias. El perfil presenta los cuatro estados y el total de tickets.
 
 La barra inferior guarda y restaura las pestañas, evita duplicar el destino activo y cierra el teclado al cambiar de opción. El formulario consume la confirmación de envío para poder volver a Nuevo. Las capturas históricas se conservan; las nuevas muestran la personalización.
 
@@ -255,3 +255,11 @@ Las tarjetas destacan el título, agrupan categoría e icono y presentan el SLA 
 | Perfil | [Captura](docs/capturas/interfaz/02-perfil-claro.png) | [Captura](docs/capturas/interfaz/03-perfil-oscuro.png) |
 
 Compilación debug y de pruebas aprobada. Se repitieron ControlesPerfilTest y BarraInferiorTest: 2 casos aprobados en 25.61 s, sin crear tickets. No se añaden al total de casos distintos ni se presentan como una repetición de toda la suite. Ver [aceptación de la revisión visual](docs/ACEPTACION.md#presentación-de-tarjetas-y-perfil-21-de-octubre-de-2026).
+
+### Login y correo de práctica 21 de octubre
+
+Estudiante accede con **magallanes@gmail.com / 1234**; Soporte conserva **soporte@campus.test / admin**. La actualización mantiene el ID y los tickets existentes, sin borrar datos. El login centra el formulario, limita el ancho y conserva el desplazamiento con poco espacio. Perfil requiere datos y contadores; la guía no exige subir una foto.
+
+Debug y APK de pruebas compilaron. DatosYReglasTest y ControlesPerfilTest aprobaron cinco casos en 13.654 s: correo nuevo, conservación de datos, roles y sesión. No se repitió toda la suite ni lint. Se revisaron el formulario centrado, el teclado flotante del emulador y la respuesta de Ingresar con campos vacíos; no se da por realizada una prueba manual con teclado acoplado.
+
+Evidencias: [login centrado](docs/capturas/interfaz/05-login-centrado.png), [teclado flotante](docs/capturas/interfaz/06-login-teclado.png) y [correo en Perfil](docs/capturas/interfaz/07-perfil-correo.png). Para repetir la comprobación focalizada ejecuta DatosYReglasTest y ControlesPerfilTest. Las capturas y resultados anteriores conservan su fecha y sus credenciales históricas.

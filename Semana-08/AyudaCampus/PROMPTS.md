@@ -646,6 +646,22 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Archivos:** TicketCard.kt, PerfilScreen.kt y documentación con resultados y capturas de la revisión visual.
 
+## Prompt 14 Espacio vacío del login
+
+**Texto del usuario a Codex:** «mira ese espaciote que hay ahi, como podemos arreglarlo?», con una captura del login alineado arriba y gran espacio inferior.
+
+**Qué generó Codex:** un contenedor que centra el formulario cuando cabe, limita su ancho a 480 dp y respeta las áreas seguras y el teclado. Se eliminó el separador fijo superior y se ajustó la separación de campos. En poco espacio el formulario conserva desplazamiento vertical.
+
+**MVVM y alcance:** solo cambió LoginScreen.kt. Se conservaron el selector de rol, credenciales, validaciones, mensajes y eventos hacia SesionViewModel; no cambiaron reglas, datos ni dependencias. Gemini no participó. La documentación y las capturas registran la revisión.
+
+## Prompt 15 Correo de práctica confirmado
+
+**Texto enviado a Codex:** «que mas me recomiednas mejorar?, recuerda no salirse de la guia del alboratorio…» y aclaración «Estudiante: magallanes@gmail.com; Soporte sigue igual». El usuario confirmó mantener 1234.
+
+**Qué generó y corrigió:** Codex pidió aclarar los dos correos mencionados antes de editar. Actualizó la semilla y la cuenta de práctica existente conservando su ID, contraseña, tickets y comentarios. Soporte conserva soporte@campus.test / admin. No se atribuye esta intervención a Gemini.
+
+**MVVM y archivos:** la actualización idempotente se realiza en DatosIniciales y UsuarioDao dentro de la transacción de inicialización existente; no hay acceso a datos desde la View, cambios de esquema ni nuevas funciones de negocio. Se adaptaron las credenciales de las pruebas y README. DatosYReglasTest comprueba acceso nuevo, rechazo del correo anterior, idempotencia y conservación del usuario ajeno y los datos históricos. La guía pide datos y contadores en Perfil; no exige subir foto.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.

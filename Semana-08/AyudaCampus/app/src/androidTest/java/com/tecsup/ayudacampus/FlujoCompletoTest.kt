@@ -35,7 +35,7 @@ class FlujoCompletoTest {
  }
  @Test fun recorridoEstudianteYSoporte() {
   esperar("Ingresar")
-  campo("Correo","juan@campus.test");campo("Contraseña","incorrecta");closeSoftKeyboard();click("Ingresar")
+  campo("Correo","magallanes@gmail.com");campo("Contraseña","incorrecta");closeSoftKeyboard();click("Ingresar")
   esperar("Correo o contraseña incorrectos")
   campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Diego")
   captura("01-estudiante-tickets")
@@ -75,7 +75,7 @@ class FlujoCompletoTest {
   click("Perfil");esperar("Cambiar a Soporte TI");click("Cambiar a Soporte TI");esperar("Panel de soporte");click("Ajustes");esperar("Recibir tickets")
   ui.onAllNodes(isToggleable())[2].performClick();ui.onAllNodes(isToggleable())[0].performClick()
   ui.onNodeWithText("Cerrar sesión").performScrollTo().performClick();esperar("Ingresar")
-  campo("Correo","juan@campus.test");campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Diego")
+  campo("Correo","magallanes@gmail.com");campo("Contraseña","1234");closeSoftKeyboard();click("Ingresar");esperar("Hola, Diego")
   click("Perfil");esperar("Modo oscuro");ui.onAllNodes(isToggleable())[0].performClick()
  }
 }

@@ -7,6 +7,7 @@ object DatosIniciales {
   if(db.usuarioDao().contar() != 0) {
    // Actualización idempotente de los datos de práctica, sin borrar tickets ni sesión.
    db.usuarioDao().personalizarNombreDePractica("Diego Magallanes")
+   db.usuarioDao().actualizarCorreoDePractica()
    return@withTransaction
   }
   if(db.categoriaDao().contar() == 0) db.categoriaDao().insertarTodas(listOf(
@@ -14,10 +15,10 @@ object DatosIniciales {
    Categoria(nombre="Red / Wi-Fi",icono="wifi"), Categoria(nombre="Cuenta",icono="key"), Categoria(nombre="Impresión",icono="printer")
   ))
   db.usuarioDao().insertarTodos(listOf(
-   Usuario(nombre="Diego Magallanes",correo="juan@campus.test",clave="1234",rol="CLIENTE"),
+   Usuario(nombre="Diego Magallanes",correo="magallanes@gmail.com",clave="1234",rol="CLIENTE"),
    Usuario(nombre="Soporte TI",correo="soporte@campus.test",clave="admin",rol="ADMIN")
   ))
-  val cliente = requireNotNull(db.usuarioDao().login("juan@campus.test","1234"))
+  val cliente = requireNotNull(db.usuarioDao().login("magallanes@gmail.com","1234"))
   val soporte = requireNotNull(db.usuarioDao().login("soporte@campus.test","admin"))
   val categorias = db.categoriaDao().observarTodas().first()
   val ahora=System.currentTimeMillis()

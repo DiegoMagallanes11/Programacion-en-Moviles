@@ -222,3 +222,13 @@ assembleDebug y assembleDebugAndroidTest terminaron correctamente en 1 min 1 s. 
 Se inspeccionaron capturas reales de tarjetas y Perfil en claro y oscuro. No hay texto superpuesto ni controles cortados en las pantallas capturadas; las listas conservan su desplazamiento. Las pruebas y la revisión no crean tickets ni editan conversaciones. La instalación de presentación muestra siete tickets existentes. Quedó abierta en Perfil, modo claro, sin tocar la resolución corregida del emulador.
 
 Evidencia: [tarjetas claras](capturas/interfaz/01-tickets-claro.png), [Perfil claro](capturas/interfaz/02-perfil-claro.png), [Perfil oscuro](capturas/interfaz/03-perfil-oscuro.png) y [tarjetas oscuras](capturas/interfaz/04-tickets-oscuro.png).
+
+### Login y correo de práctica 21 de octubre de 2026
+
+Confirmación del usuario: Estudiante magallanes@gmail.com / 1234; Soporte sin cambios. DatosIniciales actualiza el correo anterior en una transacción conservando el ID; no cambia esquema, tickets, comentarios ni sesiones por ID. La consulta evita sobrescribir una cuenta que ya tenga el correo nuevo. LoginScreen centra el formulario, limita su ancho y conserva scroll e insets de teclado.
+
+assembleDebug y assembleDebugAndroidTest: BUILD SUCCESSFUL, 1 min 19 s. Instalación mediante actualización, sin borrar datos. DatosYReglasTest (cuatro casos) y ControlesPerfilTest (un caso): OK (5 tests), 13.654 s. Son casos existentes repetidos; la prueba de instalación anterior añade aserciones del correo nuevo, rechazo del anterior y conservación de otro usuario. Las pruebas de datos usan Room en memoria. El recorrido de controles comprueba acceso nuevo, roles, preferencias y sesión sin escribir tickets.
+
+Verificación manual: Perfil muestra el correo nuevo y los siete tickets existentes (2 abiertos, 1 en proceso, 3 resueltos y 1 cerrado). El formulario queda centrado sin teclado; con el teclado flotante del emulador, Ingresar responde y muestra «Completa el correo y la contraseña». No se presenta como realizada una comprobación manual con teclado acoplado ni en otro tamaño de dispositivo. Las capturas fueron inspeccionadas. No se repitieron lint ni la suite completa.
+
+Evidencias: [login centrado](capturas/interfaz/05-login-centrado.png), [teclado flotante](capturas/interfaz/06-login-teclado.png), [Perfil actualizado](capturas/interfaz/07-perfil-correo.png).

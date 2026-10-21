@@ -37,6 +37,9 @@ class DatosYReglasTest {
    DatosIniciales.sembrar(anterior)
    DatosIniciales.sembrar(anterior)
    assertEquals("Diego Magallanes",anterior.usuarioDao().obtener(17)!!.nombre)
+   assertEquals(17,anterior.usuarioDao().login("MAGALLANES@GMAIL.COM","1234")!!.id)
+   assertNull(anterior.usuarioDao().login("juan@campus.test","1234"))
+   assertEquals("otra@campus.test",anterior.usuarioDao().obtener(18)!!.correo)
    assertEquals("Juan Pérez",anterior.usuarioDao().obtener(18)!!.nombre)
    assertEquals(2,anterior.usuarioDao().contar())
    val detalle=anterior.ticketDao().observarUno(23).first()!!
@@ -52,8 +55,8 @@ class DatosYReglasTest {
   DatosIniciales.sembrar(db)
   assertEquals(2,db.usuarioDao().contar());assertEquals(5,repo.observarCategorias().first().size)
   assertEquals(6,repo.observarTodosLosTickets().first().size)
-  assertNull(repo.login("juan@campus.test","incorrecta"))
-  val juan=repo.login("JUAN@campus.test","1234")!!
+  assertNull(repo.login("magallanes@gmail.com","incorrecta"))
+  val juan=repo.login("MAGALLANES@GMAIL.COM","1234")!!
   db.usuarioDao().insertarTodos(listOf(Usuario(nombre="Ana",correo="ana@campus.test",clave="test",rol="CLIENTE")))
   val ana=repo.login("ana@campus.test","test")!!
   val categoria=repo.observarCategoriasActivas().first().first()
@@ -67,7 +70,7 @@ class DatosYReglasTest {
   assertEquals(1,repo.observarAltasSinAtender(System.currentTimeMillis()-3600000).first())
  }
  @Test fun reglasDeRolesConversacionCierreYReapertura() = runBlocking {
-  val juan=repo.login("juan@campus.test","1234")!!;val soporte=repo.login("soporte@campus.test","admin")!!
+  val juan=repo.login("magallanes@gmail.com","1234")!!;val soporte=repo.login("soporte@campus.test","admin")!!
   val id=repo.observarTicketsCliente(juan.id).first().first { it.ticket.estado=="ABIERTO" }.ticket.id
   val cliente=withContext(Dispatchers.Main) { TicketDetalleViewModel(repo,id,juan).also { vms.put("cliente",it) } }
   val admin=withContext(Dispatchers.Main) { AtenderViewModel(repo,id,soporte).also { vms.put("admin",it) } }

@@ -37,7 +37,7 @@ class NavegacionPerfilTest {
    listOf("Ingresar","Tickets","Perfil").any { ui.onAllNodesWithText(it).fetchSemanticsNodes().isNotEmpty() }
   }
   if(ui.onAllNodesWithText("Ingresar").fetchSemanticsNodes().isNotEmpty()) {
-   ui.onNode(hasSetTextAction() and hasText("Correo")).performTextReplacement("juan@campus.test")
+   ui.onNode(hasSetTextAction() and hasText("Correo")).performTextReplacement("magallanes@gmail.com")
    ui.onNode(hasSetTextAction() and hasText("Contraseña")).performTextReplacement("1234")
    click("Ingresar")
   }

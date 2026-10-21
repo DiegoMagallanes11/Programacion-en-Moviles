@@ -79,7 +79,7 @@ class BusquedaUiTest {
    if(repo.observarCategorias().first().none { it.nombre=="Archivo Fase 2" })
     repo.guardarCategoria(Categoria(nombre="Archivo Fase 2",icono="wifi",activa=false))
    val categoria=repo.observarCategorias().first().first { it.nombre=="Archivo Fase 2" }
-   val cliente=repo.login("juan@campus.test","1234")!!
+   val cliente=repo.login("magallanes@gmail.com","1234")!!
    val previo=repo.observarTodosLosTickets().first().firstOrNull { it.ticket.titulo=="Incidencia histórica SLA" }
    if(previo!=null) {
     app.database.ticketDao().actualizarEstado(previo.ticket.id,"ABIERTO")

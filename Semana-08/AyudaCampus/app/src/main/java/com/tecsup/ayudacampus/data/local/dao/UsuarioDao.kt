@@ -4,6 +4,8 @@ import com.tecsup.ayudacampus.data.local.entity.Usuario
 @Dao interface UsuarioDao {
  @Query("UPDATE usuarios SET nombre = :nombre WHERE correo = 'juan@campus.test' COLLATE NOCASE AND nombre = 'Juan Pérez' AND rol = 'CLIENTE'")
  suspend fun personalizarNombreDePractica(nombre: String)
+ @Query("UPDATE usuarios SET correo = 'magallanes@gmail.com' WHERE correo = 'juan@campus.test' COLLATE NOCASE AND rol = 'CLIENTE' AND NOT EXISTS (SELECT 1 FROM usuarios WHERE correo = 'magallanes@gmail.com' COLLATE NOCASE)")
+ suspend fun actualizarCorreoDePractica()
  @Query("SELECT * FROM usuarios WHERE correo = :correo COLLATE NOCASE AND clave = :clave LIMIT 1") suspend fun login(correo: String, clave: String): Usuario?
  @Insert suspend fun insertarTodos(lista: List<Usuario>)
  @Query("SELECT COUNT(*) FROM usuarios") suspend fun contar(): Int

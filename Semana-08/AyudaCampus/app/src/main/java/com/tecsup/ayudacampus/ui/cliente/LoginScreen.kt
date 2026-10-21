@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.tecsup.ayudacampus.model.Rol
 import com.tecsup.ayudacampus.ui.components.*
@@ -18,8 +19,9 @@ import com.tecsup.ayudacampus.viewmodel.SesionViewModel
  var admin by rememberSaveable { mutableStateOf(false) }
  val error by vm.error.collectAsState();val ocupado by vm.ocupado.collectAsState();val oscuro by vm.modoOscuro.collectAsState()
  AyudaTheme(if(admin) Rol.ADMIN else Rol.CLIENTE,oscuro) { Surface(Modifier.fillMaxSize(),color=MaterialTheme.colorScheme.background) {
-  Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(24.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-   Spacer(Modifier.height(44.dp));Icon(Icons.Default.School,null,tint=MaterialTheme.colorScheme.primary,modifier=Modifier.size(48.dp))
+  Box(Modifier.fillMaxSize().safeDrawingPadding().imePadding(),contentAlignment=Alignment.Center) {
+  Column(Modifier.widthIn(max=480.dp).fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
+   Icon(Icons.Default.School,null,tint=MaterialTheme.colorScheme.primary,modifier=Modifier.size(48.dp))
    Text("Bienvenido",style=MaterialTheme.typography.headlineLarge); Text("Ingresa para continuar",color=MaterialTheme.colorScheme.onSurfaceVariant)
    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
     listOf("Estudiante","Soporte TI").forEachIndexed { i,t -> SegmentedButton(selected=admin==(i==1),onClick={admin=i==1;vm.limpiarError()},shape=SegmentedButtonDefaults.itemShape(i,2)) { Text(t) } }
@@ -31,6 +33,7 @@ import com.tecsup.ayudacampus.viewmodel.SesionViewModel
    Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
     Column(Modifier.padding(16.dp)) { Text("Modo práctica",style=MaterialTheme.typography.titleSmall);Text("Estudiante y Soporte comparten los tickets en este dispositivo.") }
    }
+  }
   }
  } }
 }

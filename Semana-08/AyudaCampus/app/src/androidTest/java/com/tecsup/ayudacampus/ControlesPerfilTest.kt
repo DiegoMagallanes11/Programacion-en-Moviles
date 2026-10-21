@@ -80,7 +80,7 @@ class ControlesPerfilTest {
  }
  private fun login() {
   click("Estudiante")
-  ui.onNode(hasSetTextAction() and hasText("Correo")).performTextReplacement("juan@campus.test")
+  ui.onNode(hasSetTextAction() and hasText("Correo")).performTextReplacement("magallanes@gmail.com")
   ui.onNode(hasSetTextAction() and hasText("Contraseña")).performTextReplacement("1234")
   click("Ingresar");esperar("Hola, Diego")
  }
