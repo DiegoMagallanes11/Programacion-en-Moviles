@@ -182,3 +182,11 @@ Ver [AUDITORIA.md](AUDITORIA.md) para el contraste completo con la guía y [RUBR
 ### Revisión final de la evidencia visual
 
 Una captura de cero coincidencias se había tomado antes de terminar el dibujo nativo, aunque Compose ya exponía el mensaje correcto y la prueba había pasado. Se sincronizó la captura con la inactividad de la interfaz y se dejó un margen de 250 ms para completar el dibujo; BusquedaUiTest pasó de nuevo en 37.225 s. Se sustituyó la imagen de cero resultados por la captura real verificada visualmente. Para el resultado combinado se conserva la captura válida de la ejecución anterior, con formulario, conteo y tarjeta visibles. La nueva captura adicional 07-filtros-con-teclado.png muestra los filtros y la barra por encima del teclado. No se reconstruyeron ni editaron las imágenes. Esta repetición no aumenta los diez casos instrumentados distintos.
+
+### Controles de Perfil y ajustes 20 de octubre de 2026
+
+ControlesPerfilTest aprobó un caso nuevo en 28.913 s en el emulador abierto API 35. Verificó el cambio desde el texto de los interruptores, conservación de modo oscuro y Notificaciones al recrear la Activity, mesa cerrada con Enviar ticket deshabilitado y habilitación al abrirla, cambio de ambos roles, regreso desde el detalle con teclado abierto, cierre de sesión e ingreso de nuevo. No creó ni editó tickets o comentarios; restableció las preferencias usadas por la prueba. Se mantuvieron los seis tickets de presentación.
+
+La compilación debug y del APK de pruebas pasó en 2 min 43 s. lintDebug volvió a terminar correctamente en 2 min 10 s; mantiene 0 errores y 17 advertencias, con los checks omitidos ya documentados. Este caso es adicional a los diez instrumentados anteriores; no se volvió a ejecutar la suite completa.
+
+Notificaciones conserva una preferencia, como pide el contrato DataStore; no implementa avisos del sistema. Se aclaró en ambos perfiles. La flecha Volver ahora limpia foco y oculta teclado. Evidencia real: [Perfil oscuro](capturas/controles/01-perfil-oscuro.png) y [Perfil claro](capturas/controles/02-perfil-claro.png). La instalación quedó en Perfil del estudiante y modo claro.

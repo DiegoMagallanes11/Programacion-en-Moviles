@@ -230,3 +230,9 @@ Se corrigieron la búsqueda del número visible del estudiante y el mensaje de c
 Para repetir el recorrido completo se necesita una instalación de pruebas nueva con sesión cerrada y seis tickets iniciales. Ejecuta DatosYReglasTest, PromedioRoomTest y FlujoCompletoTest; después detén el proceso y ejecuta RestauracionTest en otra instrumentación **sin borrar datos**. Luego pueden ejecutarse NavegacionPerfilTest y BusquedaUiTest. No uses la instalación de presentación para restablecer precondiciones. La revisión posterior del promedio repitió solo las comprobaciones afectadas.
 
 La implementación y esta auditoría se atribuyen a Codex. El aporte real de Gemini en Android Studio fue la prueba de SLA documentada; se mantiene esa distinción y no se garantiza una calificación académica.
+
+### Revisión de Perfil y controles
+
+Perfil muestra los datos del estudiante, total y cuatro estados de sus tickets. Los ajustes responden al pulsar toda su fila. Notificaciones guarda la preferencia; esta versión local no envía avisos del sistema. Volver desde un detalle cierra el teclado. ControlesPerfilTest agregó un caso aprobado (28.913 s) para preferencias, mesa cerrada, roles, teclado y sesión; la compilación y lint pasaron. Las pruebas anteriores se conservan como resultados de su ejecución, sin repetir toda la suite. Ver [evidencias y alcance](docs/ACEPTACION.md#controles-de-perfil-y-ajustes-20-de-octubre-de-2026).
+
+Para repetir solo esta revisión, con los dos perfiles ficticios y al menos un ticket abierto del estudiante, ejecuta `ControlesPerfilTest` desde Android Studio. No crea tickets ni modifica conversaciones. Restaura las preferencias y termina con sesión de Estudiante. Evita interactuar con la app durante la instrumentación.

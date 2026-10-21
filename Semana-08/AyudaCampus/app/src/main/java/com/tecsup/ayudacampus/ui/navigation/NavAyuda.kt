@@ -53,7 +53,7 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
      val limpiar: () -> Unit = { nav.navigate(home) { popUpTo(nav.graph.id) { inclusive=true };launchSingleTop=true } }
      Scaffold(
       containerColor=MaterialTheme.colorScheme.background,
-      topBar={AppTopBar(if(admin) "AyudaCampus · Soporte" else "AyudaCampus",if(ruta !in destinos) ({nav.popBackStack();Unit}) else null)},
+      topBar={AppTopBar(if(admin) "AyudaCampus · Soporte" else "AyudaCampus",if(ruta !in destinos) ({teclado?.hide();foco.clearFocus();nav.popBackStack();Unit}) else null)},
       bottomBar={NavigationBar(Modifier.imePadding()) {
        destinos.forEachIndexed { i,destino -> NavigationBarItem(selected=ruta==destino,onClick={ir(destino)},icon={Icon(iconos[i],null)},label={Text(etiquetas[i])}) }
       }}

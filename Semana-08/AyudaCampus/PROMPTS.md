@@ -586,6 +586,18 @@ El usuario adjuntó una rúbrica de seis criterios: commits por avance, modelo d
 
 **Seguimiento de evidencia del prompt 8:** la revisión del Word detectó una captura adelantada al dibujo nativo. Codex agregó espera de inactividad y 250 ms antes de capturar; el único recorrido afectado se repitió y aprobó en 37.225 s. Se guardó la captura real de cero coincidencias y una adicional del teclado, conservando la captura anterior válida del resultado combinado. No se atribuye esta corrección a Gemini ni se fabrican imágenes.
 
+## Prompt 9 Revisión de Perfil y controles
+
+**Texto enviado:** «en pefil no hay nada? y creo que no todos los botones son funcionales, si quieres piuedes usar miandorid studio que ya esta abrierto el amulador y hacer oreubas de que le falta para ser una buena app, no se si sea posible o el laboratorio no te lo permite hacer mejoras de la interfaz».
+
+**IA y herramienta:** Codex, revisión del código y ADB sobre el emulador abierto. Gemini no participó en esta revisión.
+
+**Qué generó y corrigió:** se comprobó que Perfil contiene el nombre y los seis tickets de la instalación de presentación. Los interruptores ahora aceptan pulsar toda la fila y exponen un único control accesible. Se aclaró que Notificaciones guarda una preferencia y no envía avisos del sistema. La flecha Volver limpia el foco y oculta el teclado antes de regresar. Se añadió ControlesPerfilTest para comprobar preferencias, recreación, mesa cerrada, regreso con teclado y cierre e inicio de sesión sin modificar tickets ni comentarios.
+
+**MVVM:** los cambios de preferencias continúan pasando por SesionViewModel y PreferenciasStore; las Views no consultan DAO ni Repository. No se alteraron los estados, entidades, dependencias ni commits de Fase 1.
+
+**Archivos afectados:** PerfilScreen.kt, AjustesScreen.kt, NavAyuda.kt, ControlesPerfilTest.kt y documentación de resultados.
+
 ## Reflexión (exactamente cinco líneas)
 Codex implementó las tres mejoras y Gemini amplió la verificación del SLA con fechas grandes.
 La primera propuesta de Gemini no comprobaba el SLA ALTA previo al cambio de prioridad.

@@ -3,6 +3,8 @@ import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
@@ -28,13 +30,20 @@ import com.tecsup.ayudacampus.ui.components.*
    }
   } }
   AjusteSwitch("Modo oscuro",oscuro,sesion::modoOscuro)
-  AjusteSwitch("Notificaciones",notificaciones,sesion::notificaciones)
+  AjusteSwitch("Notificaciones",notificaciones,sesion::notificaciones,
+   "Guarda tu preferencia. Esta versión de práctica no envía avisos del sistema.")
   Text("Modo práctica",style=MaterialTheme.typography.titleMedium);Text("Cambia de perfil para probar la atención de tus incidencias en este dispositivo.")
   AyudaButton("Cambiar a Soporte TI",!ocupado,onCambiar)
   OutlinedButton(onClick=onSalir,modifier=Modifier.fillMaxWidth()) { Text("Cerrar sesión") }
   error?.let { Mensaje(it) }
  }
 }
-@Composable fun AjusteSwitch(texto: String, valor: Boolean, cambio: (Boolean) -> Unit) {
- Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) { Text(texto);Switch(checked=valor,onCheckedChange=cambio) }
+@Composable fun AjusteSwitch(texto: String, valor: Boolean, cambio: (Boolean) -> Unit, descripcion: String? = null) {
+ Row(Modifier.fillMaxWidth().heightIn(min=56.dp).toggleable(value=valor,role=Role.Switch,onValueChange=cambio).padding(vertical=8.dp),horizontalArrangement=Arrangement.spacedBy(16.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
+  Column(Modifier.weight(1f)) {
+   Text(texto)
+   descripcion?.let { Text(it,style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant) }
+  }
+  Switch(checked=valor,onCheckedChange=null)
+ }
 }

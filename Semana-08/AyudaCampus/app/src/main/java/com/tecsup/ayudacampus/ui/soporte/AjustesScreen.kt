@@ -16,8 +16,10 @@ import com.tecsup.ayudacampus.ui.components.*
   Text("Ajustes",style=MaterialTheme.typography.headlineMedium)
   Text(usuario?.nombre ?: "Soporte TI",style=MaterialTheme.typography.titleLarge);Text(usuario?.correo ?: "")
   AjusteSwitch("Modo oscuro",oscuro,sesion::modoOscuro)
-  AjusteSwitch("Notificaciones",notificaciones,sesion::notificaciones)
-  AjusteSwitch("Recibir tickets",recibir,sesion::recibirTickets)
+  AjusteSwitch("Notificaciones",notificaciones,sesion::notificaciones,
+   "Guarda tu preferencia. Esta versión de práctica no envía avisos del sistema.")
+  AjusteSwitch("Recibir tickets",recibir,sesion::recibirTickets,
+   "Permite que los estudiantes creen nuevas solicitudes.")
   if(!recibir) Text("Mesa de ayuda cerrada: los estudiantes no pueden crear tickets.")
   HorizontalDivider();Text("Modo práctica",style=MaterialTheme.typography.titleMedium)
   AyudaButton("Cambiar a Estudiante",!ocupado,onCambiar)
