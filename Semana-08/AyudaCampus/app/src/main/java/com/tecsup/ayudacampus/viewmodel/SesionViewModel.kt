@@ -144,7 +144,15 @@ class SesionViewModel(
                 } else {
                     Rol.ADMIN
                 }
-                val usuario = requireNotNull(repository.obtenerUsuarioPorRol(nuevoRol)) {
+                val ultimoUsuarioId = preferencias.obtenerUltimoUsuarioId(nuevoRol.name)
+                val ultimoUsuario = if (ultimoUsuarioId > 0) {
+                    repository.obtenerUsuario(ultimoUsuarioId)?.takeIf { it.rol == nuevoRol.name }
+                } else {
+                    null
+                }
+                val usuario = requireNotNull(
+                    ultimoUsuario ?: repository.obtenerUsuarioPorRol(nuevoRol)
+                ) {
                     "El perfil de práctica no está disponible"
                 }
                 iniciarSesion(usuario)

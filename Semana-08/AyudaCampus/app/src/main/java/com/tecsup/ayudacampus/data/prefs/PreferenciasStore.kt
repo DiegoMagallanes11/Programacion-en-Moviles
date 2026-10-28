@@ -9,6 +9,7 @@ class PreferenciasStore(context: Context) {
  private val store = context.applicationContext.dataStore
  private object Claves {
   val perfil=stringPreferencesKey("perfilActivo"); val usuario=intPreferencesKey("usuarioId")
+  val ultimoCliente=intPreferencesKey("ultimoClienteId"); val ultimoAdmin=intPreferencesKey("ultimoAdminId")
   val oscuro=booleanPreferencesKey("modoOscuro"); val notificaciones=booleanPreferencesKey("notificaciones")
   val recibir=booleanPreferencesKey("recibirTickets")
  }
@@ -19,7 +20,14 @@ class PreferenciasStore(context: Context) {
  val modoOscuro = datos.map { it[Claves.oscuro] ?: false }.distinctUntilChanged()
  val notificaciones = datos.map { it[Claves.notificaciones] ?: true }.distinctUntilChanged()
  val recibirTickets = datos.map { it[Claves.recibir] ?: true }.distinctUntilChanged()
- suspend fun guardarSesion(rol: String, usuarioId: Int) { store.edit { it[Claves.perfil]=rol;it[Claves.usuario]=usuarioId } }
+ suspend fun guardarSesion(rol: String, usuarioId: Int) { store.edit {
+  it[Claves.perfil]=rol;it[Claves.usuario]=usuarioId
+  if(rol=="CLIENTE") it[Claves.ultimoCliente]=usuarioId else if(rol=="ADMIN") it[Claves.ultimoAdmin]=usuarioId
+ } }
+ suspend fun obtenerUltimoUsuarioId(rol: String): Int {
+  val preferencias=datos.first()
+  return if(rol=="CLIENTE") preferencias[Claves.ultimoCliente] ?: 0 else preferencias[Claves.ultimoAdmin] ?: 0
+ }
  suspend fun guardarModoOscuro(b: Boolean) { store.edit { it[Claves.oscuro]=b } }
  suspend fun guardarNotificaciones(b: Boolean) { store.edit { it[Claves.notificaciones]=b } }
  suspend fun guardarRecibirTickets(b: Boolean) { store.edit { it[Claves.recibir]=b } }
