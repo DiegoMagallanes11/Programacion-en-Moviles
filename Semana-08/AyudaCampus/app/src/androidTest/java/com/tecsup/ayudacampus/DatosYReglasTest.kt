@@ -69,6 +69,28 @@ class DatosYReglasTest {
   assertEquals(7,repo.observarCantidadPorCategoria().first().sumOf { it.cantidad })
   assertEquals(1,repo.observarAltasSinAtender(System.currentTimeMillis()-3600000).first())
  }
+ @Test fun registroValidaNormalizaYRechazaDuplicados() = runBlocking {
+  val registro=withContext(Dispatchers.Main) { RegistroViewModel(repo).also { vms.put("registro",it) } }
+  withContext(Dispatchers.Main) { registro.registrar() }
+  assertTrue(registro.estado.value.errores.keys.containsAll(listOf("nombre","correo","clave")))
+
+  withContext(Dispatchers.Main) {
+   registro.cambiarNombre("Ana Pérez")
+   registro.cambiarCorreo("  ANA.NUEVA@CAMPUS.TEST  ")
+   registro.cambiarClave("abcd")
+   registro.cambiarConfirmacion("abcd")
+   registro.registrar()
+  }
+  withTimeout(5000) { registro.estado.first { it.correoCreado=="ana.nueva@campus.test" } }
+  val creada=repo.login("ANA.NUEVA@CAMPUS.TEST","abcd")!!
+  assertEquals("Ana Pérez",creada.nombre)
+  assertEquals("CLIENTE",creada.rol)
+  assertEquals(3,db.usuarioDao().contar())
+
+  assertFalse(repo.registrarEstudiante("Duplicada","ana.NUEVA@campus.test","otra"))
+  assertFalse(repo.registrarEstudiante("Duplicada","MAGALLANES@GMAIL.COM","otra"))
+  assertEquals(3,db.usuarioDao().contar())
+ }
  @Test fun reglasDeRolesConversacionCierreYReapertura() = runBlocking {
   val juan=repo.login("magallanes@gmail.com","1234")!!;val soporte=repo.login("soporte@campus.test","admin")!!
   val id=repo.observarTicketsCliente(juan.id).first().first { it.ticket.estado=="ABIERTO" }.ticket.id

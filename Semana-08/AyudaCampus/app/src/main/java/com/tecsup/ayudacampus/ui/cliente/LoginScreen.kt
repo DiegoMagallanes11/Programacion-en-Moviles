@@ -22,7 +22,9 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,8 +41,13 @@ import com.tecsup.ayudacampus.ui.theme.AyudaTheme
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
 
 @Composable
-fun LoginScreen(viewModel: SesionViewModel) {
-    var correo by rememberSaveable { mutableStateOf("") }
+fun LoginScreen(
+    viewModel: SesionViewModel,
+    correoInicial: String = "",
+    mensajeExito: String? = null,
+    onRegistrar: () -> Unit = {}
+) {
+    var correo by rememberSaveable { mutableStateOf(correoInicial) }
     var clave by rememberSaveable { mutableStateOf("") }
     var esSoporte by rememberSaveable { mutableStateOf(false) }
 
@@ -48,6 +55,10 @@ fun LoginScreen(viewModel: SesionViewModel) {
     val ocupado by viewModel.ocupado.collectAsState()
     val oscuro by viewModel.modoOscuro.collectAsState()
     val rolSeleccionado = if (esSoporte) Rol.ADMIN else Rol.CLIENTE
+
+    LaunchedEffect(correoInicial) {
+        if (correoInicial.isNotBlank()) correo = correoInicial
+    }
 
     AyudaTheme(rolSeleccionado, oscuro) {
         Surface(
@@ -109,11 +120,22 @@ fun LoginScreen(viewModel: SesionViewModel) {
                     )
 
                     error?.let { Mensaje(it) }
+                    mensajeExito?.let {
+                        Text(it, color = MaterialTheme.colorScheme.primary)
+                    }
                     AyudaButton(
                         texto = if (ocupado) "Ingresando…" else "Ingresar",
                         enabled = !ocupado
                     ) {
                         viewModel.login(correo, clave, rolSeleccionado)
+                    }
+                    if (!esSoporte) {
+                        TextButton(
+                            onClick = onRegistrar,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Crear una cuenta de estudiante")
+                        }
                     }
                 }
             }

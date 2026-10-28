@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface AyudaRepository {
  fun observarPromedioResolucion(): Flow<Double?>
  suspend fun login(correo: String, clave: String): Usuario?
+ suspend fun registrarEstudiante(nombre: String, correo: String, clave: String): Boolean
  suspend fun obtenerUsuario(id: Int): Usuario?
  suspend fun obtenerUsuarioPorRol(rol: Rol): Usuario?
  suspend fun crearTicket(clienteId: Int, categoriaId: Int, titulo: String, descripcion: String, ubicacion: String, prioridad: Prioridad): Long

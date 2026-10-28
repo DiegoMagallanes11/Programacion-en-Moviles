@@ -1,10 +1,22 @@
 package com.tecsup.ayudacampus.data.repository
+import android.database.sqlite.SQLiteConstraintException
 import com.tecsup.ayudacampus.data.local.AyudaDatabase
 import com.tecsup.ayudacampus.data.local.entity.*
 import com.tecsup.ayudacampus.model.*
+import java.util.Locale
 class AyudaRepositoryRoom(private val db: AyudaDatabase) : AyudaRepository {
  override fun observarPromedioResolucion() = db.ticketDao().observarPromedioResolucion()
  override suspend fun login(correo: String, clave: String) = db.usuarioDao().login(correo.trim(), clave)
+ override suspend fun registrarEstudiante(nombre: String, correo: String, clave: String): Boolean {
+  val correoNormalizado = correo.trim().lowercase(Locale.ROOT)
+  if (db.usuarioDao().existeCorreo(correoNormalizado)) return false
+  return try {
+   db.usuarioDao().insertar(Usuario(nombre=nombre.trim(),correo=correoNormalizado,clave=clave,rol=Rol.CLIENTE.name))
+   true
+  } catch (_: SQLiteConstraintException) {
+   false
+  }
+ }
  override suspend fun obtenerUsuario(id: Int) = db.usuarioDao().obtener(id)
  override suspend fun obtenerUsuarioPorRol(rol: Rol) = db.usuarioDao().obtenerPorRol(rol.name)
  override suspend fun crearTicket(clienteId: Int, categoriaId: Int, titulo: String, descripcion: String, ubicacion: String, prioridad: Prioridad) = db.ticketDao().insertarTicket(Ticket(clienteId=clienteId,categoriaId=categoriaId,titulo=titulo,descripcion=descripcion,ubicacion=ubicacion,prioridad=prioridad.name))

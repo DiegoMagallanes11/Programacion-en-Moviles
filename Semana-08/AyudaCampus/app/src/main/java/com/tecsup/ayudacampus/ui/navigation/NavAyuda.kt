@@ -22,6 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -40,6 +43,7 @@ import com.tecsup.ayudacampus.ui.cliente.LoginScreen
 import com.tecsup.ayudacampus.ui.cliente.MisTicketsScreen
 import com.tecsup.ayudacampus.ui.cliente.NuevoTicketScreen
 import com.tecsup.ayudacampus.ui.cliente.PerfilScreen
+import com.tecsup.ayudacampus.ui.cliente.RegistroScreen
 import com.tecsup.ayudacampus.ui.cliente.SplashScreen
 import com.tecsup.ayudacampus.ui.components.AppTopBar
 import com.tecsup.ayudacampus.ui.soporte.AjustesScreen
@@ -57,6 +61,7 @@ import com.tecsup.ayudacampus.viewmodel.MisTicketsViewModel
 import com.tecsup.ayudacampus.viewmodel.NuevoTicketViewModel
 import com.tecsup.ayudacampus.viewmodel.PanelViewModel
 import com.tecsup.ayudacampus.viewmodel.PerfilViewModel
+import com.tecsup.ayudacampus.viewmodel.RegistroViewModel
 import com.tecsup.ayudacampus.viewmodel.SesionViewModel
 import com.tecsup.ayudacampus.viewmodel.TicketDetalleViewModel
 
@@ -80,7 +85,7 @@ fun NavAyuda(app: AyudaApp) {
         ) {
             when {
                 cargando -> SplashScreen()
-                usuario == null -> LoginScreen(sesion)
+                usuario == null -> FlujoDeAcceso(app, sesion)
                 else -> {
                     val usuarioActivo = requireNotNull(usuario)
                     key(usuarioActivo.id, usuarioActivo.rol) {
@@ -89,6 +94,41 @@ fun NavAyuda(app: AyudaApp) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FlujoDeAcceso(
+    app: AyudaApp,
+    sesion: SesionViewModel
+) {
+    var mostrandoRegistro by rememberSaveable { mutableStateOf(false) }
+    var correoRegistrado by rememberSaveable { mutableStateOf("") }
+
+    if (mostrandoRegistro) {
+        val registro: RegistroViewModel = viewModel(
+            factory = AyudaViewModelFactory { RegistroViewModel(app.repository) }
+        )
+        RegistroScreen(
+            viewModel = registro,
+            onVolver = { mostrandoRegistro = false },
+            onRegistrado = { correo ->
+                correoRegistrado = correo
+                mostrandoRegistro = false
+            }
+        )
+    } else {
+        LoginScreen(
+            viewModel = sesion,
+            correoInicial = correoRegistrado,
+            mensajeExito = correoRegistrado.takeIf { it.isNotBlank() }?.let {
+                "Cuenta creada. Ya puedes iniciar sesión."
+            },
+            onRegistrar = {
+                correoRegistrado = ""
+                mostrandoRegistro = true
+            }
+        )
     }
 }
 
