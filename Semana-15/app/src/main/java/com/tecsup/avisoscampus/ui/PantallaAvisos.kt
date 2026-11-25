@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.tecsup.avisoscampus.model.PermisoUi
 import com.tecsup.avisoscampus.notificacion.Notificador
+import com.tecsup.avisoscampus.receiver.CargadorReceiver
 import com.tecsup.avisoscampus.receiver.ModoAvionReceiver
 import com.tecsup.avisoscampus.viewmodel.AvisosViewModel
 
@@ -47,6 +48,7 @@ import com.tecsup.avisoscampus.viewmodel.AvisosViewModel
 fun PantallaAvisos(vm: AvisosViewModel) {
     val contexto = LocalContext.current
     val faltan by vm.faltan.collectAsState()
+    val escuchandoCargador by vm.escuchandoCargador.collectAsState()
     val escuchando by vm.escuchandoAvion.collectAsState()
     val avisos by vm.avisos.collectAsState()
     val mensaje by vm.mensaje.collectAsState()
@@ -74,6 +76,22 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 receptor,
                 IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED),
                 ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            onDispose { contexto.unregisterReceiver(receptor) }
+        } else {
+            onDispose {}
+        }
+    }
+
+    DisposableEffect(contexto, escuchandoCargador) {
+        if (escuchandoCargador) {
+            val receptor = CargadorReceiver(vm::alCambiarCargador)
+            val filtro = IntentFilter().apply {
+                addAction(Intent.ACTION_POWER_CONNECTED)
+                addAction(Intent.ACTION_POWER_DISCONNECTED)
+            }
+            ContextCompat.registerReceiver(
+                contexto, receptor, filtro, ContextCompat.RECEIVER_NOT_EXPORTED
             )
             onDispose { contexto.unregisterReceiver(receptor) }
         } else {
@@ -154,6 +172,17 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 ) {
                     Text("Escuchar el modo avión")
                     Switch(checked = escuchando, onCheckedChange = vm::cambiarEscucha)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Escuchar el cargador")
+                    Switch(
+                        checked = escuchandoCargador,
+                        onCheckedChange = vm::cambiarEscuchaCargador
+                    )
                 }
             }
             HistorialAvisos(avisos)
