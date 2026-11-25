@@ -40,7 +40,7 @@ flowchart TD
 | Crear | Rellenar ambos campos y observar el ID 101 tras publicar |
 | Sin conexión | Activar el modo avión, provocar una consulta y comprobar el botón Reintentar |
 
-La rama mejora-ia compiló y generó el APK de depuración. Se ejecutaron nueve pruebas unitarias con JUnit sobre el repositorio y la serialización. Las cinco capturas quedan pendientes hasta verificar los flujos en un emulador o dispositivo.
+La rama mejora-ia compiló y generó el APK de depuración. Se ejecutaron nueve pruebas unitarias con JUnit sobre el repositorio y la serialización. En el emulador Pixel 7 se verificaron el [formulario con campos vacíos](docs/capturas/04-crear.png) y el [estado de error de conexión](docs/capturas/05-sin-conexion.png). Queda pendiente comprobar la lista, el detalle, el filtro y la respuesta del servidor al publicar.
 
 ## Para pensar
 
