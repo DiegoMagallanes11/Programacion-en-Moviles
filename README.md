@@ -40,7 +40,7 @@ flowchart TD
 | Crear | Rellenar ambos campos y observar el ID 101 tras publicar |
 | Sin conexión | Activar el modo avión, provocar una consulta y comprobar el botón Reintentar |
 
-Las cinco capturas quedan pendientes hasta ejecutar la app en un emulador o dispositivo. Las pruebas unitarias usan respuestas de práctica para revisar el repositorio y la serialización.
+La rama mejora-ia compiló y generó el APK de depuración. Se ejecutaron nueve pruebas unitarias con JUnit sobre el repositorio y la serialización. Las cinco capturas quedan pendientes hasta verificar los flujos en un emulador o dispositivo.
 
 ## Para pensar
 
