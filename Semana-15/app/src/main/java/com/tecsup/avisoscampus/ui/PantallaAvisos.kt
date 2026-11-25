@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -47,6 +49,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     val faltan by vm.faltan.collectAsState()
     val escuchando by vm.escuchandoAvion.collectAsState()
     val avisos by vm.avisos.collectAsState()
+    val mensaje by vm.mensaje.collectAsState()
     val permiso by vm.permiso.collectAsState()
     val lanzador = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -59,7 +62,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
 
     LaunchedEffect(vm, contexto) {
         vm.eventos.collect { aviso ->
-            Notificador.mostrar(contexto, aviso)
+            if (!Notificador.mostrar(contexto, aviso)) vm.noSePudoMostrar()
         }
     }
 
@@ -112,6 +115,22 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                         vm.permisoRespondido(true)
                     }
                 }) { Text("Permitir notificaciones") }
+                if (permiso == PermisoUi.Denegado || mensaje != null) {
+                    OutlinedButton(onClick = {
+                        val ajustes = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                            .putExtra(Settings.EXTRA_APP_PACKAGE, contexto.packageName)
+                        contexto.startActivity(ajustes)
+                    }) { Text("Abrir ajustes") }
+                }
+                mensaje?.let {
+                    Surface(
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        shape = MaterialTheme.shapes.small
+                    ) {
+                        Text(it, modifier = Modifier.padding(12.dp))
+                    }
+                }
             }
             Tarjeta("Avisos") {
                 Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
