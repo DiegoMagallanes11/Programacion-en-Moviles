@@ -23,10 +23,14 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
     private val _busqueda = MutableStateFlow("")
     val busqueda = _busqueda.asStateFlow()
 
-    val lista = combine(_lista, _busqueda) { estado, consulta ->
+    private val eliminadas = MutableStateFlow<Set<Int>>(emptySet())
+
+    val lista = combine(_lista, _busqueda, eliminadas) { estado, consulta, idsOcultos ->
         when (estado) {
             is UiState.Exito -> UiState.Exito(
-                estado.datos.filter { it.title.contains(consulta.trim(), ignoreCase = true) }
+                estado.datos.filter { post ->
+                    post.id !in idsOcultos && post.title.contains(consulta.trim(), ignoreCase = true)
+                }
             )
             else -> estado
         }
@@ -34,6 +38,9 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
 
     private val _detalle = MutableStateFlow<UiState<DetalleUi>>(UiState.Cargando)
     val detalle = _detalle.asStateFlow()
+
+    private val _borrado = MutableStateFlow<UiState<Unit>?>(null)
+    val borrado = _borrado.asStateFlow()
 
     private val _usuarioFiltro = MutableStateFlow<Int?>(null)
     val usuarioFiltro = _usuarioFiltro.asStateFlow()
@@ -45,6 +52,7 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
     private var cargaLista: Job? = null
     private var cargaDetalle: Job? = null
     private var envio: Job? = null
+    private var eliminacion: Job? = null
 
     init {
         cargar()
@@ -94,6 +102,18 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
     fun cerrarDetalle() {
         idDetalle = null
         cargaDetalle?.cancel()
+        eliminacion?.cancel()
+        _borrado.value = null
+    }
+
+    fun eliminar(id: Int) {
+        if (idDetalle != id || _borrado.value == UiState.Cargando) return
+        _borrado.value = UiState.Cargando
+        eliminacion = viewModelScope.launch {
+            val resultado = repo.eliminar(id)
+            resultado.onSuccess { eliminadas.value = eliminadas.value + id }
+            _borrado.value = resultado.comoUiState()
+        }
     }
 
     fun publicar(titulo: String, texto: String) {

@@ -10,6 +10,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -18,11 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tecsup.murocampus.data.PostRepositoryRemote
 import com.tecsup.murocampus.data.remote.RetrofitClient
@@ -32,6 +36,7 @@ import com.tecsup.murocampus.ui.PantallaLista
 import com.tecsup.murocampus.ui.theme.MuroCampusTheme
 import com.tecsup.murocampus.viewmodel.PostsViewModel
 import com.tecsup.murocampus.viewmodel.PostsViewModelFactory
+import com.tecsup.murocampus.viewmodel.UiState
 
 class MainActivity : ComponentActivity() {
     private val factory by lazy { PostsViewModelFactory(PostRepositoryRemote(RetrofitClient.api)) }
@@ -64,8 +69,27 @@ private fun MuroCampus(vm: PostsViewModel) {
         seleccionado?.let(vm::restaurarDetalle)
     }
 
+    val borrado by vm.borrado.collectAsStateWithLifecycle()
+    val snackbar = remember { SnackbarHostState() }
+    var mostrarBorrado by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(borrado) {
+        if (borrado is UiState.Exito && seleccionado != null) {
+            mostrarBorrado = true
+            volver()
+        }
+    }
+
+    LaunchedEffect(mostrarBorrado) {
+        if (mostrarBorrado) {
+            snackbar.showSnackbar("Publicación eliminada de esta sesión")
+            mostrarBorrado = false
+        }
+    }
+
     BackHandler(enabled = !enLista, onBack = volver)
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbar) },
         topBar = {
             TopAppBar(
                 title = { Text(if (creando) "Crear publicación" else "MuroCampus") },

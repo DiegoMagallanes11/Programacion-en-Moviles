@@ -80,6 +80,12 @@ class PostRepositoryTest {
         assertEquals(Post(1, 1, "Título", "Contenido"), post)
     }
 
+    @Test
+    fun eliminaSoloSiLaRespuestaEsExitosa() = runBlocking {
+        assertTrue(repo.eliminar(1).isSuccess)
+        assertEquals("Error del servidor (404)", repo.eliminar(9999).exceptionOrNull()?.message)
+    }
+
     private class ApiDePrueba : PostApi {
         var falloLista: Exception? = null
         private val posts = (1..100).map { id ->
@@ -102,5 +108,8 @@ class PostRepositoryTest {
 
         override suspend fun crear(nuevo: NuevoPost) =
             Post(nuevo.userId, 101, nuevo.title, nuevo.body)
+
+        override suspend fun eliminar(id: Int): Response<Unit> =
+            if (id == 1) Response.success(Unit) else Response.error(404, "{}".toResponseBody())
     }
 }
