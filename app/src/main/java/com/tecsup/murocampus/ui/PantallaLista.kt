@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,8 +24,16 @@ import com.tecsup.murocampus.viewmodel.UiState
 fun PantallaLista(vm: PostsViewModel, abrir: (Int) -> Unit, modifier: Modifier = Modifier) {
     val estado by vm.lista.collectAsStateWithLifecycle()
     val filtro by vm.usuarioFiltro.collectAsStateWithLifecycle()
+    val busqueda by vm.busqueda.collectAsStateWithLifecycle()
 
     Column(modifier.fillMaxSize()) {
+        OutlinedTextField(
+            value = busqueda,
+            onValueChange = vm::buscar,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            singleLine = true,
+            label = { Text("Buscar por título") }
+        )
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -53,7 +63,8 @@ fun PantallaLista(vm: PostsViewModel, abrir: (Int) -> Unit, modifier: Modifier =
             )
             is UiState.Exito -> {
                 if (resultado.datos.isEmpty()) {
-                    Text("Sin publicaciones", Modifier.padding(16.dp))
+                    val mensaje = if (busqueda.isBlank()) "Sin publicaciones" else "Sin resultados"
+                    Text(mensaje, Modifier.padding(16.dp))
                 } else {
                     LazyColumn(
                         modifier = Modifier.weight(1f),
