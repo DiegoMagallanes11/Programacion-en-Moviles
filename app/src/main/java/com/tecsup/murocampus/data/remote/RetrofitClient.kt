@@ -12,6 +12,12 @@ object RetrofitClient {
     private val json = Json { ignoreUnknownKeys = true }
 
     private val cliente = OkHttpClient.Builder().apply {
+        addInterceptor { cadena ->
+            val peticion = cadena.request().newBuilder()
+                .header("Accept", "application/json")
+                .build()
+            cadena.proceed(peticion)
+        }
         if (BuildConfig.DEBUG) {
             addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
