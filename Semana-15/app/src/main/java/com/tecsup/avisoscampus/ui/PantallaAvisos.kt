@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import com.tecsup.avisoscampus.viewmodel.AvisosViewModel
 @Composable
 fun PantallaAvisos(vm: AvisosViewModel) {
     val contexto = LocalContext.current
+    val faltan by vm.faltan.collectAsState()
     val permiso by vm.permiso.collectAsState()
     val lanzador = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -92,8 +94,15 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
             }
             Tarjeta("Recordatorio") {
-                Button(onClick = {}, enabled = false) { Text("Recordar en 10 s") }
-                OutlinedButton(onClick = {}, enabled = false) { Text("Cancelar") }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = { vm.recordarEn() }, enabled = faltan == null) {
+                        Text("Recordar en 10 s")
+                    }
+                    OutlinedButton(onClick = vm::cancelarRecordatorio, enabled = faltan != null) {
+                        Text("Cancelar")
+                    }
+                }
+                faltan?.let { Text("Faltan $it s") }
             }
             Tarjeta("Receptor de anuncios") {
                 Text("Escuchar el modo avión")
