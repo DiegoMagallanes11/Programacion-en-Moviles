@@ -30,17 +30,23 @@ flowchart TD
   A --> S["JSONPlaceholder"]
 ```
 
-## Evidencias en emulador
+## Evidencias y verificación
 
-| Captura | Comprobación |
+La rama mejora-ia compiló y generó un APK de depuración. Las nueve pruebas unitarias pasaron y cubren el repositorio y la serialización.
+
+| Flujo | Resultado en el emulador Pixel 7 |
 | --- | --- |
-| Lista | Abrir la app y dejar cargar las publicaciones |
-| Detalle | Abrir la publicación 1 y comprobar que hay cinco comentarios |
-| Filtro | Elegir Usuario 2 y revisar que las publicaciones sean de ese usuario |
-| Crear | Rellenar ambos campos y observar el ID 101 tras publicar |
-| Sin conexión | Activar el modo avión, provocar una consulta y comprobar el botón Reintentar |
+| Listado de publicaciones | Pendiente de verificar con conexión al servicio. |
+| Detalle y comentarios | Pendiente de comprobar que la publicación 1 muestra sus cinco comentarios. |
+| Filtro por usuario | Pendiente de comprobar que al elegir Usuario 2 solo aparezcan sus publicaciones. |
+| Crear publicación | [Formulario vacío](docs/capturas/04-crear.png). El botón Publicar está deshabilitado. Falta comprobar la respuesta con ID 101. |
+| Error de conexión | [Mensaje de red y botón Reintentar](docs/capturas/05-sin-conexion.png). |
 
-La rama mejora-ia compiló y generó el APK de depuración. Se ejecutaron nueve pruebas unitarias con JUnit sobre el repositorio y la serialización. En el emulador Pixel 7 se verificaron el [formulario con campos vacíos](docs/capturas/04-crear.png) y el [estado de error de conexión](docs/capturas/05-sin-conexion.png). Queda pendiente comprobar la lista, el detalle, el filtro y la respuesta del servidor al publicar.
+## Observación crítica
+
+**¿Qué demuestra la pantalla de error y cómo se puede comprobar que el reintento funciona?**
+
+La prueba en el Pixel 7 confirmó que la app muestra un mensaje de conexión y ofrece el botón Reintentar. Para comprobar la recuperación hay que restablecer la red, tocar Reintentar y verificar que la lista se cargue sin cerrar la app. Las pruebas unitarias cubren el manejo de respuestas del repositorio, mientras que esta comprobación valida el recorrido completo desde la pantalla hasta el servicio.
 
 ## Para pensar
 
