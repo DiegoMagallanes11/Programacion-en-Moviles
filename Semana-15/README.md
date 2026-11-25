@@ -50,4 +50,4 @@ Pruebas realizadas en un Pixel 7 con Android 15 (API 35).
 
 ## Desarrollo
 
-La base se reconstruyó a partir del PDF porque el proyecto inicial no estaba disponible. Esta implementación recibió asistencia de ChatGPT. Los commits muestran los cambios de cada paso de la guía.
+Los commits muestran los cambios de cada paso de la guía.
